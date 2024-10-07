@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <h1 style="text-align:center">对不起, 当前功能暂未开发...</h1>
+    <h1 style="text-align:center">链下库存查询</h1>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'TLIAS教学管理系统',
+  title: '粮谋知链',
 
   /**
    * @type {boolean} true | false

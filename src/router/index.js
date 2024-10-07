@@ -38,6 +38,12 @@ export const routes = [
     meta: { title: '粮食信息管理', icon: 'el-icon-s-help' },
     children: [
       {
+        path: 'tabulation',
+        name: 'Tabulation',
+        component: () => import('@/views/AS-Tabulation'),
+        meta: { title: '仓库列表', icon: 'el-icon-menu' }
+      },
+      {
         path: 'classes',
         name: 'Classes',
         component: () => import('@/views/AS-UpQuery'),
