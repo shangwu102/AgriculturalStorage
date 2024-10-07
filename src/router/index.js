@@ -121,7 +121,7 @@ export const routes = [
     redirect: '/warning',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: 'WarningDashboard',
       component: () => import('@/views/AS-Waining/index'),
       meta: { title: '安全预警', icon: 'dashboard' }
     }]
