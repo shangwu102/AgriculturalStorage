@@ -1,56 +1,64 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-container>
+      <el-aside width="53vw"></el-aside>
+      <el-main>
+        <div>
+          <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
-      <div class="title-container">
-        <h3 class="title">黑马程序员Tlias智能学习辅助系统</h3>
-      </div>
-
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
-
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
-          :type="passwordType"
-          placeholder="Password"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
-      </el-form-item>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-    </el-form>
+            <div class="title-container">
+              <h3 class="title">系统登录</h3>
+            </div>
+            <el-form-item :class="{'focused': isFocused1 }" prop="username">
+              <span class="svg-container">
+                <svg-icon icon-class="user" />
+              </span>
+              <el-input
+                ref="username"
+                v-model="loginForm.username"
+                placeholder="Username"
+                name="username"
+                type="text"
+                tabindex="1"
+                auto-complete="on"
+                @focus="handleFocus1"
+                @blur="handleBlur1"
+              />
+            </el-form-item>
+            <el-form-item :class="{'focused': isFocused2 }" prop="password">
+              <span class="svg-container">
+                <svg-icon icon-class="password" />
+              </span>
+              <el-input
+                :key="passwordType"
+                ref="password"
+                v-model="loginForm.password"
+                :type="passwordType"
+                placeholder="Password"
+                name="password"
+                tabindex="2"
+                auto-complete="on"
+                @keyup.enter.native="handleLogin"
+                @focus="handleFocus2"
+                @blur="handleBlur2"
+              />
+              <span class="show-pwd" @click="showPwd">
+                <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+              </span>
+            </el-form-item>
+            <el-checkbox v-model="checked">记住密码</el-checkbox>
+            <el-button :loading="loading" type="primary" style="height:55px;width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+          </el-form>
+        </div>
+      </el-main>
+    </el-container>
   </div>
 </template>
 
 <script>
 import { validUsername } from '@/utils/validate'
-import { login } from '@/api/user'
-import { setToken } from '@/utils/auth'
+// import { login } from '@/api/user'
+// import { setToken } from '@/utils/auth'
 export default {
   name: 'Login',
   data() {
@@ -84,7 +92,22 @@ export default {
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      checked: false, // 记住密码
+      isFocused1: false, // 用于控制容器的样式
+      isFocused2: false // 用于控制容器的样式
+    }
+  },
+
+  mounted() {
+    // 页面加载时检查是否有保存的用户名和密码
+    const savedUsername = localStorage.getItem('username')
+    const savedPassword = localStorage.getItem('password')
+
+    if (savedPassword && savedUsername) {
+      this.loginForm.username = savedUsername
+      this.loginForm.password = savedPassword
+      this.checked = true // 如果保存了信息，变为勾选状态
     }
   },
 
@@ -103,26 +126,50 @@ export default {
 
     // 登录方法
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          // 调用登录后端接口
-          login(this.loginForm).then((result) => {
-            console.log(result)
-            if (result.data.code === 1) {
-              setToken(result.data.data)
-              console.log('login success')
-              this.$router.push('/')
-            } else {
-              this.$message.error(result.data.msg)
-              this.loading = false
-            }
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+      this.$router.push('/')
+      console.log(2222222222223232323)
+      // this.$refs.loginForm.validate(valid => {
+      //   if (valid) {
+      //     this.loading = true
+      //     // 调用登录后端接口
+      //     login(this.loginForm).then((result) => {
+      //       console.log(result)
+      //       if (result.data.code === 1) {
+      //         setToken(result.data.data)
+      //         console.log(result.data.data)
+      //         console.log('login success')
+      //         if (this.checked) {
+      //           // 勾选 将用户名和密码存储到 localStorage
+      //           localStorage.setItem('username', this.loginForm.username)
+      //           localStorage.setItem('password', this.loginForm.password)
+      //         } else {
+      //           // 未勾选 清除保存的信息
+      //           localStorage.removeItem('password')
+      //           localStorage.removeItem('username')
+      //         }
+      //         this.$router.push('/')
+      //       } else {
+      //         this.$message.error(result.data.msg)
+      //         this.loading = false
+      //       }
+      //     })
+      //   } else {
+      //     console.log('error submit!!')
+      //     return false
+      //   }
+      // })
+    },
+    handleFocus1() {
+      this.isFocused1 = true
+    },
+    handleBlur1() {
+      this.isFocused1 = false
+    },
+    handleFocus2() {
+      this.isFocused2 = true
+    },
+    handleBlur2() {
+      this.isFocused2 = false
     }
   }
 }
@@ -131,10 +178,28 @@ export default {
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
+.el-aside{
+  background-image: url(../../assets/login.png);
+  background-size: 100% 100%;
+  // background-repeat: no-repeat;
+  // background-size: contain;
+  background-color: #5e1010;
+}
+.el-main{
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.el-container{
+   height: calc(100vh);
+}
+.el-checkbox{
+  margin-bottom: 20px;
+}
 $bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
+$light_gray:#000000;
+$cursor: #000000;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {
@@ -148,7 +213,6 @@ $cursor: #fff;
     display: inline-block;
     height: 47px;
     width: 85%;
-
     input {
       background: transparent;
       border: 0px;
@@ -166,18 +230,25 @@ $cursor: #fff;
   }
 
   .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(154, 146, 146, 0.1);
+    border-radius: 10px;
     color: #454545;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
+
+  .el-form-item.focused {
+  border-color: #409eff; /* 聚焦时边框颜色变为蓝色 */
+  box-shadow: 0 0 5px rgba(64, 158, 255, 0.5); /* 添加阴影效果 */
+}
+
 }
 </style>
 
 <style lang="scss" scoped>
 $bg:#2d3a4b;
 $dark_gray:#889aa4;
-$light_gray:#eee;
+$light_gray:#000000;
 
 .login-container {
   min-height: 100%;
@@ -189,7 +260,7 @@ $light_gray:#eee;
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    padding: 80px 5px 100px;
     margin: 0 auto;
     overflow: hidden;
   }
@@ -216,14 +287,14 @@ $light_gray:#eee;
 
   .title-container {
     position: relative;
-
+    padding-bottom: 50px;
     .title {
-      font-size: 26px;
+      font-size: 50px;
       color: $light_gray;
       margin: 0px auto 40px auto;
-      text-align: center;
+      text-align: left;
       font-weight: bold;
-      font-family: '楷体';
+      font-family: '微软雅黑';
     }
   }
 
