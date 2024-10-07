@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <h1 style="text-align:center">链上粮食信息查询</h1>
+    <h1 style="text-align:center">链上查询页面</h1>
   </div>
 </template>
 

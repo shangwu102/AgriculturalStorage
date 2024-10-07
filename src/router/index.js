@@ -4,8 +4,15 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 import Layout from '@/layout'
+import FixedPage from '@/views/AS-e/index.vue'
+
+
+
+
+
 
 export const routes = [
+
   {
     path: '/login',
     component: () => import('@/views/login/index'),
@@ -42,6 +49,7 @@ export const routes = [
         name: 'Tabulation',
         component: () => import('@/views/AS-Tabulation'),
         meta: { title: '仓库列表', icon: 'el-icon-menu' }
+
       },
       {
         path: 'classes',
@@ -54,6 +62,12 @@ export const routes = [
         name: 'Student',
         component: () => import('@/views/AS-DownQuery'),
         meta: { title: '库存查询', icon: 'el-icon-user-solid' }
+      },
+      {
+        path: '/fixed-page',
+        name: 'fixedPage',
+        component: FixedPage,
+        meta: { title: '仓库设备管理', icon: 'el-icon-menu' },
       }
     ]
   },
@@ -75,7 +89,7 @@ export const routes = [
         name: 'Emp',
         component: () => import('@/views/AS-Outbound'),
         meta: { title: '出库信息', icon: 'el-icon-user-solid' }
-      }
+      },
     ]
   },
 
