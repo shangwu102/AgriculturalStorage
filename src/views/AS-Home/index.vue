@@ -282,7 +282,7 @@ export default {
             // 为标记添加点击事件，跳转网页或路由
             marker.on('click', () => {
               // 跳转到外部网页
-              window.location.href = 'https://hiwcq.com'
+              window.location.href = 'http://localhost:8082/#/home'
 
               // 如果需要跳转路由，可以取消上面的行，并使用下面的代码
               // this.$router.push({ name: 'TargetRoute' }) // 跳转到路由
