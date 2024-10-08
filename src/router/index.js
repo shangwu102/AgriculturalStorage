@@ -43,20 +43,20 @@ export const routes = [
         path: 'tabulation',
         name: 'Tabulation',
         component: () => import('@/views/AS-Tabulation'),
-        meta: { title: '仓库列表', icon: 'el-icon-menu' }
+        meta: { title: '链上仓库', icon: 'el-icon-menu' }
 
       },
       {
         path: 'classes',
         name: 'Classes',
         component: () => import('@/views/AS-UpQuery'),
-        meta: { title: '链上查询', icon: 'el-icon-menu' }
+        meta: { title: '仓库设备', icon: 'el-icon-menu' }
       },
       {
         path: 'student',
         name: 'Student',
         component: () => import('@/views/AS-DownQuery'),
-        meta: { title: '库存查询', icon: 'el-icon-user-solid' }
+        meta: { title: '库存控制', icon: 'el-icon-user-solid' }
       },
       {
         path: '/fixed-page',
