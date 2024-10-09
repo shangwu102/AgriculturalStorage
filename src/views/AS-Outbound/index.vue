@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="sousuo" placeholder="请输入产品ID">''</el-input>
+        <el-input v-model="sousuo" placeholder="请输入产品名称">''</el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="chaxun">搜素</el-button>
