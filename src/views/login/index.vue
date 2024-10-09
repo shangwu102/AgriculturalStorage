@@ -126,7 +126,7 @@ export default {
 
     // 登录方法
     handleLogin() {
-      this.$router.push('/')
+      this.$router.push('/ashome')
       console.log(2222222222223232323)
       // this.$refs.loginForm.validate(valid => {
       //   if (valid) {

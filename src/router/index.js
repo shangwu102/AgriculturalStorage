@@ -4,130 +4,124 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 import Layout from '@/layout'
-import FixedPage from '@/views/AS-e/index.vue'
-
 export const routes = [
-
+  // 登陆页面
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
+    component: () => import('@/views/login/index')
   },
-
+  // 404 页面
   {
     path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
+    component: () => import('@/views/404/index')
   },
-
+  // 访问根路径重定向到登录
   {
     path: '/',
+    redirect: '/login'
+  },
+  // 首页
+  {
+    path: '/ashome',
     component: Layout,
-    redirect: '/dashboard',
     children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
+      path: '',
+      name: 'AShome',
       component: () => import('@/views/AS-Home/index'),
       meta: { title: '首页', icon: 'dashboard' }
     }]
   },
-
+  // 粮食信息管理
   {
-    path: '/example',
+    path: '/asinformation',
     component: Layout,
-    redirect: '/example',
-    name: 'Example',
+    name: 'ASasinformation',
     meta: { title: '粮食信息管理', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'tabulation',
-        name: 'Tabulation',
+        path: 'blockchainwarehouse',
+        name: 'Blockchainwarehouse',
         component: () => import('@/views/AS-Tabulation'),
         meta: { title: '链上仓库', icon: 'el-icon-menu' }
-
       },
       {
-        path: 'classes',
-        name: 'Classes',
+        path: 'equipmentwarehouse',
+        name: 'Equipmentwarehouse',
         component: () => import('@/views/AS-UpQuery'),
         meta: { title: '仓库设备', icon: 'el-icon-menu' }
       },
       {
-        path: 'student',
-        name: 'Student',
+        path: 'controlwarehouse',
+        name: 'Controlwarehouse',
         component: () => import('@/views/AS-DownQuery'),
         meta: { title: '库存控制', icon: 'el-icon-user-solid' }
-      },
-      {
-        path: '/fixed-page',
-        name: 'fixedPage',
-        component: FixedPage
       }
+      // {
+      //   path: '/fixed-page',
+      //   name: 'fixedPage',
+      //   component: FixedPage
+      // }
     ]
   },
+  // 生产管理
   {
-    path: '/system',
+    path: '/asmanage',
     component: Layout,
-    redirect: '/system',
-    name: 'System',
+    name: 'Asmanage',
     meta: { title: '生产管理', icon: 'el-icon-s-tools' },
     children: [
       {
-        path: 'dept',
-        name: 'Dept',
+        path: 'warehousing',
+        name: 'Warehousing',
         component: () => import('@/views/AS-Warehousing'),
         meta: { title: '入库信息', icon: 'el-icon-menu' }
       },
       {
-        path: 'emp',
-        name: 'Emp',
+        path: 'outbound',
+        name: 'Outbound',
         component: () => import('@/views/AS-Outbound'),
         meta: { title: '出库信息', icon: 'el-icon-user-solid' }
       }
     ]
   },
-
+  // 数据报表
   {
-    path: '/report',
+    path: '/asreport',
     component: Layout,
-    redirect: '/report',
-    name: 'Report',
+    name: 'Asreport',
     meta: { title: '数据报表', icon: 'el-icon-s-tools' },
     children: [
       {
-        path: 'emp-report',
-        name: 'emp-report',
+        path: 'warehousereport',
+        name: 'Warehousereport',
         component: () => import('@/views/AS-report'),
-        meta: { title: '仓库数据报表', icon: 'el-icon-s-data' }
+        meta: { title: '仓库报表', icon: 'el-icon-s-data' }
       },
       {
-        path: 'student-report',
-        name: 'student-report',
+        path: 'testreport',
+        name: 'Testreport',
         component: () => import('@/views/student-report'),
         meta: { title: 'test', icon: 'el-icon-s-data' }
       }
     ]
   },
-  // {
-  //   path: '/warning',
-  //   component: Layout,
-  //   redirect: '/warning',
-  //   name: 'Warning',
-  //   meta: { title: '安全预警', icon: 'el-icon-s-tools' }
-  // },
+  // 安全预警
   {
-    path: '/warning',
+    path: '/aswarning',
     component: Layout,
-    redirect: '/warning',
     children: [{
-      path: 'dashboard',
+      path: '',
       name: 'WarningDashboard',
       component: () => import('@/views/AS-Waining/index'),
       meta: { title: '安全预警', icon: 'dashboard' }
     }]
   },
+  // 大屏展示
+  {
+    path: '/lshome',
+    component: () => import('@/views/LS-Home/index')
+  },
 
-  // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
 
