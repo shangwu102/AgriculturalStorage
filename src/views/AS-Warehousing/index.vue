@@ -78,7 +78,7 @@
       height="75vh"
       style="width: 100%"
       border
-      :row-style="{height: '62.4px'}"
+      :row-style="{height: '63.1px'}"
     >
       <el-table-column
         prop="id"
@@ -143,7 +143,9 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="1000"
+        :total="tableData.length"
+        :current-page="dangqianyema"
+        @current-change="handlePageChange"
       />
     </div>
   </div>
@@ -259,6 +261,26 @@ export default {
         pass: '96%',
         createTime: '2021-11-20 17:40:50',
         account: '灌溉系统1'
+      },
+      {
+        id: '11',
+        repertoryName: '主仓库',
+        productType: '家电',
+        productName: '电视',
+        joinAmount: 250,
+        pass: '96%',
+        createTime: '2021-11-20 17:40:50',
+        account: '灌溉系统1'
+      },
+      {
+        id: '12',
+        repertoryName: '主仓库',
+        productType: '家电',
+        productName: '电视',
+        joinAmount: 250,
+        pass: '96%',
+        createTime: '2021-11-20 17:40:50',
+        account: '灌溉系统1'
       }
     ]
     const newrukuxx = {
@@ -284,12 +306,22 @@ export default {
       value: '',
       sousuo: '',
       tableData: tableData,
-      newdata: tableData,
+      newdata: [],
       dialogFormVisible: false,
       form: newrukuxx,
       shujujianyan: newrukuxxjianyan,
-      table: true
+      table: true,
+      dangqianyema: 1
     }
+  },
+  created() {
+    for (let i = 0; i < 10; i++) {
+      this.newdata.push(this.tableData[i])
+    }
+  },
+  mounted() {
+    // 初始化时获取第一页的数据
+    this.fetchData(this.dangqianyema)
   },
   methods: {
     chaxun() {
@@ -308,12 +340,54 @@ export default {
       this.newdata = newdata
     },
     xingzeng() {
-      this.newdata.push({
-        id: this.newdata.length + 1,
-        ...this.form
-      })
-      console.log(this.newdata)
-      this.dialogFormVisible = false
+      if (this.form.repertoryName === '' ||
+    this.form.productType === '' ||
+    this.form.productName === '' ||
+    this.form.joinAmount === '' ||
+    this.form.pass === '' ||
+    this.form.createTime === '' ||
+    this.form.account === '') {
+        // 如果所有字段都不为空时，执行这里的逻辑
+        this.$message({
+          message: '请输入全部数据',
+          type: 'warning'
+        })
+      } else {
+        console.log(this.form)
+        this.newdata.push({
+          id: this.newdata.length + 1,
+          ...this.form
+        })
+        console.log(this.newdata)
+        this.form = {
+          repertoryName: '',
+          productType: '',
+          productName: '',
+          joinAmount: '',
+          pass: '',
+          createTime: '',
+          account: ''
+        }
+        this.dialogFormVisible = false
+      }
+    },
+    handlePageChange(page) {
+      // 处理页码切换逻辑
+      this.currentPage = page
+      console.log('当前页码为:', page)
+      // 这里可以根据 page 发送请求，获取相应的分页数据
+      this.fetchData(page)
+    },
+    fetchData(page) {
+      // 模拟获取数据
+      console.log(`正在获取第 ${page} 页的数据...`)
+      // 请求数据的逻辑
+      // 可以将请求到的数据显示在 tableData 中
+      const fenyeshuj = []
+      for (let i = (page - 1) * 10; i < ((page - 1) * 10) + 10; i++) {
+        fenyeshuj.push(this.tableData[i])
+      }
+      this.newdata = fenyeshuj
     }
   }
 }
