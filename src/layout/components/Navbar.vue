@@ -7,12 +7,7 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img
-            src="
-
-https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png"
-            class="user-avatar"
-          >
+          <img width="40px" src="https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -69,11 +64,11 @@ export default {
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
-    line-height: 46px;
+    line-height: 20px;
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background .3s;
+    transition: width .3s;
     -webkit-tap-highlight-color:transparent;
 
     &:hover {
@@ -104,7 +99,7 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background .3s;
+        transition: width .3s;
 
         &:hover {
           background: rgba(0, 0, 0, .025)
