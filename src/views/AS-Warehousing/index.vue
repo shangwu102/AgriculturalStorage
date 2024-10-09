@@ -17,61 +17,6 @@
       <el-form-item>
         <el-button type="primary" @click="chaxun">搜素</el-button>
       </el-form-item>
-      <el-form-item>
-        <el-button class="xinzeng" type="success" icon="el-icon-plus" @click="dialogFormVisible = true">新增入库</el-button>
-        <!-- 弹框 -->
-        <el-dialog title="新增入库" :visible.sync="dialogFormVisible">
-          <div class="biaodan">
-            <el-form :model="form" :rules="shujujianyan" class="xingzengshuju">
-              <div class="diyi">
-                <el-form-item label="仓库名称" :label-width="formLabelWidth" prop="repertoryName">
-                  <el-select v-model="form.repertoryName" placeholder="请选择仓库">
-                    <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="操作员" :label-width="formLabelWidth" prop="account">
-                  <el-input v-model="form.account" autocomplete="off" />
-                </el-form-item>
-              </div>
-              <div class="dier">
-                <el-form-item label="产品种类" :label-width="formLabelWidth" prop="productType">
-                  <el-input v-model="form.productType" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label="合格率" :label-width="formLabelWidth" prop="pass">
-                  <el-input v-model="form.pass" autocomplete="off" />
-                </el-form-item>
-              </div>
-              <div class="disan">
-                <el-form-item label="产品名称" :label-width="formLabelWidth" prop="productName">
-                  <el-input v-model="form.productName" autocomplete="off" />
-                </el-form-item>
-              </div>
-              <div class="disi">
-                <el-form-item label="入库数量" :label-width="formLabelWidth" prop="joinAmount">
-                  <el-input v-model="form.joinAmount" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label="入库时间" :label-width="formLabelWidth" prop="createTime">
-                  <el-date-picker
-                    v-model="form.createTime"
-                    type="datetime"
-                    placeholder="选择日期时间"
-                    style="width: 17vw;"
-                  />
-                </el-form-item>
-              </div>
-            </el-form>
-          </div>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="xingzeng">确 定</el-button>
-          </div>
-        </el-dialog>
-      </el-form-item>
     </el-form>
     <el-table
       :data="newdata"
