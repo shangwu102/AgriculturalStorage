@@ -78,7 +78,7 @@
       height="75vh"
       style="width: 100%"
       border
-      :row-style="{height: '63.1px'}"
+      :row-style="{height: '62.4px'}"
     >
       <el-table-column
         prop="id"
