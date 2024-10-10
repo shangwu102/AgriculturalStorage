@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-container>
-      <el-aside width="53vw">11</el-aside>
+      <el-aside width="65vw">11</el-aside>
       <el-main>
         <div>
           <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">

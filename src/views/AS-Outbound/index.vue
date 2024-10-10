@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :inline="true" :model="a" class="demo-form-inline">
+    <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
         <el-select v-model="value" placeholder="请选择" @change="chaxun">
           <el-option
@@ -20,10 +20,9 @@
     </el-form>
     <el-table
       :data="newdata"
-      height="75vh"
       style="width: 100%"
       border
-      :row-style="{height: '62.4px'}"
+      :row-style="{height: '64px'}"
     >
       <el-table-column
         prop="id"
@@ -330,6 +329,11 @@ export default {
       // 可以将请求到的数据显示在 tableData 中
       const fenyeshuj = []
       for (let i = (page - 1) * 10; i < ((page - 1) * 10) + 10; i++) {
+        console.log(this.tableData[i])
+        if (this.tableData[i] === undefined) {
+          console.warn(`字段未定义，值为 undefined`)
+          break
+        }
         fenyeshuj.push(this.tableData[i])
       }
       this.newdata = fenyeshuj
@@ -340,6 +344,9 @@ export default {
 <style>
 .yema{
   /* border: 1px solid red; */
+  position: absolute;
+  bottom: 0px ;
+  left: 43vw;
   height: 8vh;
   min-height:6vh ;
   display: flex;
@@ -373,6 +380,7 @@ export default {
   justify-content: space-between;
 }
 .app-container{
+  position: relative;
   height: calc(100vh - 50px);
   /* border: 1px solid red; */
 }
