@@ -346,7 +346,7 @@ export default {
   /* border: 1px solid red; */
   position: absolute;
   bottom: 0px ;
-  left: 43vw;
+  left: 40vw;
   height: 8vh;
   min-height:6vh ;
   display: flex;

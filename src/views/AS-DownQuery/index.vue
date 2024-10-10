@@ -520,7 +520,7 @@ export default {
   /* border: 1px solid red; */
   position: absolute;
   bottom: 0px ;
-  left: 43vw;
+  left: 40vw;
   height: 8vh;
   min-height:6vh ;
   display: flex;
@@ -561,9 +561,8 @@ export default {
 .el-form-item__content{
   display: inline-block;
 }
-
-/* .el-dialog{
+.el-dialog{
   margin-bottom: 0;
-  box-shadow: 1px 5px 8px red;
-} */
+  /*box-shadow: 1px 5px 8px red;*/
+}
 </style>
