@@ -12,7 +12,7 @@ const ToastMsg = Vue.extend(Toast)
 Toast.install = (options, type) => {
   if (options === undefined || options === null) {
     options = {
-		  content: ''
+      content: ''
     }
   } else if (typeof options === 'string' || typeof options === 'number') {
     options = {

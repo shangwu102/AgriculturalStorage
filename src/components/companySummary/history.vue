@@ -11,7 +11,7 @@
         <li
           v-for="(itemTit, index) in tabTitle"
           :key="index"
-          :class="{ active: cur == index }"
+          :class="{ active: cur === index }"
           @mouseover="handleMouseOver(index)"
           @mouseout="handleMouseOut(index)"
         >
@@ -19,10 +19,10 @@
         </li>
       </ul>
       <div class="indicatorDots">
-        <span v-for="(v, i) in tabTitle" :key="i" :class="{ active: cur == i }" />
+        <span v-for="(v, i) in tabTitle" :key="i" :class="{ active: cur === i }" />
       </div>
       <div class="tab-content">
-        <div v-for="(itemCon, index) in tabCon" v-show="cur == index" :key="index">
+        <div v-for="(itemCon, index) in tabCon" v-show="cur === index" :key="index">
           <div v-for="(v, i) in itemCon" :key="i" class="content">
             {{ v }}
           </div>
@@ -87,7 +87,7 @@ export default {
     getTimer() {
       this.timer = setInterval(() => {
         this.cur++
-        if (this.cur == this.tabTitle.length) {
+        if (this.cur === this.tabTitle.length) {
           this.cur = 0
         }
       }, 2000)

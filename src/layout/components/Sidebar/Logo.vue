@@ -2,7 +2,7 @@
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
       <router-link key="collapse" class="sidebar-logo-link" to="/">
-        <img src="@/assets/logo/hm-logo5.png" class="sidebar-logo" >
+        <img src="@/assets/logo/hm-logo5.png" class="sidebar-logo">
         <h1 class="sidebar-title">{{ title }} </h1>
       </router-link>
 
