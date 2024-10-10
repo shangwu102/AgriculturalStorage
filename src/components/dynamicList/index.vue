@@ -149,10 +149,10 @@ export default {
 
 <style lang="scss" scoped>
 .sn-container {
-  left: 50px;
-  top: 700px;
-  width: 560px;
-  height: 400px;
+  left: 630px;
+  top: 110px;
+  width: 660px;
+  height: 550px;
   .pd-info {
     left: 0;
     top: 35px;
@@ -164,8 +164,8 @@ export default {
     height: 100%;
     .y-center {
       position: absolute;
-      top: 16px;
-      left: 30px;
+      top: 86px;
+      left: 90px;
       width: 234px;
       height: 234px;
       > [class^=info-1] {
@@ -235,8 +235,8 @@ export default {
       -o-animation-timing-function: cubic-bezier(1, 0, 0.6, 0.6);
       animation-timing-function: cubic-bezier(1, 0, 0.6, 0.6);
       .y-number-bg {
-        width: 54px;
-        height: 54px;
+        width: 250px;
+        height: 63px;
         position: absolute;
         top: 5px;
         -webkit-animation-duration: 5s;
@@ -245,8 +245,8 @@ export default {
         animation-duration: 5s;
       }
       .y-number-icon {
-        width: 54px;
-        height: 54px;
+        width: 254px;
+        height: 74px;
         position: absolute;
         top: 5px;
       }
@@ -254,7 +254,7 @@ export default {
         display: inline-block;
         color: #0072bc;
         font-size: 18px;
-        padding: 10px 0 0 60px;
+        padding: 10px 0 0 160px;
         > span {
           display: block;
           &:nth-child(2) {
