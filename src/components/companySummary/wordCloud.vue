@@ -12,6 +12,7 @@
 
 <script>
 import '@/assets/js/echarts-wordcloud.min'
+import * as echarts from 'echarts'
 
 export default {
   name: 'WordCloud',
