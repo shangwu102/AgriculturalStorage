@@ -32,7 +32,6 @@
       <el-table-column
         prop="alert_type"
         label="预警类型"
-        width="180"
       />
       <el-table-column
         prop="alert_source"
@@ -49,6 +48,7 @@
       <el-table-column
         prop="alert_message"
         label="预警信息"
+        width="250"
       />
       <el-table-column
         prop="alert_time"
@@ -347,10 +347,10 @@ export default {
 <style>
 .yema{
   /* border: 1px solid red; */
-  position: absolute;
+  /* position: absolute;
   bottom: 0px ;
-  left: 40vw;
-  height: 8vh;
+  left: 40vw; */
+  height: 6vh;
   min-height:6vh ;
   display: flex;
   justify-content: center;
@@ -385,6 +385,7 @@ export default {
 .app-container{
   position: relative;
   height: calc(100vh - 50px);
+  overflow-y: auto;
   /* border: 1px solid red; */
 }
 </style>

@@ -344,10 +344,10 @@ export default {
 <style>
 .yema{
   /* border: 1px solid red; */
-  position: absolute;
-  bottom: 0px ;
-  left: 40vw;
-  height: 8vh;
+  /* position: absolute;
+  bottom: 0px ; */
+  /* left: 40vw; */
+  height: 6vh;
   min-height:6vh ;
   display: flex;
   justify-content: center;
@@ -382,6 +382,7 @@ export default {
 .app-container{
   position: relative;
   height: calc(100vh - 50px);
+  overflow-y: auto;
   /* border: 1px solid red; */
 }
 </style>
