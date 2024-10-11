@@ -28,7 +28,7 @@ export const routes = [
       path: '',
       name: 'AShome',
       component: () => import('@/views/AS-Home/index'),
-      meta: { title: '首页', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'editor-left-alignment' }
     }]
   },
   // 粮食信息管理
@@ -36,25 +36,25 @@ export const routes = [
     path: '/asinformation',
     component: Layout,
     name: 'ASasinformation',
-    meta: { title: '粮食信息管理', icon: 'el-icon-s-help' },
+    meta: { title: '粮食信息管理', icon: '粮食安全考核' },
     children: [
       {
         path: 'blockchainwarehouse',
         name: 'Blockchainwarehouse',
         component: () => import('@/views/AS-Tabulation'),
-        meta: { title: '链上仓库', icon: 'el-icon-menu' }
+        meta: { title: '链上仓库', icon: '链接' }
       },
       {
         path: 'equipmentwarehouse',
         name: 'Equipmentwarehouse',
         component: () => import('@/views/AS-UpQuery'),
-        meta: { title: '仓库设备', icon: 'el-icon-menu' }
+        meta: { title: '仓库设备', icon: '应用管理' }
       },
       {
         path: 'controlwarehouse',
         name: 'Controlwarehouse',
         component: () => import('@/views/AS-DownQuery'),
-        meta: { title: '库存控制', icon: 'el-icon-user-solid' }
+        meta: { title: '库存控制', icon: '仓库信息' }
       }
       // {
       //   path: '/fixed-page',
@@ -68,19 +68,19 @@ export const routes = [
     path: '/asmanage',
     component: Layout,
     name: 'Asmanage',
-    meta: { title: '生产管理', icon: 'el-icon-s-tools' },
+    meta: { title: '生产管理', icon: '生产管理' },
     children: [
       {
         path: 'warehousing',
         name: 'Warehousing',
         component: () => import('@/views/AS-Warehousing'),
-        meta: { title: '入库信息', icon: 'el-icon-menu' }
+        meta: { title: '入库信息', icon: '新风神_扫码入库' }
       },
       {
         path: 'outbound',
         name: 'Outbound',
         component: () => import('@/views/AS-Outbound'),
-        meta: { title: '出库信息', icon: 'el-icon-user-solid' }
+        meta: { title: '出库信息', icon: '已出库' }
       }
     ]
   },
@@ -89,13 +89,13 @@ export const routes = [
     path: '/asreport',
     component: Layout,
     name: 'Asreport',
-    meta: { title: '数据报表', icon: 'el-icon-s-tools' },
+    meta: { title: '数据报表', icon: '数据报表' },
     children: [
       {
         path: 'warehousereport',
         name: 'Warehousereport',
         component: () => import('@/views/AS-report'),
-        meta: { title: '仓库报表', icon: 'el-icon-s-data' }
+        meta: { title: '仓库报表', icon: '仓库报表' }
       },
       {
         path: 'testreport',
@@ -113,7 +113,7 @@ export const routes = [
       path: '',
       name: 'WarningDashboard',
       component: () => import('@/views/AS-Waining/index'),
-      meta: { title: '安全预警', icon: 'dashboard' }
+      meta: { title: '安全预警', icon: '安全预警' }
     }]
   },
   // 大屏展示
