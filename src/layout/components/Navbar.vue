@@ -116,9 +116,9 @@ export default {
 
         .user-avatar {
           cursor: pointer;
-          width: 130px;
+          width: 40px;
           height: 40px;
-          border-radius: 10px;
+          border-radius: 50%;
         }
 
         .el-icon-caret-bottom {
