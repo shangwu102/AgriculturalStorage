@@ -4,7 +4,7 @@
     <div class="back_img" />
     <div class="back_img1" />
     <div class="back_img2" />
-    <ul v-for="(item, index) in arrData" :key="index" :class="{first: index == 0, second: index == 1, third: index == 2, four: index == 3}">
+    <ul v-for="(item, index) in arrData" :key="item.id" :class="{first: index == 0, second: index == 1, third: index == 2, four: index == 3}">
       <li />
       <li />
       <li />
@@ -13,7 +13,7 @@
       <li />
     </ul>
 
-    <div v-for="(item, index) in arrData" :key="index" class="detail" :class="`detail_${index + 1}`">
+    <div v-for="(item, index) in arrData" :key="item.id" class="detail" :class="`detail_${index + 1}`">
       <div class="detail_txt" :class="`detail_txt${index + 1}`">
         <span class="precent_txt" :class="`precent_txt${index + 1}`">
           <div :id="`chart_${index + 1}`" class="chartsdom" />
@@ -42,15 +42,19 @@ export default {
     return {
       option: null,
       arrData: [{
+        id: '1',
         post: '技术经理',
         number: 158
       }, {
+        id: '2',
         post: 'Java工程师',
         number: 572
       }, {
+        id: '3',
         post: '前端工程师',
         number: 826
       }, {
+        id: '4',
         post: '项目经理',
         number: 66
       }],
