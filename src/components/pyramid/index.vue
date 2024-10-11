@@ -1,9 +1,3 @@
-<!--
- 描述: 金字塔动画
- 作者: Jack Chen
- 日期: 2020-04-19
--->
-
 <template>
   <div class="wrap-container trigle">
     <div class="back_img3" />
@@ -141,8 +135,8 @@ export default {
 
 <style lang="scss" scoped>
 .trigle {
-  left: 600px;
-  top: 150px;
+  left: 10px;
+  top: 700px;
   width: 720px;
   height: 500px;
   .back_img {
