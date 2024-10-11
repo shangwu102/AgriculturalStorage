@@ -92,16 +92,16 @@ export const routes = [
     meta: { title: '数据报表', icon: 'el-icon-s-tools' },
     children: [
       {
+        path: 'blockreport',
+        name: 'Blockreport',
+        component: () => import('@/views/AS-block'),
+        meta: { title: '区块报表', icon: 'el-icon-s-data' }
+      },
+      {
         path: 'warehousereport',
         name: 'Warehousereport',
         component: () => import('@/views/AS-report'),
         meta: { title: '仓库报表', icon: 'el-icon-s-data' }
-      },
-      {
-        path: 'testreport',
-        name: 'Testreport',
-        component: () => import('@/views/student-report'),
-        meta: { title: 'test', icon: 'el-icon-s-data' }
       }
     ]
   },
