@@ -1,41 +1,52 @@
 <template>
   <div class="app-container">
     <!-- 上方搜索框 -->
-    <div class="row justify-content-between">
-      <input v-model="searchQuery" type="text" class="form-control col-3 m-2" placeholder="请输入仓库名称或编号">
-      <button class="btn btn-info m-2" style="position: relative; right: 70%;" @click="handleSearch">搜索</button>
-    </div>
+    <el-row class="search-row">
+      <el-col :span="8" class="search-input">
+        <el-input v-model="searchQuery" placeholder="请输入仓库名称或编号" />
+      </el-col>
+      <el-col :span="4" class="search-button">
+        <el-button type="primary" @click="handleSearch">搜索</el-button>
+      </el-col>
+    </el-row>
 
     <!-- 下方列表框 -->
-    <div class="house_data mt-4 p-3">
+    <div class="house_data">
       <!-- 为每个仓库创建一个单独的列表 -->
       <div v-for="(item) in filteredData" :key="item.id" class="warehouse-list">
-        <div class="row align-items-center">
-          <div class="col-3 pl-3 pb-3 cursor-pointer" @click="openDrawer(item)">
-            <strong>仓库名称：{{ item.name }}</strong>
-          </div>
-          <div class="col-2 offset-6 pl-3 pb-3 d-flex justify-content-end cursor-pointer" @click="openDrawer(item)">
+        <el-row class="align-items-center warehouse-item">
+          <el-col :span="16" class="warehouse-name cursor-pointer" @click="openDrawer(item)">
+            <strong>{{ item.name }}</strong>
+          </el-col>
+          <el-col :span="2" class="cursor-pointer info-icon" @click="openDrawer(item)">
             <strong aria-label="更多信息">></strong>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-4">
-            <div class="row p-2"><span class="col">编号</span><span class="col">{{ item.code }}</span></div>
-            <div class="row p-2"><span class="col">公司编号</span><span class="col">{{ item.companyCode }}</span></div>
-            <div class="row p-2"><span class="col">建立时间</span><span class="col">{{ item.creationTime }}</span></div>
-            <div class="row p-2"><span class="col">录入时间</span><span class="col">{{ item.intoTime }}</span></div>
-          </div>
-        </div>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-row class="p-2">
+              <el-col :span="10">编号</el-col>
+              <el-col :span="14">{{ item.code }}</el-col>
+            </el-row>
+            <el-row class="p-2">
+              <el-col :span="10">公司编号</el-col>
+              <el-col :span="14">{{ item.companyCode }}</el-col>
+            </el-row>
+            <el-row class="p-2">
+              <el-col :span="10">建立时间</el-col>
+              <el-col :span="14">{{ item.creationTime }}</el-col>
+            </el-row>
+            <el-row class="p-2">
+              <el-col :span="10">录入时间</el-col>
+              <el-col :span="14">{{ item.intoTime }}</el-col>
+            </el-row>
+          </el-col>
+        </el-row>
       </div>
     </div>
 
     <!-- Drawer 抽屉 -->
-    <el-drawer
-      title="仓库详细信息"
-      :visible.sync="drawerVisible"
-      direction="rtl"
-      size="30%"
-    >
+    <el-drawer title="仓库详细信息" :visible.sync="drawerVisible" direction="rtl" size="30%" custom-class="custom-drawer">
       <div v-if="selectedItem" class="drawer-content">
         <el-row>
           <el-col :span="8"><strong>仓库名称:</strong></el-col>
@@ -113,50 +124,64 @@ export default {
   padding: 20px;
   max-height: 100vh;
   overflow-y: auto;
+  background-color: #f5f7fa;
+}
+
+.search-row {
+  margin-bottom: 20px;
+}
+
+.search-input {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.search-button {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .house_data {
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 10px;
   max-height: 80vh;
   overflow-y: auto;
-  overflow-x: hidden;
+  background-color: #fff;
+  padding: 10px;
 }
 
 .warehouse-list {
   border: 1px solid #eee;
   margin-bottom: 10px;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
+  background-color: #fff;
+  transition: background-color 0.3s;
 }
 
-.row {
-  border-bottom: 1px solid #eee;
+.warehouse-list:hover {
+  background-color: #f0f9ff;
 }
 
-.row:last-child {
-  border-bottom: none;
+.warehouse-name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+  transition: color 0.3s;
 }
 
-.col {
-  display: inline-block;
-  margin-right: 10px;
-}
-
-.col-3 {
-  width: 25%;
+.warehouse-name:hover {
+  color: #409eff;
 }
 
 .cursor-pointer {
   cursor: pointer;
-  transition: color 0.3s;
 }
 
-.cursor-pointer:hover {
-  color: #007bff;
+.custom-drawer {
+  background-color: #f5f7fa;
 }
 
-/* 优化Drawer内容样式 */
 .drawer-content {
   padding: 10px;
 }
@@ -168,5 +193,9 @@ export default {
 .drawer-content .el-divider {
   margin: 10px 0;
 }
-</style>
 
+.info-icon {
+  text-align: right;
+  font-size: 18px;
+}
+</style>

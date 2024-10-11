@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '粮谋知链',
+  title: '藏粮于链',
 
   /**
    * @type {boolean} true | false

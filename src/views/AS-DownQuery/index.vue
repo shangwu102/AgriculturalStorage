@@ -512,7 +512,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .xiangqing{
   padding: 20px;
 }

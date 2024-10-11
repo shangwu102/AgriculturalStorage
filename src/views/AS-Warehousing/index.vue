@@ -341,7 +341,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .yema{
   /* border: 1px solid red; */
   /* position: absolute;
