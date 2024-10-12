@@ -19,14 +19,22 @@
         <el-button type="primary" @click="chaxun">搜素</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button class="xinzeng" type="success" icon="el-icon-plus" @click="xinzengdialogFormVisible = true">新增入库</el-button>
+        <el-button
+          class="xinzeng"
+          type="success"
+          icon="el-icon-plus"
+          @click="xinzengdialogFormVisible = true"
+        >新增入库</el-button>
         <!-- 弹框 -->
         <el-dialog title="新增入库" :visible.sync="xinzengdialogFormVisible">
           <div class="biaodan">
             <el-form :model="form" :rules="shujujianyan" class="xingzengshuju">
               <div class="diyi">
                 <el-form-item label="仓库名称" prop="repertoryName">
-                  <el-select v-model="form.repertoryName" placeholder="请选择仓库">
+                  <el-select
+                    v-model="form.repertoryName"
+                    placeholder="请选择仓库"
+                  >
                     <el-option
                       v-for="item in options"
                       :key="item.value"
@@ -61,14 +69,16 @@
                     v-model="form.createTime"
                     type="datetime"
                     placeholder="选择日期时间"
-                    style="width: 17vw;"
+                    style="width: 17vw"
                   />
                 </el-form-item>
               </div>
             </el-form>
           </div>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="xinzengdialogFormVisible = false">取 消</el-button>
+            <el-button
+              @click="xinzengdialogFormVisible = false"
+            >取 消</el-button>
             <el-button type="primary" @click="xinzeng">确 定</el-button>
           </div>
         </el-dialog>
@@ -78,50 +88,32 @@
       :data="newdata"
       style="width: 100%"
       border
-      :row-style="{height: '64px'}"
+      :row-style="{ height: '64px' }"
     >
-      <el-table-column
-        prop="id"
-        label="编号"
-        width="130"
-      />
-      <el-table-column
-        prop="repertoryName"
-        label="仓库名称"
-        width="140"
-      />
-      <el-table-column
-        prop="productType"
-        label="产品种类"
-      />
-      <el-table-column
-        prop="productName"
-        label="产品名称"
-      />
-      <el-table-column
-        prop="joinAmount"
-        label="入库量"
-      />
-      <el-table-column
-        prop="pass"
-        label="合格率"
-      />
-      <el-table-column
-        prop="createTime"
-        label="入库时间"
-      />
-      <el-table-column
-        prop="account"
-        label="操作员"
-      >
+      <el-table-column prop="id" label="编号" width="130" />
+      <el-table-column prop="repertoryName" label="仓库名称" width="140" />
+      <el-table-column prop="productType" label="产品种类" />
+      <el-table-column prop="productName" label="产品名称" />
+      <el-table-column prop="joinAmount" label="入库量" />
+      <el-table-column prop="pass" label="合格率" />
+      <el-table-column prop="createTime" label="入库时间" />
+      <el-table-column prop="account" label="操作员">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="chakan(scope.row)">查看</el-button>
-          <el-button type="warning" size="small" @click="chukudialogFormVisible=true">出库</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="chakan(scope.row)"
+          >查看</el-button>
+          <el-button
+            type="warning"
+            size="small"
+            @click="chukuxianshi(scope.row)"
+          >出库</el-button>
           <el-drawer
             title="库存详情"
             :visible.sync="celan"
             direction="rtl"
-            size="50%"
+            size="40%"
           >
             <div class="xiangqing">
               <h3 class="el-icon-s-order">产品信息</h3>
@@ -155,10 +147,18 @@
           </el-drawer>
           <el-dialog title="新增出库" :visible.sync="chukudialogFormVisible">
             <div class="biaodan">
-              <el-form :model="form" :rules="shujujianyan" class="xingzengshuju">
+              <el-form
+                :model="form"
+                :rules="shujujianyan"
+                class="xingzengshuju"
+              >
                 <div class="diyi">
                   <el-form-item label="仓库名称" prop="repertoryName">
-                    <el-select v-model="form.repertoryName" placeholder="请选择仓库">
+                    <el-select
+                      v-model="form.repertoryName"
+                      placeholder="请选择仓库"
+                      disabled
+                    >
                       <el-option
                         v-for="item in options"
                         :key="item.value"
@@ -168,12 +168,12 @@
                     </el-select>
                   </el-form-item>
                   <el-form-item label="操作员" prop="account">
-                    <el-input v-model="form.account" autocomplete="off" />
+                    <el-input v-model="form.account" disabled autocomplete="off" />
                   </el-form-item>
                 </div>
                 <div class="dier">
                   <el-form-item label="产品种类" prop="productType">
-                    <el-input v-model="form.productType" autocomplete="off" />
+                    <el-input v-model="form.productType" disabled autocomplete="off" />
                   </el-form-item>
                   <el-form-item label="合格率" prop="pass">
                     <el-input v-model="form.pass" autocomplete="off" />
@@ -181,7 +181,7 @@
                 </div>
                 <div class="disan">
                   <el-form-item label="产品名称" prop="productName">
-                    <el-input v-model="form.productName" autocomplete="off" />
+                    <el-input v-model="form.productName" disabled autocomplete="off" />
                   </el-form-item>
                 </div>
                 <div class="disi">
@@ -193,15 +193,20 @@
                       v-model="form.createTime"
                       type="datetime"
                       placeholder="选择日期时间"
-                      style="width: 17vw;"
+                      style="width: 17vw"
                     />
                   </el-form-item>
                 </div>
               </el-form>
             </div>
             <div slot="footer" class="dialog-footer">
-              <el-button @click="chukudialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="chuku(scope.row)">确 定</el-button>
+              <el-button
+                @click="chukudialogFormVisible = false"
+              >取 消</el-button>
+              <el-button
+                type="primary"
+                @click="chuku(scope.row)"
+              >确 定</el-button>
             </div>
           </el-dialog>
         </template>
@@ -211,7 +216,7 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="tableData.length"
+        :total="zhongjianshuju.length"
         :current-page.sync="dangqianyema"
         @current-change="handlePageChange"
       />
@@ -221,13 +226,16 @@
 <script>
 export default {
   data() {
-    const options = [{
-      value: '主仓库',
-      label: '主仓库'
-    }, {
-      value: '辅仓库',
-      label: '辅仓库'
-    }]
+    const options = [
+      {
+        value: '主仓库',
+        label: '主仓库'
+      },
+      {
+        value: '辅仓库',
+        label: '辅仓库'
+      }
+    ]
     const tableData = [
       {
         id: '1',
@@ -360,23 +368,32 @@ export default {
       account: ''
     }
     const newrukuxxjianyan = {
-      repertoryName: [{ required: true, message: '请输入仓库名称', trigger: 'blur' }],
-      productType: [{ required: true, message: '请输入产品类型', trigger: 'blur' }],
-      productName: [{ required: true, message: '请输入产品名称', trigger: 'blur' }],
-      joinAmount: [{ required: true, message: '请输入入库数量', trigger: 'blur' }],
+      repertoryName: [
+        { required: true, message: '请输入仓库名称', trigger: 'blur' }
+      ],
+      productType: [
+        { required: true, message: '请输入产品类型', trigger: 'blur' }
+      ],
+      productName: [
+        { required: true, message: '请输入产品名称', trigger: 'blur' }
+      ],
+      joinAmount: [
+        { required: true, message: '请输入入库数量', trigger: 'blur' }
+      ],
       pass: [{ required: true, message: '请输入合格率', trigger: 'blur' }],
-      createTime: [{ required: true, message: '请输入入库时间', trigger: 'blur' }],
+      createTime: [
+        { required: true, message: '请输入入库时间', trigger: 'blur' }
+      ],
       account: [{ required: true, message: '请输入操作账号', trigger: 'blur' }]
     }
-    const gridData = [
-
-    ]
+    const gridData = []
     return {
       options: options,
       value: '',
       sousuo: '',
       tableData: tableData,
       newdata: [],
+      zhongjianshuju: '',
       xinzengdialogFormVisible: false,
       form: newrukuxx,
       shujujianyan: newrukuxxjianyan,
@@ -387,38 +404,71 @@ export default {
     }
   },
   created() {
-    for (let i = 0; i < 10; i++) {
-      this.newdata.push(this.tableData[i])
-    }
-  },
-  mounted() {
-    // 初始化时获取第一页的数据
-    this.fetchData(this.dangqianyema)
+    this.huqushuju()
+    this.chaxun()
   },
   methods: {
+    chukuxianshi(e) {
+      this.chukudialogFormVisible = true
+      this.form.repertoryName = e.repertoryName
+      this.form.productType = e.productType
+      this.form.productName = e.productName
+      this.form.account = e.account
+    },
+    huqushuju() {
+      this.newdata = this.tableData
+    },
     chaxun() {
       const newdata = []
-      this.tableData.forEach(item => {
-        if (item.repertoryName === this.value && item.productName.includes(this.sousuo)) {
+      this.tableData.forEach((item) => {
+        if (
+          item.repertoryName === this.value &&
+          item.productName.includes(this.sousuo)
+        ) {
           newdata.push(item)
           console.log('搜索成功')
         } else if (item.repertoryName === this.value && this.sousuo === '') {
           newdata.push(item)
           console.log('搜索成功')
+        } else if (this.value === '' && this.sousuo === '') {
+          newdata.push(item)
+          console.log('搜索成功')
         }
-      },
+      })
       console.log(newdata)
-      )
-      this.newdata = newdata
+      this.zhongjianshuju = newdata
+      console.log('中间', this.zhonjianshuju)
+      this.dangqianyema = 1
+      this.fenye(1)
+    },
+    handlePageChange(ym) {
+      console.log(ym)
+      this.currentPage = ym
+      this.fenye(ym)
+    },
+    fenye(e) {
+      this.newdata = []
+      for (let i = (e - 1) * 10; i < (e - 1) * 10 + 10; i++) {
+        console.log(this.zhongjianshuju[i])
+        if (this.zhongjianshuju[i] === undefined) {
+          console.warn(`字段未定义，值为 undefined`)
+          break
+        } else {
+          this.newdata.push(this.zhongjianshuju[i])
+        }
+      }
+      console.log('分页数据', this.newdata)
     },
     xinzeng() {
-      if (this.form.repertoryName === '' ||
-    this.form.productType === '' ||
-    this.form.productName === '' ||
-    this.form.joinAmount === '' ||
-    this.form.pass === '' ||
-    this.form.createTime === '' ||
-    this.form.account === '') {
+      if (
+        this.form.repertoryName === '' ||
+        this.form.productType === '' ||
+        this.form.productName === '' ||
+        this.form.joinAmount === '' ||
+        this.form.pass === '' ||
+        this.form.createTime === '' ||
+        this.form.account === ''
+      ) {
         // 如果所有字段都不为空时，执行这里的逻辑
         this.$message.error('请输入全部数据')
       } else {
@@ -428,8 +478,9 @@ export default {
           ...this.form
         })
         console.log(this.dangqianyema)
-        this.fetchData(this.dangqianyema)
+        this.fenye(this.dangqianyema)
         console.log(this.tableData)
+        this.chaxun()
         this.form = {
           repertoryName: '',
           productType: '',
@@ -446,53 +497,31 @@ export default {
         })
       }
     },
-    handlePageChange(page) {
-      // 处理页码切换逻辑
-      this.currentPage = page
-      console.log('当前页码为:', page)
-      // 这里可以根据 page 发送请求，获取相应的分页数据
-      this.fetchData(page)
-    },
-    fetchData(page) {
-      // 模拟获取数据
-      console.log(`正在获取第 ${page} 页的数据...`)
-      // 请求数据的逻辑
-      // 可以将请求到的数据显示在 tableData 中
-      const fenyeshuj = []
-      for (let i = (page - 1) * 10; i < ((page - 1) * 10) + 10; i++) {
-        // console.log(this.tableData[i])
-        if (this.tableData[i] === undefined) {
-          console.warn(`字段未定义，值为 undefined`)
-          break
-        }
-        fenyeshuj.push(this.tableData[i])
-      }
-      this.newdata = fenyeshuj
-    },
+
     chakan(e) {
       this.celan = true
       console.log(e)
     },
     chuku(e) {
       console.log(e)
-      if (this.form.repertoryName === '' ||
-    this.form.productType === '' ||
-    this.form.productName === '' ||
-    this.form.joinAmount === '' ||
-    this.form.pass === '' ||
-    this.form.createTime === '' ||
-    this.form.account === '') {
+      this.form.repertoryName = e.repertoryName
+      this.form.productType = e.productType
+      this.form.productName = e.productName
+      this.form.account = e.account
+      if (
+        this.form.joinAmount === '' ||
+        this.form.pass === '' ||
+        this.form.createTime === ''
+      ) {
         // 如果所有字段都不为空时，执行这里的逻辑
         this.$message.error('请输入全部数据')
       } else {
-        console.log(this.form)
-        // this.tableData.push({
-        //   id: this.tableData.length + 1,
-        //   ...this.form
-        // })
+        console.log('当前行的数据', e)
+        this.tableData.splice(e.id, 1)
         console.log(this.dangqianyema)
-        this.fetchData(this.dangqianyema)
+        this.fenye(this.dangqianyema)
         console.log(this.tableData)
+        this.chaxun()
         this.form = {
           repertoryName: '',
           productType: '',
@@ -512,22 +541,25 @@ export default {
   }
 }
 </script>
-<style>
-.xiangqing{
+<style scoped>
+.el-select{
+  width: 17vw;
+}
+.xiangqing {
   padding: 20px;
 }
-.yema{
+.yema {
   /* border: 1px solid red; */
   /* position: absolute;
   bottom: 0px ; */
   /* left: 40vw; */
   height: 6vh;
-  min-height:6vh ;
+  min-height: 6vh;
   display: flex;
   justify-content: center;
-  align-items:center;
+  align-items: center;
 }
-.xingzengshuju{
+.xingzengshuju {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -537,32 +569,34 @@ export default {
 .el-input {
   width: 17vw;
 }
-.diyi{
+.diyi {
   display: flex;
   justify-content: space-between;
 }
-.dier{
+.dier {
   display: flex;
   justify-content: space-between;
-
 }
-.disan input{
+.disan input {
   width: calc(50vw - 169px);
 }
-.disi{
+.disi {
   display: flex;
   justify-content: space-between;
 }
-.app-container{
+.app-container {
   position: relative;
   height: calc(100vh - 50px);
   overflow-y: auto;
   /* border: 1px solid red; */
 }
-.el-form-item__content{
+.el-form-item__content {
   display: inline-block;
 }
-.el-dialog{
+.el-form-item{
+  display: inline-block;
+}
+.el-dialog {
   margin-bottom: 0;
   /*box-shadow: 1px 5px 8px red;*/
 }

@@ -87,8 +87,8 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="tableData.length"
-        :current-page="dangqianyema"
+        :total="zhongjianshuju.length"
+        :current-page.sync="dangqianyema"
         @current-change="handlePageChange"
       />
     </div>
@@ -251,6 +251,7 @@ export default {
       sousuo: '',
       tableData: tableData,
       newdata: [],
+      zhonjianshuju: '',
       dialogFormVisible: false,
       form: newrukuxx,
       shujujianyan: newrukuxxjianyan,
@@ -259,15 +260,13 @@ export default {
     }
   },
   created() {
-    for (let i = 0; i < 10; i++) {
-      this.newdata.push(this.tableData[i])
-    }
-  },
-  mounted() {
-    // 初始化时获取第一页的数据
-    this.fetchData(this.dangqianyema)
+    this.huqushuju()
+    this.chaxun()
   },
   methods: {
+    huqushuju() {
+      this.newdata = this.tableData
+    },
     chaxun() {
       const newdata = []
       this.tableData.forEach(item => {
@@ -277,71 +276,43 @@ export default {
         } else if (item.repertoryName === this.value && this.sousuo === '') {
           newdata.push(item)
           console.log('搜索成功')
+        } else if (this.value === '' && this.sousuo === '') {
+          newdata.push(item)
+          console.log('搜索成功')
         }
-      },
-      console.log(newdata)
-      )
-      this.newdata = newdata
-    },
-    xingzeng() {
-      if (this.form.repertoryName === '' ||
-    this.form.productType === '' ||
-    this.form.productName === '' ||
-    this.form.joinAmount === '' ||
-    this.form.pass === '' ||
-    this.form.createTime === '' ||
-    this.form.account === '') {
-        // 如果所有字段都不为空时，执行这里的逻辑
-        this.$message({
-          message: '请输入全部数据',
-          type: 'warning'
-        })
-      } else {
-        console.log(this.form)
-        this.newdata.push({
-          id: this.newdata.length + 1,
-          ...this.form
-        })
-        console.log(this.newdata)
-        this.form = {
-          repertoryName: '',
-          productType: '',
-          productName: '',
-          joinAmount: '',
-          pass: '',
-          createTime: '',
-          account: ''
-        }
-        this.dialogFormVisible = false
       }
+      )
+      console.log(newdata)
+      this.zhongjianshuju = newdata
+      console.log('中间', this.zhonjianshuju)
+      this.dangqianyema = 1
+      this.fenye(1)
     },
-    handlePageChange(page) {
-      // 处理页码切换逻辑
-      this.currentPage = page
-      console.log('当前页码为:', page)
-      // 这里可以根据 page 发送请求，获取相应的分页数据
-      this.fetchData(page)
+    handlePageChange(ym) {
+      console.log(ym)
+      this.currentPage = ym
+      this.fenye(ym)
     },
-    fetchData(page) {
-      // 模拟获取数据
-      console.log(`正在获取第 ${page} 页的数据...`)
-      // 请求数据的逻辑
-      // 可以将请求到的数据显示在 tableData 中
-      const fenyeshuj = []
-      for (let i = (page - 1) * 10; i < ((page - 1) * 10) + 10; i++) {
-        console.log(this.tableData[i])
-        if (this.tableData[i] === undefined) {
+    fenye(e) {
+      this.newdata = []
+      for (let i = (e - 1) * 10; i < ((e - 1) * 10) + 10; i++) {
+        console.log(this.zhongjianshuju[i])
+        if (this.zhongjianshuju[i] === undefined) {
           console.warn(`字段未定义，值为 undefined`)
           break
+        } else {
+          this.newdata.push(this.zhongjianshuju[i])
         }
-        fenyeshuj.push(this.tableData[i])
       }
-      this.newdata = fenyeshuj
+      console.log('分页数据', this.newdata)
     }
   }
 }
 </script>
-<style>
+<style scoped>
+.el-select{
+  width: 17vw;
+}
 .yema{
   /* border: 1px solid red; */
   /* position: absolute;
