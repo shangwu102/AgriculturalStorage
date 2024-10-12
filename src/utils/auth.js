@@ -1,12 +1,15 @@
-const TokenKey = 'tlias_token'
-export function getToken() {
-  return localStorage.getItem(TokenKey)
+const TOKEN_NAME = 'AS-token'
+// 1. 保存
+export const setToken = (tokenObj) => {
+  localStorage.setItem(TOKEN_NAME, JSON.stringify(tokenObj))
 }
 
-export function setToken(token) {
-  return localStorage.setItem(TokenKey, token)
+// 2. 获取
+export const getToken = () => {
+  return JSON.parse(localStorage.getItem(TOKEN_NAME))
 }
 
-export function removeToken() {
-  return localStorage.removeItem(TokenKey)
+// 3. 删除
+export const removeToken = () => {
+  localStorage.removeItem(TOKEN_NAME)
 }
