@@ -1,22 +1,30 @@
 <template>
   <div class="login-container">
     <el-container>
-      <el-aside width="65vw">11</el-aside>
+      <el-aside width="65vw" />
       <el-main>
         <div>
-          <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
+          <el-form
+            ref="loginForm"
+            :model="loginForm"
+            :rules="loginRules"
+            class="login-form"
+            auto-complete="on"
+            label-position="left"
+          >
             <div class="title-container">
               <h3 class="title">系统登录</h3>
             </div>
-            <el-form-item :class="{'focused': isFocused1 }" prop="username">
+
+            <!-- 用户名输入框 -->
+            <el-form-item :class="{ 'focused': isFocused1 }" prop="username">
               <span class="svg-container">
                 <svg-icon icon-class="user" />
               </span>
               <el-input
                 ref="username"
                 v-model="loginForm.username"
-                placeholder="Username"
+                placeholder="用户名"
                 name="username"
                 type="text"
                 tabindex="1"
@@ -25,7 +33,9 @@
                 @blur="handleBlur1"
               />
             </el-form-item>
-            <el-form-item :class="{'focused': isFocused2 }" prop="password">
+
+            <!-- 密码输入框 -->
+            <el-form-item :class="{ 'focused': isFocused2 }" prop="password">
               <span class="svg-container">
                 <svg-icon icon-class="password" />
               </span>
@@ -34,7 +44,7 @@
                 ref="password"
                 v-model="loginForm.password"
                 :type="passwordType"
-                placeholder="Password"
+                placeholder="密码"
                 name="password"
                 tabindex="2"
                 auto-complete="on"
@@ -46,8 +56,31 @@
                 <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
               </span>
             </el-form-item>
-            <el-checkbox v-model="checked">记住密码</el-checkbox>
-            <el-button :loading="loading" type="primary" style="height:55px;width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+
+            <!-- 地址输入框 -->
+            <el-form-item :class="{ 'focused': isFocused3 }" prop="address">
+              <span class="svg-container">
+                <svg-icon icon-class="location" />
+              </span>
+              <el-input
+                v-model="loginForm.address"
+                placeholder="地址"
+                name="address"
+                tabindex="3"
+                auto-complete="on"
+                @focus="handleFocus3"
+                @blur="handleBlur3"
+              />
+            </el-form-item>
+
+            <el-checkbox v-model="checked">记住信息</el-checkbox>
+
+            <el-button
+              :loading="loading"
+              type="primary"
+              style="height:55px;width:100%;margin-bottom:30px;"
+              @click.prevent="handleLogin"
+            >登录</el-button>
           </el-form>
         </div>
       </el-main>
@@ -57,12 +90,12 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
-// import { login } from '@/api/user'
-// import { setToken } from '@/utils/auth'
+import { login } from '@/api/user'
+import { setToken } from '@/utils/auth'
+
 export default {
   name: 'Login',
   data() {
-    // 用户名校验规则
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
         callback(new Error('请输入正确的用户名'))
@@ -71,7 +104,6 @@ export default {
       }
     }
 
-    // 用户名校验规则
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
         callback(new Error('密码长度至少为6位'))
@@ -80,85 +112,103 @@ export default {
       }
     }
 
-    // 数据模型
+    const validateAddress = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入地址'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       loginForm: {
-        username: 'jinyong',
-        password: '123456'
+        address: '',
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        address: [{ required: true, trigger: 'blur', validator: validateAddress }]
       },
       loading: false,
       passwordType: 'password',
       redirect: undefined,
-      checked: false, // 记住密码
-      isFocused1: false, // 用于控制容器的样式
-      isFocused2: false // 用于控制容器的样式
+      checked: false,
+      isFocused1: false,
+      isFocused2: false,
+      isFocused3: false
     }
   },
 
   mounted() {
-    // 页面加载时检查是否有保存的用户名和密码
     const savedUsername = localStorage.getItem('username')
     const savedPassword = localStorage.getItem('password')
+    const savedAddress = localStorage.getItem('address')
 
-    if (savedPassword && savedUsername) {
+    if (savedPassword && savedUsername && savedAddress) {
       this.loginForm.username = savedUsername
       this.loginForm.password = savedPassword
-      this.checked = true // 如果保存了信息，变为勾选状态
+      this.loginForm.address = savedAddress
+      this.checked = true
     }
   },
 
   methods: {
-    // 展示密码
     showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
+      this.passwordType = this.passwordType === 'password' ? '' : 'password'
       this.$nextTick(() => {
         this.$refs.password.focus()
       })
     },
 
-    // 登录方法
-    handleLogin() {
-      this.$router.push('/ashome')
-      console.log(2222222222223232323)
-      // this.$refs.loginForm.validate(valid => {
-      //   if (valid) {
-      //     this.loading = true
-      //     // 调用登录后端接口
-      //     login(this.loginForm).then((result) => {
-      //       console.log(result)
-      //       if (result.data.code === 1) {
-      //         setToken(result.data.data)
-      //         console.log(result.data.data)
-      //         console.log('login success')
-      //         if (this.checked) {
-      //           // 勾选 将用户名和密码存储到 localStorage
-      //           localStorage.setItem('username', this.loginForm.username)
-      //           localStorage.setItem('password', this.loginForm.password)
-      //         } else {
-      //           // 未勾选 清除保存的信息
-      //           localStorage.removeItem('password')
-      //           localStorage.removeItem('username')
-      //         }
-      //         this.$router.push('/')
-      //       } else {
-      //         this.$message.error(result.data.msg)
-      //         this.loading = false
-      //       }
-      //     })
-      //   } else {
-      //     console.log('error submit!!')
-      //     return false
-      //   }
-      // })
+    async handleLogin() {
+      try {
+        // 验证表单
+        const valid = await this.$refs.loginForm.validate()
+        if (!valid) {
+          console.log('表单验证失败!')
+          return false
+        }
+
+        // 开启 loading 状态
+        this.loading = true
+
+        // 调用登录接口
+        const result = await login(this.loginForm)
+        console.log(result)
+
+        // 根据返回结果判断登录是否成功
+        if (result.data.code === 1) {
+          // 成功，保存 token
+          setToken(result.data.data)
+
+          // 根据是否勾选 "记住密码" 来存储或移除用户信息
+          if (this.checked) {
+            localStorage.setItem('username', this.loginForm.username)
+            localStorage.setItem('password', this.loginForm.password)
+            localStorage.setItem('address', this.loginForm.address)
+          } else {
+            localStorage.removeItem('password')
+            localStorage.removeItem('username')
+            localStorage.removeItem('address')
+          }
+          // 跳转到主页
+          this.$router.push('/ashome')
+        } else {
+          // 登录失败，显示错误消息
+          this.$message.error(result.data.msg)
+        }
+      } catch (error) {
+        // 捕获错误并处理
+        console.error('登录请求失败:', error)
+        this.$message.error('登录请求失败')
+      } finally {
+        // 无论成功与否，最终都关闭 loading 状态
+        this.loading = false
+      }
     },
+
     handleFocus1() {
       this.isFocused1 = true
     },
@@ -170,36 +220,45 @@ export default {
     },
     handleBlur2() {
       this.isFocused2 = false
+    },
+    handleFocus3() {
+      this.isFocused3 = true
+    },
+    handleBlur3() {
+      this.isFocused3 = false
     }
   }
 }
-
 </script>
 
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-.el-aside{
+.el-aside {
   background-image: url(../../assets/login.png);
   background-size: 100% 100%;
   // background-repeat: no-repeat;
   // background-size: contain;
   background-color: #5e1010;
 }
-.el-main{
+
+.el-main {
   background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.el-container{
-   height: calc(100vh);
+
+.el-container {
+  height: calc(100vh);
 }
-.el-checkbox{
+
+.el-checkbox {
   margin-bottom: 20px;
 }
-$bg:#283443;
-$light_gray:#000000;
+
+$bg: #283443;
+$light_gray: #000000;
 $cursor: #000000;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
@@ -214,6 +273,7 @@ $cursor: #000000;
     display: inline-block;
     height: 47px;
     width: 85%;
+
     input {
       background: transparent;
       border: 0px;
@@ -239,17 +299,19 @@ $cursor: #000000;
   }
 
   .el-form-item.focused {
-  border-color: #409eff; /* 聚焦时边框颜色变为蓝色 */
-  box-shadow: 0 0 5px rgba(64, 158, 255, 0.5); /* 添加阴影效果 */
-}
+    border-color: #409eff;
+    /* 聚焦时边框颜色变为蓝色 */
+    box-shadow: 0 0 5px rgba(64, 158, 255, 0.5);
+    /* 添加阴影效果 */
+  }
 
 }
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#000000;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
+$light_gray: #000000;
 
 .login-container {
   min-height: 100%;
@@ -289,6 +351,7 @@ $light_gray:#000000;
   .title-container {
     position: relative;
     padding-bottom: 50px;
+
     .title {
       font-size: 50px;
       color: $light_gray;

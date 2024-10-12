@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { Message } from 'element-ui'
+import { getToken } from '@/utils/auth' // 引入获取 token 的工具函数
 
 Vue.use(Router)
 
@@ -8,7 +10,7 @@ export const routes = [
   // 登陆页面
   {
     path: '/login',
-    component: () => import('@/views/login/index')
+    component: () => import('@/views/login/index') // 标记为公共页面，无需认证
   },
   // 404 页面
   {
@@ -126,15 +128,25 @@ export const routes = [
 ]
 
 const createRouter = () => new Router({
-
-  // mode: 'history', // require service support
-  // scrollBehavior: () => ({ y: 0 }),
   routes
 })
 
 const router = createRouter()
 
-// // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+// 添加全局导航守卫
+router.beforeEach((to, from, next) => {
+  const token = getToken() // 检查是否存在 token
+  if (to.path === '/login') {
+    // 如果是登录页面，直接放行
+    return next()
+  }
+  if (!token && !to.meta.public) { // 如果没有 token 且该页面不是公共页面
+    Message.warning('请先登录') // 提示用户先登录
+    return next('/login') // 重定向到登录页面
+  }
+  next() // 否则继续访问目标页面
+})
+
 export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher
