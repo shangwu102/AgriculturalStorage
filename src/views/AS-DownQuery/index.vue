@@ -572,8 +572,8 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-.disan input {
-  width: calc(50vw - 169px);
+.disan .el-input {
+  width: calc(50vw - 160px);
 }
 .disi {
   display: flex;
@@ -588,11 +588,15 @@ export default {
 .el-form-item__content {
   display: inline-block;
 }
-.el-form-item{
-  display: inline-block;
+.xingzengshuju .el-form-item{
+  display: flex;
+  flex-direction: row;
+  margin: 0;
 }
-.el-dialog {
+/* .el-dialog {
   margin-bottom: 0;
-  /*box-shadow: 1px 5px 8px red;*/
-}
+  border: 55px;
+  box-shadow: 9px 5px 8px red !important;
+  -webkit-box-shadow:0 !important;
+} */
 </style>
