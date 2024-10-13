@@ -33,12 +33,23 @@ export const routes = [
       meta: { title: '首页', icon: 'editor-left-alignment' }
     }]
   },
+  // 用户管理
+  {
+    path: '/asuser',
+    component: Layout,
+    children: [{
+      path: '',
+      name: 'User',
+      component: () => import('@/views/AS-user/index'),
+      meta: { title: '用户中心', icon: '安全预警' }
+    }]
+  },
   // 粮食信息管理
   {
     path: '/asinformation',
     component: Layout,
     name: 'ASasinformation',
-    meta: { title: '粮食信息管理', icon: '粮食安全考核' },
+    meta: { title: '仓库管理', icon: '粮食安全考核' },
     children: [
       {
         path: 'blockchainwarehouse',
@@ -51,13 +62,8 @@ export const routes = [
         name: 'Equipmentwarehouse',
         component: () => import('@/views/AS-UpQuery'),
         meta: { title: '仓库设备', icon: '应用管理' }
-      },
-      {
-        path: 'controlwarehouse',
-        name: 'Controlwarehouse',
-        component: () => import('@/views/AS-DownQuery'),
-        meta: { title: '库存控制', icon: '仓库信息' }
       }
+
       // {
       //   path: '/fixed-page',
       //   name: 'fixedPage',
@@ -73,6 +79,12 @@ export const routes = [
     meta: { title: '生产管理', icon: '生产管理' },
     children: [
       {
+        path: 'controlwarehouse',
+        name: 'Controlwarehouse',
+        component: () => import('@/views/AS-DownQuery'),
+        meta: { title: '库存控制', icon: '仓库信息' }
+      },
+      {
         path: 'warehousing',
         name: 'Warehousing',
         component: () => import('@/views/AS-Warehousing'),
@@ -85,6 +97,17 @@ export const routes = [
         meta: { title: '出库信息', icon: '已出库' }
       }
     ]
+  },
+  // 交易管理
+  {
+    path: '/astransaction',
+    component: Layout,
+    children: [{
+      path: '',
+      name: 'Transaction',
+      component: () => import('@/views/AS-transaction/index'),
+      meta: { title: '交易监管', icon: '安全预警' }
+    }]
   },
   // 数据报表
   {

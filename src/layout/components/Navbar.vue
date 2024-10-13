@@ -7,11 +7,12 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img width="40px" src="https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png" class="user-avatar">
+          <!-- <img width="40px" src="https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png" class="user-avatar"> -->
+          <div style="font-size: 14px; font-weight: bold;">当前操作角色：{{ username }}</div>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/">
+          <router-link to="/ashome">
             <el-dropdown-item>
               首页
             </el-dropdown-item>
@@ -31,6 +32,7 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import { removeToken } from '@/utils/auth'
+import { removeUser, getUser } from '@/utils/auth'
 
 export default {
   components: {
@@ -41,14 +43,23 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar'
-    ])
+    ]),
+    username() {
+      // 获取存储的用户对象
+      const user = getUser()
+      console.log(user)
+
+      // 如果用户对象存在，解析它并返回 uname，否则返回空字符串
+      return user ? JSON.parse(user).username : ''
+    }
   },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
-    async logout() {
+    logout() {
       removeToken()
+      removeUser()
       this.$router.push('/login')
     }
   }
@@ -83,7 +94,7 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
-    line-height: 50px;
+    line-height: 25px;
 
     &:focus {
       outline: none;

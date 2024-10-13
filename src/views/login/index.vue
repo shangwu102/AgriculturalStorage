@@ -92,6 +92,7 @@
 import { validUsername } from '@/utils/validate'
 import { login } from '@/api/user'
 import { setToken } from '@/utils/auth'
+import { getUser, setUser, removeUser } from '@/utils/auth' // 引入封装好的方法
 
 export default {
   name: 'Login',
@@ -142,14 +143,13 @@ export default {
   },
 
   mounted() {
-    const savedUsername = localStorage.getItem('username')
-    const savedPassword = localStorage.getItem('password')
-    const savedAddress = localStorage.getItem('address')
-
-    if (savedPassword && savedUsername && savedAddress) {
-      this.loginForm.username = savedUsername
-      this.loginForm.password = savedPassword
-      this.loginForm.address = savedAddress
+    // 从封装的getUser方法中获取保存的用户信息
+    const savedUser = getUser()
+    if (savedUser) {
+      const user = JSON.parse(savedUser)
+      this.loginForm.username = user.username
+      this.loginForm.password = user.password
+      this.loginForm.address = user.address
       this.checked = true
     }
   },
@@ -183,16 +183,18 @@ export default {
           // 成功，保存 token
           setToken(result.data.data)
 
-          // 根据是否勾选 "记住密码" 来存储或移除用户信息
+          // 根据是否勾选 "记住信息" 来存储或移除用户信息
           if (this.checked) {
-            localStorage.setItem('username', this.loginForm.username)
-            localStorage.setItem('password', this.loginForm.password)
-            localStorage.setItem('address', this.loginForm.address)
+            const user = {
+              username: this.loginForm.username,
+              password: this.loginForm.password,
+              address: this.loginForm.address
+            }
+            setUser(JSON.stringify(user)) // 使用封装好的setUser存储
           } else {
-            localStorage.removeItem('password')
-            localStorage.removeItem('username')
-            localStorage.removeItem('address')
+            removeUser() // 使用封装好的removeUser移除
           }
+
           // 跳转到主页
           this.$router.push('/ashome')
         } else {
