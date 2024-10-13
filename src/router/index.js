@@ -2,152 +2,95 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth' // 引入获取 token 的工具函数
+import store from '@/store' // 引入 Vuex store，用于获取用户角色信息
 
 Vue.use(Router)
-
-import Layout from '@/layout'
+// 懒加载组件
+const Layout = () => import('@/layout') // 主布局
+const Login = () => import('@/views/login/index') // 登录页面
+const NotFund = () => import('@/views/404/index') // 404 页面
+const ASHome = () => import('@/views/AS-Home/index') // 首页
+const ASCompany = () => import('@/views/AS-company/index') // 公司首页
+const UserCenter = () => import('@/views/AS-user/index') // 用户中心
+const BlockchainWarehouse = () => import('@/views/AS-Tabulation') // 链上仓库
+const EquipmentWarehouse = () => import('@/views/AS-UpQuery') // 仓库设备
+const ControlWarehouse = () => import('@/views/AS-DownQuery') // 库存控制
+const Warehousing = () => import('@/views/AS-Warehousing') // 入库信息
+const Outbound = () => import('@/views/AS-Outbound') // 出库信息
+const Transaction = () => import('@/views/AS-transaction/index') // 交易监管
+const BlockReport = () => import('@/views/AS-block') // 区块报表
+const WarehouseReport = () => import('@/views/AS-report') // 仓库报表
+const WarningDashboard = () => import('@/views/AS-Waining/index') // 安全预警
+const LSHome = () => import('@/views/LS-Home/index') // 大屏展示
 export const routes = [
-  // 登陆页面
-  {
-    path: '/login',
-    component: () => import('@/views/login/index') // 标记为公共页面，无需认证
-  },
-  // 404 页面
-  {
-    path: '/404',
-    component: () => import('@/views/404/index')
-  },
-  // 访问根路径重定向到登录
-  {
-    path: '/',
-    redirect: '/login'
-  },
-  // 首页
+  { path: '/', redirect: '/login' }, // 重定向到登录页面
+  { path: '/login', component: Login },
+  { path: '/404', component: NotFund },
   {
     path: '/ashome',
     component: Layout,
-    children: [{
-      path: '',
-      name: 'AShome',
-      component: () => import('@/views/AS-Home/index'),
-      meta: { title: '首页', icon: 'editor-left-alignment' }
-    }]
+    children: [
+      { path: '', component: ASHome, meta: { title: '首页', icon: 'editor-left-alignment', roles: ['admin', 'operator'] }}
+    ]
   },
-  // 用户管理
+  {
+    path: '/ascompany',
+    component: Layout,
+    children: [
+      { path: '', component: ASCompany, meta: { title: '公司首页', icon: 'company', roles: ['company'] }}
+    ]
+  },
   {
     path: '/asuser',
     component: Layout,
-    children: [{
-      path: '',
-      name: 'User',
-      component: () => import('@/views/AS-user/index'),
-      meta: { title: '用户中心', icon: '安全预警' }
-    }]
+    children: [
+      { path: '', component: UserCenter, meta: { title: '用户中心', icon: '安全预警' }}
+    ]
   },
-  // 粮食信息管理
   {
     path: '/asinformation',
     component: Layout,
-    name: 'ASasinformation',
     meta: { title: '仓库管理', icon: '粮食安全考核' },
     children: [
-      {
-        path: 'blockchainwarehouse',
-        name: 'Blockchainwarehouse',
-        component: () => import('@/views/AS-Tabulation'),
-        meta: { title: '链上仓库', icon: '链接' }
-      },
-      {
-        path: 'equipmentwarehouse',
-        name: 'Equipmentwarehouse',
-        component: () => import('@/views/AS-UpQuery'),
-        meta: { title: '仓库设备', icon: '应用管理' }
-      }
-
-      // {
-      //   path: '/fixed-page',
-      //   name: 'fixedPage',
-      //   component: FixedPage
-      // }
+      { path: 'blockchainwarehouse', component: BlockchainWarehouse, meta: { title: '链上仓库', icon: '链接' }},
+      { path: 'equipmentwarehouse', component: EquipmentWarehouse, meta: { title: '仓库设备', icon: '应用管理' }}
     ]
   },
-  // 生产管理
   {
     path: '/asmanage',
     component: Layout,
-    name: 'Asmanage',
     meta: { title: '生产管理', icon: '生产管理' },
     children: [
-      {
-        path: 'controlwarehouse',
-        name: 'Controlwarehouse',
-        component: () => import('@/views/AS-DownQuery'),
-        meta: { title: '库存控制', icon: '仓库信息' }
-      },
-      {
-        path: 'warehousing',
-        name: 'Warehousing',
-        component: () => import('@/views/AS-Warehousing'),
-        meta: { title: '入库信息', icon: '新风神_扫码入库' }
-      },
-      {
-        path: 'outbound',
-        name: 'Outbound',
-        component: () => import('@/views/AS-Outbound'),
-        meta: { title: '出库信息', icon: '已出库' }
-      }
+      { path: 'controlwarehouse', component: ControlWarehouse, meta: { title: '库存控制', icon: '仓库信息' }},
+      { path: 'warehousing', component: Warehousing, meta: { title: '入库信息', icon: '新风神_扫码入库' }},
+      { path: 'outbound', component: Outbound, meta: { title: '出库信息', icon: '已出库' }}
     ]
   },
-  // 交易管理
   {
     path: '/astransaction',
     component: Layout,
-    children: [{
-      path: '',
-      name: 'Transaction',
-      component: () => import('@/views/AS-transaction/index'),
-      meta: { title: '交易监管', icon: '安全预警' }
-    }]
+    children: [
+      { path: '', component: Transaction, meta: { title: '交易监管', icon: '安全预警' }}
+    ]
   },
-  // 数据报表
   {
     path: '/asreport',
     component: Layout,
-    name: 'Asreport',
     meta: { title: '数据报表', icon: '数据报表' },
     children: [
-      {
-        path: 'blockreport',
-        name: 'Blockreport',
-        component: () => import('@/views/AS-block'),
-        meta: { title: '区块报表', icon: 'el-icon-s-data' }
-      },
-      {
-        path: 'warehousereport',
-        name: 'Warehousereport',
-        component: () => import('@/views/AS-report'),
-        meta: { title: '仓库报表', icon: 'el-icon-s-data' }
-      }
+      { path: 'blockreport', component: BlockReport, meta: { title: '区块报表', icon: 'el-icon-s-data' }},
+      { path: 'warehousereport', component: WarehouseReport, meta: { title: '仓库报表', icon: 'el-icon-s-data' }}
     ]
   },
-  // 安全预警
   {
     path: '/aswarning',
     component: Layout,
-    children: [{
-      path: '',
-      name: 'WarningDashboard',
-      component: () => import('@/views/AS-Waining/index'),
-      meta: { title: '安全预警', icon: '安全预警' }
-    }]
+    children: [
+      { path: '', component: WarningDashboard, meta: { title: '安全预警', icon: '安全预警' }}
+    ]
   },
-  // 大屏展示
-  {
-    path: '/lshome',
-    component: () => import('@/views/LS-Home/index')
-  },
-
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '/lshome', component: LSHome },
+  { path: '*', redirect: '/404' } // 捕获所有未匹配的路由，重定向到404
 ]
 
 const createRouter = () => new Router({
@@ -155,20 +98,6 @@ const createRouter = () => new Router({
 })
 
 const router = createRouter()
-
-// 添加全局导航守卫
-router.beforeEach((to, from, next) => {
-  const token = getToken() // 检查是否存在 token
-  if (to.path === '/login') {
-    // 如果是登录页面，直接放行
-    return next()
-  }
-  if (!token && !to.meta.public) { // 如果没有 token 且该页面不是公共页面
-    Message.warning('请先登录') // 提示用户先登录
-    return next('/login') // 重定向到登录页面
-  }
-  next() // 否则继续访问目标页面
-})
 
 export function resetRouter() {
   const newRouter = createRouter()

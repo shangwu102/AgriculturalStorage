@@ -92,7 +92,7 @@
             </el-form-item>
 
             <el-checkbox v-model="checked">记住信息</el-checkbox>
-            <el-button style="position: absolute;right: 7%;" @click="showRegisterDialog">注册公司</el-button>
+            <el-button style="position: relative;right: 0;float: right;" @click="showRegisterDialog">注册公司</el-button>
             <!-- 注册对话框 -->
             <el-dialog :visible.sync="registerDialogVisible" title="注册公司" width="80%" top="5vh">
               <el-form ref="registerFormRef" :model="registerForm" :rules="rules" label-width="150px">
@@ -212,8 +212,8 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
-import { login } from '@/api/user'
-import { setToken } from '@/utils/auth'
+// import { login } from '@/api/user'
+// import { setToken } from '@/utils/auth'
 import { getUser, setUser, removeUser } from '@/utils/auth' // 引入封装好的方法
 
 export default {
@@ -321,7 +321,8 @@ export default {
       this.loginForm.username = user.username
       this.loginForm.password = user.password
       this.loginForm.address = user.address
-      this.loginForm.role = user.role // 如果已保存，填充角色信息
+      this.loginForm.role = user.role
+      // 如果已保存，填充角色信息
       this.checked = true
     }
   },
@@ -348,50 +349,80 @@ export default {
     },
     async handleLogin() {
       try {
-        // 验证表单
         const valid = await this.$refs.loginForm.validate()
         if (!valid) {
           console.log('表单验证失败!')
           return false
         }
 
-        // 开启 loading 状态
         this.loading = true
+        // const result = await login(this.loginForm)
 
-        // 调用登录接口
-        const result = await login(this.loginForm)
-        console.log(result)
+        // if (result.data.code === 1) {
+        //   setToken(result.data.data)
 
-        // 根据返回结果判断登录是否成功
-        if (result.data.code === 1) {
-          // 成功，保存 token
-          setToken(result.data.data)
+        //   if (this.checked) {
+        //     const user = {
+        //       username: this.loginForm.username,
+        //       password: this.loginForm.password,
+        //       address: this.loginForm.address,
+        //       role: this.loginForm.role
+        //     }
+        //     setUser(JSON.stringify(user))
+        //   } else {
+        //     removeUser()
+        //   }
 
-          // 根据是否勾选 "记住信息" 来存储或移除用户信息
-          if (this.checked) {
-            const user = {
-              username: this.loginForm.username,
-              password: this.loginForm.password,
-              address: this.loginForm.address,
-              role: this.loginForm.role // 保存角色信息
-            }
-            setUser(JSON.stringify(user)) // 使用封装好的setUser存储
-          } else {
-            removeUser() // 使用封装好的removeUser移除
-          }
+        //   // 根据用户角色跳转
+        //   if (this.loginForm.role === 'admin' || this.loginForm.role === 'operator') {
+        //     this.$router.push('/ashome') // 管理员或操作员跳转 ashome
+        //   } else if (this.loginForm.role === 'company') {
+        //     this.$router.push('/ascompany') // 公司用户跳转 ascompany
+        //   }
+        // } else {
+        //   this.$message.error(result.data.msg)
+        // }
+        // 根据用户角色跳转 临时测试代码-------------------------------------------------------------------
+        // 使用 Vuex 调用 login action
+        await this.$store.dispatch('user/login', {
+          username: this.loginForm.username,
+          password: this.loginForm.password,
+          address: this.loginForm.address,
+          role: this.loginForm.role
+        })
 
-          // 跳转到主页
-          this.$router.push('/ashome')
+        // 获取用户信息并存入 Vuex
+        const userInfo = {
+          username: this.loginForm.username,
+          address: this.loginForm.address,
+          role: this.loginForm.role,
+          password: this.loginForm.password
+        }
+        this.$store.dispatch('user/setUserInfo', userInfo)
+
+        // 本地存储选项，根据是否勾选 "记住信息" 来决定是否存储
+        if (this.checked) {
+          setUser(JSON.stringify(userInfo)) // 存储到本地
         } else {
-          // 登录失败，显示错误消息
-          this.$message.error(result.data.msg)
+          removeUser() // 清除本地存储
+        }
+
+        const user = {
+          username: this.loginForm.username,
+          password: this.loginForm.password,
+          address: this.loginForm.address,
+          role: this.loginForm.role
+        }
+        setUser(JSON.stringify(user))
+        if (this.loginForm.role === 'admin' || this.loginForm.role === 'operator') {
+          this.$router.push('/ashome') // 管理员或操作员跳转 ashome
+        } else if (this.loginForm.role === 'company') {
+          this.$router.push('/ascompany') // 公司用户跳转 ascompany
         }
       } catch (error) {
-        // 捕获错误并处理
         console.error('登录请求失败:', error)
         this.$message.error('登录请求失败')
       } finally {
-        // 无论成功与否，最终都关闭 loading 状态
         this.loading = false
       }
     },

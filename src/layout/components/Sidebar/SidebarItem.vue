@@ -1,13 +1,16 @@
 <template>
-  <div v-if="!item.hidden">
-    <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
+  <div v-if="!item.hidden && (!item.meta || !item.meta.roles || item.meta.roles.includes(role))">
+    <!-- 一级菜单 -->
+    <template
+      v-if="hasOneShowingChild(item.children, item) && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow"
+    >
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
-          <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
+        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'submenu-title-noDropdown': !isNest }">
+          <item :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" :title="onlyOneChild.meta.title" />
         </el-menu-item>
       </app-link>
     </template>
-
+    <!-- 二级菜单 -->
     <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
       <template slot="title">
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
@@ -36,7 +39,7 @@ export default {
   components: { Item, AppLink },
   mixins: [FixiOSBug],
   props: {
-    // route object
+    // 路由对象
     item: {
       type: Object,
       required: true
@@ -51,36 +54,43 @@ export default {
     }
   },
   data() {
-    // To fix https://github.com/PanJiaChen/vue-admin-template/issues/237
-    // TODO: refactor with render function
+    // 修复 iOS 设备上点击菜单触发 mouseleave 的 Bug
+    // 参见：https://github.com/PanJiaChen/vue-admin-template/issues/237
+    // TODO: 使用 render function 重构
     this.onlyOneChild = null
     return {}
   },
+  computed: {
+    role() {
+      return this.$store.state.user.role // 假设用户角色保存在 Vuex 的 user 模块中
+    }
+  },
   methods: {
+    // 判断是否只显示一个子菜单
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {
-        if (item.hidden) {
+        // 过滤菜单项的逻辑，检查菜单是否隐藏和角色权限
+        if (item.hidden || (item.meta.roles && !item.meta.roles.includes(this.role))) {
           return false
         } else {
-          // Temp set(will be used if only has one showing child)
+          // 当只有一个子菜单时，设置 onlyOneChild
           this.onlyOneChild = item
           return true
         }
       })
 
-      // When there is only one child router, the child router is displayed by default
       if (showingChildren.length === 1) {
         return true
       }
 
-      // Show parent if there are no child router to display
       if (showingChildren.length === 0) {
-        this.onlyOneChild = { ... parent, path: '', noShowingChildren: true }
+        this.onlyOneChild = { ...parent, path: '', noShowingChildren: true }
         return true
       }
 
       return false
     },
+    // 解析路由路径
     resolvePath(routePath) {
       if (isExternal(routePath)) {
         return routePath
@@ -91,5 +101,6 @@ export default {
       return path.resolve(this.basePath, routePath)
     }
   }
+
 }
 </script>

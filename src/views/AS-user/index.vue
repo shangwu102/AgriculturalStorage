@@ -20,7 +20,8 @@
             <el-col :span="12">
               <el-button type="primary" @click="openPasswordDialog">修改密码</el-button>
             </el-col>
-            <el-col :span="12">
+            <!-- 只有角色是 'admin' 时显示授权用户按钮 -->
+            <el-col v-if="role === 'admin'" :span="12">
               <el-button type="primary" @click="openAuthorizeDialog">授权用户</el-button>
             </el-col>
           </el-row>
@@ -139,6 +140,14 @@ export default {
           { required: true, message: '请选择角色', trigger: 'change' }
         ]
       }
+    }
+  },
+  computed: {
+    // 从 Vuex 中获取用户的角色
+    role() {
+      console.log(this.$store.state.user.role)
+
+      return this.$store.state.user.role
     }
   },
   methods: {

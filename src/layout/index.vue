@@ -1,18 +1,36 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
-    <div class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
-        <navbar />
+    <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+    <!-- 如果是管理员或操作员显示这个布局 -->
+    <template v-if="role === 'admin' || role === 'operator'">
+      <!-- 侧边栏 -->
+      <Sidebar class="sidebar-container" />
+      <div class="main-container">
+        <div :class="{ 'fixed-header': fixedHeader }">
+          <!-- 导航栏 -->
+          <Navbar />
+        </div>
+        <!-- 主页 -->
+        <AppMain />
       </div>
-      <app-main />
-    </div>
+    </template>
+
+    <!-- 如果是公司显示不同的布局 -->
+    <template v-else-if="role === 'company'">
+      <sidebar class="sidebar-container" />
+      <div class="main-container">
+        <div :class="{ 'fixed-header': fixedHeader }">
+          <navbar />
+        </div>
+        <!-- 替换为公司的页面 -->
+        <CompanyMain />
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain } from './components'
+import { Navbar, Sidebar, AppMain, CompanyMain } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 
 export default {
@@ -20,7 +38,8 @@ export default {
   components: {
     Navbar,
     Sidebar,
-    AppMain
+    AppMain,
+    CompanyMain
   },
   mixins: [ResizeMixin],
   computed: {
@@ -40,6 +59,11 @@ export default {
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'
       }
+    },
+    role() {
+      console.log(this.$store.state.user.role)
+
+      return this.$store.state.user.role // 获取当前登录用户的角色
     }
   },
   methods: {

@@ -96,7 +96,7 @@
 </template>
 
 <script>
-import { hqkc } from '@/api/kucunkongzhi'
+// import { hqkc } from '@/api/kucunkongzhi'
 export default {
   data() {
     const options = [{
@@ -267,8 +267,8 @@ export default {
   methods: {
     async qingqui() {
       try {
-        const ref = await hqkc()
-        console.log('数据', ref)
+        // const ref = await hqkc()
+        console.log('数据')
       } catch (error) {
         console.log('错误', error)
       }
