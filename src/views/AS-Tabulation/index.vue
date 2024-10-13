@@ -15,60 +15,63 @@
       <!-- 为每个仓库创建一个单独的列表 -->
       <div v-for="(item) in filteredData" :key="item.id" class="warehouse-list">
         <el-row class="align-items-center warehouse-item">
-          <el-col :span="16" class="warehouse-name cursor-pointer" @click="openDrawer(item)">
-            <strong>{{ item.name }}</strong>
+          <!-- 左边仓库信息 -->
+          <el-col :span="18" class="warehouse-info cursor-pointer">
+            <strong @click="openDrawer(item)">{{ item.name }}</strong>
+            <el-row>
+              <el-col :span="12" class="p-2">
+                <el-row>
+                  <el-col :span="8">编号:</el-col>
+                  <el-col :span="16">{{ item.code }}</el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">公司编号:</el-col>
+                  <el-col :span="16">{{ item.companyCode }}</el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">建立时间:</el-col>
+                  <el-col :span="16">{{ item.creationTime }}</el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">录入时间:</el-col>
+                  <el-col :span="16">{{ item.intoTime }}</el-col>
+                </el-row>
+              </el-col>
+            </el-row>
           </el-col>
-          <el-col :span="2" class="cursor-pointer info-icon" @click="openDrawer(item)">
-            <strong aria-label="更多信息">></strong>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-row class="p-2">
-              <el-col :span="10">编号</el-col>
-              <el-col :span="14">{{ item.code }}</el-col>
-            </el-row>
-            <el-row class="p-2">
-              <el-col :span="10">公司编号</el-col>
-              <el-col :span="14">{{ item.companyCode }}</el-col>
-            </el-row>
-            <el-row class="p-2">
-              <el-col :span="10">建立时间</el-col>
-              <el-col :span="14">{{ item.creationTime }}</el-col>
-            </el-row>
-            <el-row class="p-2">
-              <el-col :span="10">录入时间</el-col>
-              <el-col :span="14">{{ item.intoTime }}</el-col>
-            </el-row>
+
+          <!-- 右边仓库图片 -->
+          <el-col :span="6" class="cursor-pointer info-icon" @click="openDrawer(item)">
+            <el-image :src="item.img" alt="更多信息" class="aligned-image" />
           </el-col>
         </el-row>
       </div>
     </div>
 
     <!-- Drawer 抽屉 -->
-    <el-drawer title="仓库详细信息" :visible.sync="drawerVisible" direction="rtl" size="30%" custom-class="custom-drawer">
+    <el-drawer title="仓库详细信息" :visible.sync="drawerVisible" direction="rtl" size="40%">
       <div v-if="selectedItem" class="drawer-content">
-        <el-row>
+        <el-row class="drawer-row">
           <el-col :span="8"><strong>仓库名称:</strong></el-col>
           <el-col :span="16">{{ selectedItem.name }}</el-col>
         </el-row>
         <el-divider />
-        <el-row>
+        <el-row class="drawer-row">
           <el-col :span="8"><strong>编号:</strong></el-col>
           <el-col :span="16">{{ selectedItem.code }}</el-col>
         </el-row>
         <el-divider />
-        <el-row>
+        <el-row class="drawer-row">
           <el-col :span="8"><strong>公司编号:</strong></el-col>
           <el-col :span="16">{{ selectedItem.companyCode }}</el-col>
         </el-row>
         <el-divider />
-        <el-row>
+        <el-row class="drawer-row">
           <el-col :span="8"><strong>建立时间:</strong></el-col>
           <el-col :span="16">{{ selectedItem.creationTime }}</el-col>
         </el-row>
         <el-divider />
-        <el-row>
+        <el-row class="drawer-row">
           <el-col :span="8"><strong>录入时间:</strong></el-col>
           <el-col :span="16">{{ selectedItem.intoTime }}</el-col>
         </el-row>
@@ -81,15 +84,17 @@
 export default {
   data() {
     return {
+
       searchQuery: '',
       drawerVisible: false, // 控制Drawer显示
       selectedItem: null, // 存储选中的仓库信息
       dataList: [
-        { id: 1, name: '1号仓库', code: '42', companyCode: '37', creationTime: '2022-02-25 17:36:41', intoTime: '2024-02-25 17:36:41' },
-        { id: 2, name: '2号仓库', code: '43', companyCode: '38', creationTime: '2022-02-26 17:36:41', intoTime: '2024-02-26 17:36:41' },
-        { id: 3, name: '3号仓库', code: '44', companyCode: '39', creationTime: '2022-02-27 17:36:41', intoTime: '2024-02-27 17:36:41' },
-        { id: 4, name: '4号仓库', code: '45', companyCode: '40', creationTime: '2022-02-28 17:36:41', intoTime: '2024-02-28 17:36:41' }
-        // 仓库数据
+        { id: 1, name: '1号仓库', code: '42', companyCode: '37', creationTime: '2022-02-25 17:36:41', intoTime: '2024-02-25 17:36:41', img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' },
+        { id: 2, name: '2号仓库', code: '43', companyCode: '38', creationTime: '2022-02-26 17:36:41', intoTime: '2024-02-26 17:36:41', img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' },
+        { id: 3, name: '3号仓库', code: '44', companyCode: '39', creationTime: '2022-02-27 17:36:41', intoTime: '2024-02-27 17:36:41', img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' },
+        { id: 4, name: '4号仓库', code: '45', companyCode: '40', creationTime: '2022-02-28 17:36:41', intoTime: '2024-02-28 17:36:41', img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' },
+        { id: 5, name: '4号仓库', code: '45', companyCode: '40', creationTime: '2022-02-28 17:36:41', intoTime: '2024-02-28 17:36:41', img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' },
+        { id: 6, name: '4号仓库', code: '45', companyCode: '40', creationTime: '2022-02-28 17:36:41', intoTime: '2024-02-28 17:36:41', img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' }
       ]
     }
   },
@@ -108,12 +113,11 @@ export default {
   methods: {
     handleSearch() {
       console.log('Searching for:', this.searchQuery)
-      // 添加其他逻辑API调用
     },
     openDrawer(item) {
-      // 打开Drawer并存储选中的仓库信息
-      this.selectedItem = item
-      this.drawerVisible = true
+      console.log('打开抽屉')
+      this.selectedItem = item // 确保选中仓库信息更新
+      this.drawerVisible = true // 打开Drawer
     }
   }
 }
@@ -197,5 +201,58 @@ export default {
 .info-icon {
   text-align: right;
   font-size: 18px;
+}
+
+.aligned-image {
+  vertical-align: middle;
+  width: 100px;
+  /* 设定图片宽度 */
+  height: 100px;
+  /* 设定图片高度 */
+}
+/* Drawer 样式 */
+.custom-drawer {
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+.drawer-content {
+  padding: 20px;
+}
+
+/* 每一行样式 */
+.drawer-row {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+/* 设置文本样式 */
+.drawer-row strong {
+  font-size: 14px;
+  color: #666;
+}
+
+.el-divider {
+  margin: 15px 0;
+}
+
+/* 行内文本样式 */
+.drawer-row el-col:nth-child(2) {
+  font-size: 14px;
+  color: #333;
+}
+
+/* 设置整体样式 */
+.custom-drawer .el-drawer__header {
+  background-color: #409eff;
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+  padding: 10px;
+}
+
+.custom-drawer .el-drawer__body {
+  padding: 20px;
 }
 </style>
