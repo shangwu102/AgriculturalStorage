@@ -91,7 +91,7 @@
       <el-table-column prop="joinAmount" label="入库量" />
       <el-table-column prop="pass" label="合格率" />
       <el-table-column prop="createTime" label="入库时间" />
-      <el-table-column prop="account" label="操作员">
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
             type="primary"

@@ -12,48 +12,61 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="sousuo" placeholder="请输入区域名称">''</el-input>
+        <el-input v-model="sousuo" placeholder="请输入控制器名称">''</el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="chaxun">搜素</el-button>
       </el-form-item>
     </el-form>
     <el-table
+      :key="newdata.id"
       :data="newdata"
       style="width: 100%"
       border
       :row-style="{height: '64px'}"
     >
       <el-table-column
-        prop="id"
-        label="编号"
+        prop="status"
+        label="状态"
         width="130"
       />
       <el-table-column
-        prop="alert_type"
-        label="预警类型"
+        prop="device_id"
+        label="编号"
+        width="70px"
       />
       <el-table-column
-        prop="alert_source"
-        label="预警来源"
+        prop="icon"
+        label="图标"
+        width="130"
       />
       <el-table-column
-        prop="alert_area"
-        label="预警区域"
+        prop="controller_name"
+        label="传感器名称"
       />
       <el-table-column
-        prop="device_name"
-        label="设备名称"
+        prop="value"
+        label="数值"
+        width="300"
       />
       <el-table-column
-        prop="alert_message"
-        label="预警信息"
-        width="250"
-      />
+        prop="controller_status"
+        label="控制器状态"
+      >
+        <el-switch
+          value="controller_status"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+        />
+      </el-table-column>
       <el-table-column
-        prop="alert_time"
-        label="时间"
-      />
+        label="操作"
+      >
+        <template>
+          <el-button size="small" type="success">设置</el-button>
+          <el-button size="small" type="warning">重命名</el-button>
+        </template>
+      </el-table-column>
       <!-- <el-table-column
         label="操作"
       >
@@ -95,138 +108,122 @@
 export default {
   data() {
     const options = [{
-      value: '地震预警',
-      label: '地震预警'
+      value: '✅',
+      label: '正常'
     },
     {
-      value: '空气质量预警',
-      label: '空气质量预警'
+      value: '❌',
+      label: '警告'
     },
     {
-      value: '滑坡预警',
-      label: '滑坡预警'
-    },
-    {
-      value: '库存预警',
-      label: '库存预警'
-    }]
+      value: '⚠',
+      label: '故障'
+    }
+    ]
     const tableData = [
       {
-        id: 1,
-        alert_type: '地震预警',
-        alert_source: '地震监测中心',
-        alert_area: '四川省',
-        device_name: '地震监测仪',
-        alert_message: '发生5.2级地震，请做好避险准备。',
-        alert_time: '2024-10-02 09:15'
+        'status': '✅',
+        'device_id': 1,
+        'icon': '正常图标.png',
+        'controller_name': '温度控制器',
+        'value': 23.5,
+        'controller_status': 1
       },
       {
-        id: 2,
-        alert_type: '空气质量预警',
-        alert_source: '环保局',
-        alert_area: '某城市',
-        device_name: '空气质量监测仪',
-        alert_message: 'PM2.5浓度过高，请减少户外活动。',
-        alert_time: '2024-10-06 12:00'
+        'status': '❌',
+        'device_id': 2,
+        'icon': '警告图标.png',
+        'controller_name': '湿度控制器',
+        'value': 68.2,
+        'controller_status': 0
       },
       {
-        id: 3,
-        alert_type: '滑坡预警',
-        alert_source: '地质灾害监测中心',
-        alert_area: '山区',
-        device_name: '地质监测仪',
-        alert_message: '近期降雨量大，请注意滑坡风险。',
-        alert_time: '2024-10-10 15:45'
+        'status': '⚠',
+        'device_id': 3,
+        'icon': '故障图标.png',
+        'controller_name': '压力控制器',
+        'value': null,
+        'controller_status': 1
       },
       {
-        id: 4,
-        alert_type: '库存预警',
-        alert_source: '供应链管理系统',
-        alert_area: '物流中心',
-        device_name: '库存监测系统',
-        alert_message: '重要物资库存不足，请尽快补充。',
-        alert_time: '2024-10-10 11:30'
+        'status': '✅',
+        'device_id': 4,
+        'icon': '正常图标.png',
+        'controller_name': '气体控制器',
+        'value': 15.3,
+        'controller_status': 0
       },
       {
-        id: 5,
-        alert_type: '地震预警',
-        alert_source: '地震监测中心',
-        alert_area: '云南省',
-        device_name: '地震监测仪',
-        alert_message: '发生4.8级地震，请做好避险准备。',
-        alert_time: '2024-10-03 12:30'
+        'status': '✅',
+        'device_id': 5,
+        'icon': '正常图标.png',
+        'controller_name': '温度控制器',
+        'value': 22.8,
+        'controller_status': 1
       },
       {
-        id: 6,
-        alert_type: '空气质量预警',
-        alert_source: '环保局',
-        alert_area: '某工业区',
-        device_name: '空气质量监测仪',
-        alert_message: 'PM10浓度过高，空气污染严重。',
-        alert_time: '2024-10-07 08:00'
+        'status': '❌',
+        'device_id': 6,
+        'icon': '警告图标.png',
+        'controller_name': '湿度控制器',
+        'value': 72.5,
+        'controller_status': 0
       },
       {
-        id: 7,
-        alert_type: '滑坡预警',
-        alert_source: '地质灾害监测中心',
-        alert_area: '南方山区',
-        device_name: '地质监测仪',
-        alert_message: '近期有降雨，滑坡风险增加。',
-        alert_time: '2024-10-08 14:20'
+        'status': '⚠',
+        'device_id': 7,
+        'icon': '故障图标.png',
+        'controller_name': '压力控制器',
+        'value': null,
+        'controller_status': 1
       },
       {
-        id: 8,
-        alert_type: '库存预警',
-        alert_source: '供应链管理系统',
-        alert_area: '物流仓库',
-        device_name: '库存监测系统',
-        alert_message: '食品类物资库存不足，请尽快补充。',
-        alert_time: '2024-10-09 09:45'
+        'status': '✅',
+        'device_id': 8,
+        'icon': '正常图标.png',
+        'controller_name': '气体控制器',
+        'value': 12.6,
+        'controller_status': 0
       },
       {
-        id: 9,
-        alert_type: '地震预警',
-        alert_source: '地震监测中心',
-        alert_area: '新疆地区',
-        device_name: '地震监测仪',
-        alert_message: '发生5.5级地震，震感强烈，请做好防护。',
-        alert_time: '2024-10-05 16:00'
+        'status': '❌',
+        'device_id': 9,
+        'icon': '警告图标.png',
+        'controller_name': '温度控制器',
+        'value': 30.2,
+        'controller_status': 1
       },
       {
-        id: 10,
-        alert_type: '空气质量预警',
-        alert_source: '环保局',
-        alert_area: '北方城市',
-        device_name: '空气质量监测仪',
-        alert_message: '沙尘暴来袭，空气质量恶化。',
-        alert_time: '2024-10-04 10:30'
+        'status': '✅',
+        'device_id': 10,
+        'icon': '正常图标.png',
+        'controller_name': '湿度控制器',
+        'value': 55.4,
+        'controller_status': 0
       },
       {
-        id: 11,
-        alert_type: '滑坡预警',
-        alert_source: '地质灾害监测中心',
-        alert_area: '东部山区',
-        device_name: '地质监测仪',
-        alert_message: '连续降雨，可能发生滑坡，请注意。',
-        alert_time: '2024-10-06 18:00'
+        'status': '⚠',
+        'device_id': 11,
+        'icon': '故障图标.png',
+        'controller_name': '气压控制器',
+        'value': null,
+        'controller_status': 1
       },
       {
-        id: 12,
-        alert_type: '库存预警',
-        alert_source: '供应链管理系统',
-        alert_area: '港口物流中心',
-        device_name: '库存监测系统',
-        alert_message: '建筑材料库存告急，请及时补货。',
-        alert_time: '2024-10-08 13:10'
+        'status': '✅',
+        'device_id': 12,
+        'icon': '正常图标.png',
+        'controller_name': '风速控制器',
+        'value': 5.4,
+        'controller_status': 0
       },
       {
-        id: 13,
-        alert_type: '地震预警',
-        alert_source: '地震监测中心',
-        alert_area: '甘肃省',
-        device_name: '地震监测仪',
-        alert_message: '发生4.6级地震，震源较浅，请避险。',
-        alert_time: '2024-10-09 07:55'
+        'status': '❌',
+        'device_id': 13,
+        'icon': '警告图标.png',
+        'controller_name': '温度控制器',
+        'value': 29.9,
+        'controller_status': 1
       }
     ]
 
@@ -259,7 +256,8 @@ export default {
       form: newrukuxx,
       shujujianyan: newrukuxxjianyan,
       table: true,
-      dangqianyema: 1
+      dangqianyema: 1,
+      activeName: 'chuangganqi'
     }
   },
   created() {
@@ -273,10 +271,10 @@ export default {
     chaxun() {
       const newdata = []
       this.tableData.forEach(item => {
-        if (item.alert_type === this.value && item.alert_area.includes(this.sousuo)) {
+        if (item.status === this.value && item.controller_name.includes(this.sousuo)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (item.alert_type === this.value && this.sousuo === '') {
+        } else if (item.status === this.value && this.sousuo === '') {
           newdata.push(item)
           console.log('搜索成功')
         } else if (this.value === '' && this.sousuo === '') {
@@ -312,6 +310,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
 .el-select{
   width: 17vw;
@@ -354,9 +353,10 @@ export default {
   justify-content: space-between;
 }
 .app-container{
-  position: relative;
+  padding: 0;
+  /* position: relative; */
   height: calc(100vh - 50px);
   overflow-y: auto;
-  /* border: 1px solid red; */
+  /* border: 1px solid rgb(46, 251, 0); */
 }
 </style>

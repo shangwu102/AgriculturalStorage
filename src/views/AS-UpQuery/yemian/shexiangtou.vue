@@ -12,48 +12,62 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="sousuo" placeholder="请输入区域名称">''</el-input>
+        <el-input v-model="sousuo" placeholder="请输入摄像头名称">''</el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="chaxun">搜素</el-button>
       </el-form-item>
     </el-form>
     <el-table
+      :key="newdata.id"
       :data="newdata"
       style="width: 100%"
       border
       :row-style="{height: '64px'}"
     >
       <el-table-column
-        prop="id"
-        label="编号"
+        prop="icon"
+        label="图标"
         width="130"
       />
       <el-table-column
-        prop="alert_type"
-        label="预警类型"
+        prop="camera_name"
+        label="摄像头名称"
+        width="130"
       />
       <el-table-column
-        prop="alert_source"
-        label="预警来源"
+        prop="camera_url"
+        label="摄像头URL"
+        width="130"
       />
       <el-table-column
-        prop="alert_area"
-        label="预警区域"
+        prop="channel"
+        label="通道"
+        width="130"
       />
       <el-table-column
-        prop="device_name"
-        label="设备名称"
+        prop="username"
+        label="用户名"
+        width="200"
       />
       <el-table-column
-        prop="alert_message"
-        label="预警信息"
-        width="250"
+        prop="password"
+        label="密码"
+        width="200"
       />
       <el-table-column
-        prop="alert_time"
-        label="时间"
+        prop="create_time"
+        label="创建时间"
       />
+      <el-table-column
+        label="操作"
+      >
+        <template>
+
+          <el-button size="small" type="warning">重命名</el-button>
+          <el-button size="small" type="primary">视频查看</el-button>
+        </template>
+      </el-table-column>
       <!-- <el-table-column
         label="操作"
       >
@@ -95,138 +109,135 @@
 export default {
   data() {
     const options = [{
-      value: '地震预警',
-      label: '地震预警'
+      value: 1,
+      label: '通道1'
     },
     {
-      value: '空气质量预警',
-      label: '空气质量预警'
+      value: 2,
+      label: '通道2'
     },
     {
-      value: '滑坡预警',
-      label: '滑坡预警'
-    },
-    {
-      value: '库存预警',
-      label: '库存预警'
-    }]
+      value: 3,
+      label: '通道3'
+    }
+    ]
     const tableData = [
       {
-        id: 1,
-        alert_type: '地震预警',
-        alert_source: '地震监测中心',
-        alert_area: '四川省',
-        device_name: '地震监测仪',
-        alert_message: '发生5.2级地震，请做好避险准备。',
-        alert_time: '2024-10-02 09:15'
+        'icon': 'camera1.png',
+        'camera_name': '前门摄像头',
+        'camera_url': '',
+        'channel': 1,
+        'username': 'admin1',
+        'password': 'password1',
+        'create_time': '2024-01-01 10:00:00'
       },
       {
-        id: 2,
-        alert_type: '空气质量预警',
-        alert_source: '环保局',
-        alert_area: '某城市',
-        device_name: '空气质量监测仪',
-        alert_message: 'PM2.5浓度过高，请减少户外活动。',
-        alert_time: '2024-10-06 12:00'
+        'icon': 'camera2.png',
+        'camera_name': '后门摄像头',
+        'camera_url': '',
+        'channel': 1,
+        'username': 'admin2',
+        'password': 'password2',
+        'create_time': '2024-01-02 11:00:00'
       },
       {
-        id: 3,
-        alert_type: '滑坡预警',
-        alert_source: '地质灾害监测中心',
-        alert_area: '山区',
-        device_name: '地质监测仪',
-        alert_message: '近期降雨量大，请注意滑坡风险。',
-        alert_time: '2024-10-10 15:45'
+        'icon': 'camera3.png',
+        'camera_name': '车库摄像头',
+        'camera_url': '',
+        'channel': 2,
+        'username': 'admin3',
+        'password': 'password3',
+        'create_time': '2024-01-03 12:00:00'
       },
       {
-        id: 4,
-        alert_type: '库存预警',
-        alert_source: '供应链管理系统',
-        alert_area: '物流中心',
-        device_name: '库存监测系统',
-        alert_message: '重要物资库存不足，请尽快补充。',
-        alert_time: '2024-10-10 11:30'
+        'icon': 'camera4.png',
+        'camera_name': '大厅摄像头',
+        'camera_url': '',
+        'channel': 2,
+        'username': 'admin4',
+        'password': 'password4',
+        'create_time': '2024-01-04 13:00:00'
       },
       {
-        id: 5,
-        alert_type: '地震预警',
-        alert_source: '地震监测中心',
-        alert_area: '云南省',
-        device_name: '地震监测仪',
-        alert_message: '发生4.8级地震，请做好避险准备。',
-        alert_time: '2024-10-03 12:30'
+        'icon': 'camera5.png',
+        'camera_name': '走廊摄像头',
+        'camera_url': '',
+        'channel': 3,
+        'username': 'admin5',
+        'password': 'password5',
+        'create_time': '2024-01-05 14:00:00'
       },
       {
-        id: 6,
-        alert_type: '空气质量预警',
-        alert_source: '环保局',
-        alert_area: '某工业区',
-        device_name: '空气质量监测仪',
-        alert_message: 'PM10浓度过高，空气污染严重。',
-        alert_time: '2024-10-07 08:00'
+        'icon': 'camera6.png',
+        'camera_name': '楼梯摄像头',
+        'camera_url': '',
+        'channel': 3,
+        'username': 'admin6',
+        'password': 'password6',
+        'create_time': '2024-01-06 15:00:00'
       },
       {
-        id: 7,
-        alert_type: '滑坡预警',
-        alert_source: '地质灾害监测中心',
-        alert_area: '南方山区',
-        device_name: '地质监测仪',
-        alert_message: '近期有降雨，滑坡风险增加。',
-        alert_time: '2024-10-08 14:20'
+        'icon': 'camera7.png',
+        'camera_name': '阳台摄像头',
+        'camera_url': '',
+        'channel': 1,
+        'username': 'admin7',
+        'password': 'password7',
+        'create_time': '2024-01-07 16:00:00'
       },
       {
-        id: 8,
-        alert_type: '库存预警',
-        alert_source: '供应链管理系统',
-        alert_area: '物流仓库',
-        device_name: '库存监测系统',
-        alert_message: '食品类物资库存不足，请尽快补充。',
-        alert_time: '2024-10-09 09:45'
+        'icon': 'camera8.png',
+        'camera_name': '地下室摄像头',
+        'camera_url': '',
+        'channel': 2,
+        'username': 'admin8',
+        'password': 'password8',
+        'create_time': '2024-01-08 17:00:00'
       },
       {
-        id: 9,
-        alert_type: '地震预警',
-        alert_source: '地震监测中心',
-        alert_area: '新疆地区',
-        device_name: '地震监测仪',
-        alert_message: '发生5.5级地震，震感强烈，请做好防护。',
-        alert_time: '2024-10-05 16:00'
+        'icon': 'camera9.png',
+        'camera_name': '厨房摄像头',
+        'camera_url': '',
+        'channel': 3,
+        'username': 'admin9',
+        'password': 'password9',
+        'create_time': '2024-01-09 18:00:00'
       },
       {
-        id: 10,
-        alert_type: '空气质量预警',
-        alert_source: '环保局',
-        alert_area: '北方城市',
-        device_name: '空气质量监测仪',
-        alert_message: '沙尘暴来袭，空气质量恶化。',
-        alert_time: '2024-10-04 10:30'
+        'icon': 'camera10.png',
+        'camera_name': '客厅摄像头',
+        'camera_url': '',
+        'channel': 1,
+        'username': 'admin10',
+        'password': 'password10',
+        'create_time': '2024-01-10 19:00:00'
       },
       {
-        id: 11,
-        alert_type: '滑坡预警',
-        alert_source: '地质灾害监测中心',
-        alert_area: '东部山区',
-        device_name: '地质监测仪',
-        alert_message: '连续降雨，可能发生滑坡，请注意。',
-        alert_time: '2024-10-06 18:00'
+        'icon': 'camera11.png',
+        'camera_name': '办公室摄像头',
+        'camera_url': '',
+        'channel': 2,
+        'username': 'admin11',
+        'password': 'password11',
+        'create_time': '2024-01-11 20:00:00'
       },
       {
-        id: 12,
-        alert_type: '库存预警',
-        alert_source: '供应链管理系统',
-        alert_area: '港口物流中心',
-        device_name: '库存监测系统',
-        alert_message: '建筑材料库存告急，请及时补货。',
-        alert_time: '2024-10-08 13:10'
+        'icon': 'camera12.png',
+        'camera_name': '洗手间摄像头',
+        'camera_url': '',
+        'channel': 3,
+        'username': 'admin12',
+        'password': 'password12',
+        'create_time': '2024-01-12 21:00:00'
       },
       {
-        id: 13,
-        alert_type: '地震预警',
-        alert_source: '地震监测中心',
-        alert_area: '甘肃省',
-        device_name: '地震监测仪',
-        alert_message: '发生4.6级地震，震源较浅，请避险。',
-        alert_time: '2024-10-09 07:55'
+        'icon': 'camera13.png',
+        'camera_name': '花园摄像头',
+        'camera_url': '',
+        'channel': 1,
+        'username': 'admin13',
+        'password': 'password13',
+        'create_time': '2024-01-13 22:00:00'
       }
     ]
 
@@ -259,7 +270,8 @@ export default {
       form: newrukuxx,
       shujujianyan: newrukuxxjianyan,
       table: true,
-      dangqianyema: 1
+      dangqianyema: 1,
+      activeName: 'chuangganqi'
     }
   },
   created() {
@@ -273,10 +285,10 @@ export default {
     chaxun() {
       const newdata = []
       this.tableData.forEach(item => {
-        if (item.alert_type === this.value && item.alert_area.includes(this.sousuo)) {
+        if (item.channel === this.value && item.camera_name.includes(this.sousuo)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (item.alert_type === this.value && this.sousuo === '') {
+        } else if (item.channel === this.value && this.sousuo === '') {
           newdata.push(item)
           console.log('搜索成功')
         } else if (this.value === '' && this.sousuo === '') {
@@ -312,6 +324,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
 .el-select{
   width: 17vw;
@@ -354,9 +367,10 @@ export default {
   justify-content: space-between;
 }
 .app-container{
-  position: relative;
+  padding: 0;
+  /* position: relative; */
   height: calc(100vh - 50px);
   overflow-y: auto;
-  /* border: 1px solid red; */
+  /* border: 1px solid rgb(46, 251, 0); */
 }
 </style>
