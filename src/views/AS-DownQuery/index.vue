@@ -25,8 +25,16 @@
             <el-form :model="form" :rules="shujujianyan" class="xingzengshuju">
               <div class="diyi">
                 <el-form-item label="仓库名称" prop="repertoryName">
-                  <el-select v-model="form.repertoryName" placeholder="请选择仓库">
-                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+                  <el-select
+                    v-model="form.repertoryName"
+                    placeholder="请选择仓库"
+                  >
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
                   </el-select>
                 </el-form-item>
                 <el-form-item label="操作员" prop="account">
@@ -51,19 +59,31 @@
                   <el-input v-model="form.joinAmount" autocomplete="off" />
                 </el-form-item>
                 <el-form-item label="入库时间" prop="createTime">
-                  <el-date-picker v-model="form.createTime" type="datetime" placeholder="选择日期时间" style="width: 17vw" />
+                  <el-date-picker
+                    v-model="form.createTime"
+                    type="datetime"
+                    placeholder="选择日期时间"
+                    style="width: 17vw"
+                  />
                 </el-form-item>
               </div>
             </el-form>
           </div>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="xinzengdialogFormVisible = false">取 消</el-button>
+            <el-button
+              @click="xinzengdialogFormVisible = false"
+            >取 消</el-button>
             <el-button type="primary" @click="xinzeng">确 定</el-button>
           </div>
         </el-dialog>
       </el-form-item>
     </el-form>
-    <el-table :data="newdata" style="width: 100%" border :row-style="{ height: '64px' }">
+    <el-table
+      :data="newdata"
+      style="width: 100%"
+      border
+      :row-style="{ height: '64px' }"
+    >
       <el-table-column prop="id" label="编号" width="130" />
       <el-table-column prop="repertoryName" label="仓库名称" width="140" />
       <el-table-column prop="productType" label="产品种类" />
@@ -73,9 +93,22 @@
       <el-table-column prop="createTime" label="入库时间" />
       <el-table-column prop="account" label="操作员">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="chakan(scope.row)">查看</el-button>
-          <el-button type="warning" size="small" @click="chukuxianshi(scope.row)">出库</el-button>
-          <el-drawer title="库存详情" :visible.sync="celan" direction="rtl" size="40%">
+          <el-button
+            type="primary"
+            size="small"
+            @click="chakan(scope.row)"
+          >查看</el-button>
+          <el-button
+            type="warning"
+            size="small"
+            @click="chukuxianshi(scope.row)"
+          >出库</el-button>
+          <el-drawer
+            title="库存详情"
+            :visible.sync="celan"
+            direction="rtl"
+            size="40%"
+          >
             <div class="xiangqing">
               <h3 class="el-icon-s-order">产品信息</h3>
               <el-table :data="gridData">
@@ -108,11 +141,24 @@
           </el-drawer>
           <el-dialog title="新增出库" :visible.sync="chukudialogFormVisible">
             <div class="biaodan">
-              <el-form :model="form" :rules="shujujianyan" class="xingzengshuju">
+              <el-form
+                :model="form"
+                :rules="shujujianyan"
+                class="xingzengshuju"
+              >
                 <div class="diyi">
                   <el-form-item label="仓库名称" prop="repertoryName">
-                    <el-select v-model="form.repertoryName" placeholder="请选择仓库" disabled>
-                      <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+                    <el-select
+                      v-model="form.repertoryName"
+                      placeholder="请选择仓库"
+                      disabled
+                    >
+                      <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
                     </el-select>
                   </el-form-item>
                   <el-form-item label="操作员" prop="account">
@@ -148,8 +194,13 @@
               </el-form>
             </div>
             <div slot="footer" class="dialog-footer">
-              <el-button @click="chukudialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="chuku(scope.row)">确 定</el-button>
+              <el-button
+                @click="chukudialogFormVisible = false"
+              >取 消</el-button>
+              <el-button
+                type="primary"
+                @click="chuku(scope.row)"
+              >确 定</el-button>
             </div>
           </el-dialog>
         </template>
@@ -485,11 +536,11 @@ export default {
 }
 </script>
 <style scoped>
+.el-select{
+  width: 17vw;
+}
 .xiangqing {
   padding: 20px;
-}
-.el-select {
-  width: 17vw;
 }
 .yema {
   /* border: 1px solid red; */
@@ -502,7 +553,6 @@ export default {
   justify-content: center;
   align-items: center;
 }
-
 .xingzengshuju {
   display: flex;
   flex-direction: column;
@@ -514,37 +564,33 @@ export default {
 .el-input {
   width: 17vw;
 }
-
 .diyi {
   display: flex;
   justify-content: space-between;
 }
-
 .dier {
   display: flex;
   justify-content: space-between;
 }
-
 .disan input {
   width: calc(50vw - 169px);
 }
-
 .disi {
   display: flex;
   justify-content: space-between;
 }
-
 .app-container {
   position: relative;
   height: calc(100vh - 50px);
   overflow-y: auto;
   /* border: 1px solid red; */
 }
-
 .el-form-item__content {
   display: inline-block;
 }
-
+.el-form-item{
+  display: inline-block;
+}
 .el-dialog {
   margin-bottom: 0;
   /*box-shadow: 1px 5px 8px red;*/
