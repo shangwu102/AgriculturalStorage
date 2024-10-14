@@ -22,17 +22,17 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    proxy: {
-      '/api': {
-        target: process.env.VUE_APP_URL,
-        ws: false,
-        secure: false,
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': ''
-        }
-      }
-    }
+    // proxy: {
+    //   '/api': {
+    //     target: process.env.VUE_APP_URL,
+    //     ws: false,
+    //     secure: false,
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       '^/api': ''
+    //     }
+    //   }
+    // }
   },
   transpileDependencies: [
     'color-parse',
