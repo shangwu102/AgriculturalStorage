@@ -7,17 +7,25 @@ export function cgqsbhq() {
   })
 }
 
-export function getInfo(token) {
+export function qgqszhq() {
   return request({
-    url: '/users/info',
-    method: 'get',
-    params: { token }
+    url: '/getAllSetSensor',
+    method: 'get'
   })
 }
 
-export function logout() {
+export function xzcgqsz(e) {
   return request({
-    url: '/logout',
-    method: 'post'
+    url: '/insertSensorSet',
+    method: 'post',
+    data: e
   })
 }
+export function shanchu(e) {
+  return request({
+    url: `/Sensor`,
+    method: 'post',
+    data: e
+  })
+}
+

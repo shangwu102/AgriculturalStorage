@@ -107,7 +107,7 @@
             title="库存详情"
             :visible.sync="celan"
             direction="rtl"
-            size="40%"
+            size="50%"
           >
             <div class="xiangqing">
               <h3 class="el-icon-s-order">产品信息</h3>
@@ -199,7 +199,7 @@
               >取 消</el-button>
               <el-button
                 type="primary"
-                @click="chuku(scope.row)"
+                @click="chuku()"
               >确 定</el-button>
             </div>
           </el-dialog>
@@ -394,7 +394,8 @@ export default {
       dangqianyema: 1,
       celan: false,
       chukudialogFormVisible: false,
-      gridData: gridData
+      gridData: gridData,
+      hangshuju: ''
     }
   },
   created() {
@@ -403,6 +404,7 @@ export default {
   },
   methods: {
     chukuxianshi(e) {
+      this.hangshuju = e
       this.chukudialogFormVisible = true
       this.form.repertoryName = e.repertoryName
       this.form.productType = e.productType
@@ -499,12 +501,12 @@ export default {
       this.celan = true
       console.log(e)
     },
-    chuku(e) {
-      console.log(e)
-      this.form.repertoryName = e.repertoryName
-      this.form.productType = e.productType
-      this.form.productName = e.productName
-      this.form.account = e.account
+    chuku() {
+      console.log('行数据', this.hangshuju)
+      this.form.repertoryName = this.hangshuju.repertoryName
+      this.form.productType = this.hangshuju.productType
+      this.form.productName = this.hangshuju.productName
+      this.form.account = this.hangshuju.account
       if (
         this.form.joinAmount === '' ||
         this.form.pass === '' ||
@@ -513,8 +515,8 @@ export default {
         // 如果所有字段都不为空时，执行这里的逻辑
         this.$message.error('请输入全部数据')
       } else {
-        console.log('当前行的数据', e)
-        this.tableData.splice(e.id, 1)
+        console.log('当前行的数据', this.hangshuju)
+        this.tableData.splice(this.hangshuju.id, 1)
         console.log(this.dangqianyema)
         this.fenye(this.dangqianyema)
         console.log(this.tableData)

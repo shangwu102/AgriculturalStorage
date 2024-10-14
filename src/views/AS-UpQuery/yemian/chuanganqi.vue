@@ -53,36 +53,132 @@
       <el-table-column
         label="操作"
       >
-        <template>
-          <el-button size="small" type="success">设置</el-button>
+        <template slot-scope="scope">
+          <el-button size="small" type="success" @click="shezhi(scope.row)">设置</el-button>
           <el-button size="small" type="primary">查看报表</el-button>
-          <el-button size="small" type="warning">重命名</el-button>
+          <el-button size="small" type="warning" @click="chongmm(scope.row)">重命名</el-button>
+          <el-drawer
+            title="传感器设置列表"
+            :visible.sync="table"
+            direction="rtl"
+            size="50%"
+          >
+            <div class="celan">
+              <el-button type="primary" @click="xinzeng()">新增设置</el-button>
+              <el-table :data="gridData">
+                <el-table-column property="sensorStart" label="开始时间" width="150" />
+                <el-table-column property="sensorEnd" label="结束时间" width="200" />
+                <el-table-column property="lessValue" label="小于报警值" />
+                <el-table-column property="bigValue" label="大于报警值" />
+                <el-table-column property="sensorStatus" label="状态" />
+                <el-table-column label="操作">
+                  <template slot-scope="szscope">
+                    <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
+                    <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-drawer>
+          <el-dialog title="新增传感器设置" :visible.sync="dialogFormVisible">
+            <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
+              <div class="diyi">
+                <el-form-item label="开始时间" prop="sensorStart">
+                  <el-time-select
+                    v-model="form.sensorStart"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:05',
+                      end: '23:55'
+                    }"
+                    placeholder="选择时间"
+                  />
+                </el-form-item>
+                <el-form-item label="小于报警值" prop="lessValue">
+                  <el-input v-model="form.lessValue" autocomplete="off" />
+                </el-form-item>
+                <el-form-item label="状态" prop="sensorStatus">
+                  <el-input v-model="form.sensorStatus" autocomplete="off" />
+                </el-form-item>
+              </div>
+              <div class="dier">
+                <el-form-item label="结束时间" prop="sensorEnd">
+                  <el-time-select
+                    v-model="form.sensorEnd"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:05',
+                      end: '23:55'
+                    }"
+                    placeholder="选择时间"
+                  />
+                </el-form-item>
+                <el-form-item label="大于报警值" prop="bigValue">
+                  <el-input v-model="form.bigValue" autocomplete="off" />
+                </el-form-item>
+              </div>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogFormVisible = false">取 消</el-button>
+              <el-button type="primary" @click="xinzengqr()">确 定</el-button>
+            </div>
+          </el-dialog>
+          <el-dialog title="修改设置" :visible.sync="xuigaixs">
+            <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
+              <div class="diyi">
+                <el-form-item label="开始时间" prop="sensorStart">
+                  <el-time-select
+                    v-model="form.sensorStart"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:05',
+                      end: '23:55'
+                    }"
+                    placeholder="选择时间"
+                  />
+                </el-form-item>
+                <el-form-item label="小于报警值" prop="lessValue">
+                  <el-input v-model="form.lessValue" autocomplete="off" />
+                </el-form-item>
+                <el-form-item label="状态" prop="sensorStatus">
+                  <el-input v-model="form.sensorStatus" autocomplete="off" />
+                </el-form-item>
+              </div>
+              <div class="dier">
+                <el-form-item label="结束时间" prop="sensorEnd">
+                  <el-time-select
+                    v-model="form.sensorEnd"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:05',
+                      end: '23:55'
+                    }"
+                    placeholder="选择时间"
+                  />
+                </el-form-item>
+                <el-form-item label="大于报警值" prop="bigValue">
+                  <el-input v-model="form.bigValue" autocomplete="off" />
+                </el-form-item>
+              </div>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="xuigaixs = false">取 消</el-button>
+              <el-button type="primary" @click="xuigaiqr()">确 定</el-button>
+            </div>
+          </el-dialog>
+          <el-dialog title="重命名" :visible.sync="chongmmxs">
+            <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="xinzenshuju">
+              <el-form-item label="传感器名称" prop="sensorName">
+                <el-input v-model="dangqianhangshuju.sensorName" placeholder="请输入内容" />
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="chongmmxs = false">取 消</el-button>
+              <el-button type="primary" @click="chongmmqr()">确 定</el-button>
+            </div>
+          </el-dialog>
         </template>
       </el-table-column>
-      <!-- <el-table-column
-        label="操作"
-      >
-        <template>
-          <el-button
-            type="primary"
-            size="small"
-            @click="table = true"
-          >查看</el-button>
-        </template>
-        <el-drawer
-          title="我嵌套了表格!"
-          :visible.sync="table"
-          direction="rtl"
-          size="30%"
-          modal="false"
-        >
-          <el-table :data="gridData">
-            <el-table-column property="date" label="日期" width="150" />
-            <el-table-column property="name" label="姓名" width="200" />
-            <el-table-column property="address" label="地址" />
-          </el-table>
-        </el-drawer>
-      </el-table-column> -->
     </el-table>
     <div class="yema">
       <el-pagination
@@ -98,6 +194,9 @@
 
 <script>
 import { cgqsbhq } from '@/api/cangkushebei.js'
+import { qgqszhq } from '@/api/cangkushebei.js'
+import { xzcgqsz } from '@/api/cangkushebei.js'
+import { shanchu } from '@/api/cangkushebei.js'
 export default {
   data() {
     const options = [{
@@ -197,23 +296,53 @@ export default {
     ]
 
     const newrukuxx = {
-      repertoryName: '',
-      productType: '',
-      productName: '',
-      joinAmount: '',
-      pass: '',
-      createTime: '',
-      account: ''
+      sensorStart: '',
+      sensorEnd: '',
+      lessValue: '',
+      bigValue: '',
+      sensorStatus: ''
     }
     const newrukuxxjianyan = {
-      repertoryName: [{ required: true, message: '请输入仓库名称', trigger: 'blur' }],
-      productType: [{ required: true, message: '请输入产品类型', trigger: 'blur' }],
-      productName: [{ required: true, message: '请输入产品名称', trigger: 'blur' }],
-      joinAmount: [{ required: true, message: '请输入入库数量', trigger: 'blur' }],
-      pass: [{ required: true, message: '请输入合格率', trigger: 'blur' }],
-      createTime: [{ required: true, message: '请输入入库时间', trigger: 'blur' }],
-      account: [{ required: true, message: '请输入操作账号', trigger: 'blur' }]
+      sensorStart: [{ required: true, message: '请输入开始时间', trigger: 'blur' }],
+      sensorEnd: [{ required: true, message: '请输入结束时间', trigger: 'blur' }],
+      lessValue: [{ required: true, message: '请输入报警值', trigger: 'blur' }],
+      bigValue: [{ required: true, message: '请输入报警值', trigger: 'blur' }],
+      sensorStatus: [{ required: true, message: '请输入状态', trigger: 'blur' }]
     }
+    const newrukuxxjianyan1 = {
+      sensorName: [{ required: true, message: '请输入传感器名称', trigger: 'blur' }]
+    }
+    const gridData = [
+      {
+        'sensorStart': '00:00',
+        'sensorEnd': '01:00',
+        'lessValue': 5,
+        'bigValue': 10,
+        'sensorStatus': '正常'
+      },
+      {
+        'sensorStart': '02:00',
+        'sensorEnd': '03:00',
+        'lessValue': 3,
+        'bigValue': 12,
+        'sensorStatus': '警报'
+      },
+      {
+        'sensorStart': '04:00',
+        'sensorEnd': '05:00',
+        'lessValue': 1,
+        'bigValue': 15,
+        'sensorStatus': '正常'
+      },
+      {
+        'sensorStart': '06:00',
+        'sensorEnd': '07:00',
+        'lessValue': 7,
+        'bigValue': 20,
+        'sensorStatus': '警报'
+      }
+    ]
+
     return {
       options: options,
       value: '',
@@ -224,9 +353,15 @@ export default {
       dialogFormVisible: false,
       form: newrukuxx,
       shujujianyan: newrukuxxjianyan,
-      table: true,
+      shujujianyan1: newrukuxxjianyan1,
+      table: false,
       dangqianyema: 1,
-      activeName: 'chuangganqi'
+      activeName: 'chuangganqi',
+      dangqianhangshuju: '',
+      gridData: gridData,
+      xuigaixs: false,
+      chongmmxs: false,
+      shezhidqhsj: ''
     }
   },
   async created() {
@@ -245,18 +380,71 @@ export default {
     this.chaxun()
   },
   methods: {
-    // async hqcgq() {
-    //   try {
-    //     const ref = await cgqsbhq()
-    //     console.log(this.tableData)
-
-    //     console.log('数据', ref)
-    //     this.tableData = ref.data.data
-    //     console.log(this.tableData)
-    //   } catch (error) {
-    //     console.log('错误', error)
-    //   }
-    // },
+    chongmmqr() {
+      console.log(this.dangqianhangshuju)
+      this.chongmmxs = false
+    },
+    chongmm(e) {
+      this.chongmmxs = true
+      this.dangqianhangshuju = e
+      console.log('当前行', this.dangqianhangshuju)
+    },
+    async shanchushezhi(e) {
+      try {
+        const json = {
+          id: e.id
+        }
+        const ref = await shanchu(json)
+        console.log(json)
+        console.log(ref)
+      } catch (error) {
+        console.log('错误', error)
+      }
+      console.log('删除', e.id)
+      this.shezhi(this.shezhidqhsj)
+    },
+    xuigaiqr() {
+      console.log('修改后的数据', this.form)
+      this.xuigaixs = false
+    },
+    xuigai(e) {
+      this.xuigaixs = true
+      console.log('修改', e)
+      this.form.bigValue = e.bigValue
+      this.form.sensorStart = e.sensorStart
+      this.form.sensorEnd = e.sensorEnd
+      this.form.lessValue = e.lessValue
+      this.form.sensorStatus = e.sensorStatus
+    },
+    async shezhi(e) {
+      this.shezhidqhsj = e
+      try {
+        const ref = await qgqszhq()
+        console.log('数据', ref)
+        this.gridData = ref.data.data
+        console.log('替换完的数据', this.gridData)
+      } catch (error) {
+        console.log('错误', error)
+      }
+      this.table = true
+      console.log('当前行数据', e)
+      this.dangqianhangshuju = e
+      console.log('新增那条数据的设置', this.dangqianhangshuju)
+    },
+    async xinzengqr() {
+      try {
+        const ref = await xzcgqsz(this.form)
+        console.log('返回数据', ref.data.code)
+      } catch (error) {
+        console.log('错误', error)
+      }
+      console.log(this.form)
+      this.dialogFormVisible = false
+    },
+    xinzeng() {
+      this.dialogFormVisible = true
+      console.log('新增那条数据的设置', this.dangqianhangshuju)
+    },
     huqushuju() {
       this.newdata = this.tableData
     },
@@ -310,6 +498,9 @@ export default {
 .el-select{
   width: 17vw;
 }
+.celan{
+  padding: 20px;
+}
 .yema{
   /* border: 1px solid red; */
   /* position: absolute;
@@ -321,31 +512,22 @@ export default {
   justify-content: center;
   align-items:center;
 }
-.xingzengshuju{
+.xinzenshuju{
+  /* border: 7px solid red; */
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin: 20px;
-  /* width: 90%; */
+  flex-direction: row;
+  justify-content: space-around;
 }
 .el-input {
   width: 17vw;
 }
 .diyi{
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
 }
 .dier{
   display: flex;
-  justify-content: space-between;
-
-}
-.disan input{
-  width: 40vw;
-}
-.disi{
-  display: flex;
-  justify-content: space-between;
+  flex-direction: column;
 }
 .app-container{
   padding: 0;
