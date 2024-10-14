@@ -31,32 +31,32 @@
         width="130"
       />
       <el-table-column
-        prop="camera_name"
+        prop="cameraName"
         label="摄像头名称"
         width="130"
       />
       <el-table-column
-        prop="camera_url"
+        prop="cameraUrl"
         label="摄像头URL"
         width="130"
       />
       <el-table-column
-        prop="channel"
+        prop="cameraCount"
         label="通道"
         width="130"
       />
       <el-table-column
-        prop="username"
+        prop="cameraUsername"
         label="用户名"
         width="200"
       />
       <el-table-column
-        prop="password"
+        prop="cameraPassword"
         label="密码"
         width="200"
       />
       <el-table-column
-        prop="create_time"
+        prop="cameraCreatetime"
         label="创建时间"
       />
       <el-table-column
@@ -106,6 +106,8 @@
 </template>
 
 <script>
+import { sxtsbhq } from '@/api/shexiangtoushebei.js'
+
 export default {
   data() {
     const options = [{
@@ -119,6 +121,18 @@ export default {
     {
       value: 3,
       label: '通道3'
+    },
+    {
+      value: 4,
+      label: '通道4'
+    },
+    {
+      value: 5,
+      label: '通道5'
+    },
+    {
+      value: 6,
+      label: '通道6'
     }
     ]
     const tableData = [
@@ -274,7 +288,17 @@ export default {
       activeName: 'chuangganqi'
     }
   },
-  created() {
+  async created() {
+    try {
+      const ref = await sxtsbhq()
+      console.log('原始', this.tableData)
+
+      console.log('数据', ref)
+      this.tableData = ref.data.data
+      console.log('修改后', this.tableData)
+    } catch (error) {
+      console.log('错误', error)
+    }
     this.huqushuju()
     this.chaxun()
   },
@@ -285,10 +309,13 @@ export default {
     chaxun() {
       const newdata = []
       this.tableData.forEach(item => {
-        if (item.channel === this.value && item.camera_name.includes(this.sousuo)) {
+        if (item.cameraCount === this.value && item.cameraName.includes(this.sousuo)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (item.channel === this.value && this.sousuo === '') {
+        } else if (item.cameraCount === this.value && this.sousuo === '') {
+          newdata.push(item)
+          console.log('搜索成功')
+        } else if (this.value === '' && item.cameraName.includes(this.sousuo)) {
           newdata.push(item)
           console.log('搜索成功')
         } else if (this.value === '' && this.sousuo === '') {
@@ -297,9 +324,9 @@ export default {
         }
       }
       )
-      console.log(newdata)
+      console.log('搜索后的结果', newdata)
       this.zhongjianshuju = newdata
-      console.log('中间', this.zhonjianshuju)
+      console.log('中间', this.zhongjianshuju)
       this.dangqianyema = 1
       this.fenye(1)
     },
@@ -311,7 +338,7 @@ export default {
     fenye(e) {
       this.newdata = []
       for (let i = (e - 1) * 10; i < ((e - 1) * 10) + 10; i++) {
-        console.log(this.zhongjianshuju[i])
+        console.log(`第${e}页的数据${i}`, this.zhongjianshuju[i])
         if (this.zhongjianshuju[i] === undefined) {
           console.warn(`字段未定义，值为 undefined`)
           break

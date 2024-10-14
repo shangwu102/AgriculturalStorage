@@ -26,19 +26,28 @@
       :row-style="{height: '64px'}"
     >
       <el-table-column
-        prop="status"
+        prop="sensorStatus"
         label="状态"
-      />
+      >
+        <template slot-scope="scope">
+          <span v-if="scope.row.sensorStatus === 1" style="color: green;">
+            <i class="el-icon-check" /> 正常
+          </span>
+          <span v-else style="color: red;">
+            <i class="el-icon-close" /> 异常
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="icon"
         label="图标"
       />
       <el-table-column
-        prop="sensor_name"
+        prop="sensorName"
         label="传感器名称"
       />
       <el-table-column
-        prop="value"
+        prop="sensorValue"
         label="数值"
       />
       <el-table-column
@@ -88,19 +97,16 @@
 </template>
 
 <script>
+import { cgqsbhq } from '@/api/cangkushebei.js'
 export default {
   data() {
     const options = [{
-      value: '✅',
+      value: 1,
       label: '正常'
     },
     {
-      value: '❌',
+      value: 0,
       label: '警告'
-    },
-    {
-      value: '⚠',
-      label: '故障'
     }
     ]
     const tableData = [
@@ -223,21 +229,47 @@ export default {
       activeName: 'chuangganqi'
     }
   },
-  created() {
+  async created() {
+    try {
+      const ref = await cgqsbhq()
+      console.log('原始', this.tableData)
+
+      console.log('数据', ref)
+      this.tableData = ref.data.data
+      console.log('修改后', this.tableData)
+    } catch (error) {
+      console.log('错误', error)
+    }
+    // this.hqcgq()
     this.huqushuju()
     this.chaxun()
   },
   methods: {
+    // async hqcgq() {
+    //   try {
+    //     const ref = await cgqsbhq()
+    //     console.log(this.tableData)
+
+    //     console.log('数据', ref)
+    //     this.tableData = ref.data.data
+    //     console.log(this.tableData)
+    //   } catch (error) {
+    //     console.log('错误', error)
+    //   }
+    // },
     huqushuju() {
       this.newdata = this.tableData
     },
     chaxun() {
       const newdata = []
       this.tableData.forEach(item => {
-        if (item.status === this.value && item.sensor_name.includes(this.sousuo)) {
+        if (item.sensorStatus === this.value && item.sensorName.includes(this.sousuo)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (item.status === this.value && this.sousuo === '') {
+        } else if (item.sensorStatus === this.value && this.sousuo === '') {
+          newdata.push(item)
+          console.log('搜索成功')
+        } else if (this.value === '' && item.sensorName.includes(this.sousuo)) {
           newdata.push(item)
           console.log('搜索成功')
         } else if (this.value === '' && this.sousuo === '') {
@@ -246,9 +278,9 @@ export default {
         }
       }
       )
-      console.log(newdata)
+      console.log('搜索后的结果', newdata)
       this.zhongjianshuju = newdata
-      console.log('中间', this.zhonjianshuju)
+      console.log('中间', this.zhongjianshuju)
       this.dangqianyema = 1
       this.fenye(1)
     },
@@ -260,7 +292,7 @@ export default {
     fenye(e) {
       this.newdata = []
       for (let i = (e - 1) * 10; i < ((e - 1) * 10) + 10; i++) {
-        console.log(this.zhongjianshuju[i])
+        console.log(`第${e}页的数据${i}`, this.zhongjianshuju[i])
         if (this.zhongjianshuju[i] === undefined) {
           console.warn(`字段未定义，值为 undefined`)
           break
