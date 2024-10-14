@@ -8,7 +8,7 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <!-- <img width="40px" src="https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png" class="user-avatar"> -->
-          <div style="font-size: 14px; font-weight: bold;">当前操作角色：{{ username }}</div>
+          <div style="font-size: 14px; font-weight: bold;">当前角色：{{ username }}</div>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -50,7 +50,7 @@ export default {
       console.log(user)
 
       // 如果用户对象存在，解析它并返回 uname，否则返回空字符串
-      return user ? JSON.parse(user).username : ''
+      return user ? JSON.parse(user).role : ''
     }
   },
   methods: {

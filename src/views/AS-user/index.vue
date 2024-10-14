@@ -2,18 +2,36 @@
   <div class="user-center">
     <el-card class="user-card" shadow="hover">
       <div slot="header">
-        <span>用户中心</span>
+        <span style="font-weight: bold;">用户管理中心</span>
       </div>
-      <el-form :model="userInfo" class="user-info-form">
+      <el-form :model="userInfo" class="user-info-form" label-width="100px">
+        <!-- 角色 -->
+        <el-form-item label="角色">
+          <el-row>
+            <el-col :span="24">
+              <el-input v-model="userInfo.role" disabled />
+            </el-col>
+          </el-row>
+        </el-form-item>
+
         <!-- 用户名 -->
         <el-form-item label="用户名">
-          <el-input v-model="userInfo.username" disabled />
+          <el-row>
+            <el-col :span="24">
+              <el-input v-model="userInfo.username" disabled />
+            </el-col>
+          </el-row>
         </el-form-item>
 
         <!-- 区块链地址 -->
         <el-form-item label="区块链地址">
-          <el-input v-model="userInfo.blockchainAddress" disabled />
+          <el-row>
+            <el-col :span="24">
+              <el-input v-model="userInfo.address" disabled />
+            </el-col>
+          </el-row>
         </el-form-item>
+
         <!-- 功能按钮 -->
         <el-form-item>
           <el-row :gutter="20">
@@ -26,13 +44,12 @@
             </el-col>
           </el-row>
         </el-form-item>
-
       </el-form>
     </el-card>
 
     <!-- 修改密码的对话框 -->
     <el-dialog title="修改密码" :visible.sync="passwordDialogVisible" width="30%">
-      <el-form ref="passwordForm" :model="passwordForm" :rules="passwordRules">
+      <el-form ref="passwordForm" :model="passwordForm" :rules="passwordRules" label-width="100px">
         <el-form-item label="当前密码" prop="currentPassword">
           <el-input v-model="passwordForm.currentPassword" type="password" />
         </el-form-item>
@@ -51,23 +68,18 @@
 
     <!-- 角色授权的对话框 -->
     <el-dialog title="角色授权" :visible.sync="authorizeDialogVisible" width="30%">
-      <el-form ref="authForm" :model="authForm" :rules="authFormRules">
+      <el-form ref="authForm" :model="authForm" :rules="authFormRules" label-width="100px">
         <!-- 用户名输入框 -->
         <el-form-item label="用户名" prop="username">
           <el-input v-model="authForm.username" placeholder="请输入要授权的用户名" />
         </el-form-item>
-
-        <!-- 区块链地址输入框（可选） -->
-        <el-form-item label="区块链地址" prop="blockchainAddress">
-          <el-input v-model="authForm.blockchainAddress" placeholder="请输入区块链地址（可选）" />
+        <!-- 密码输入框 -->
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="authForm.password" type="password" placeholder="请输入密码" />
         </el-form-item>
-
-        <!-- 角色选择 -->
-        <el-form-item label="选择角色" prop="role">
-          <el-select v-model="authForm.role" placeholder="请选择角色">
-            <el-option label="操作员" value="operator" />
-            <el-option label="管理员" value="admin" />
-          </el-select>
+        <!-- 区块链地址输入框 -->
+        <el-form-item label="区块链地址" prop="blockchainAddress">
+          <el-input v-model="authForm.blockchainAddress" placeholder="请输入区块链地址" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -79,13 +91,16 @@
 </template>
 
 <script>
+import { getUser } from '@/utils/auth' // 引入你封装的本地存储工具
+
 export default {
-  data() {
+  data () {
     return {
       // 用户信息
       userInfo: {
-        username: 'John Doe',
-        blockchainAddress: '0x1234567890abcdef1234567890abcdef12345678'
+        username: '',
+        address: '',
+        role: ''
       },
 
       // 修改密码对话框的可见状态
@@ -115,11 +130,12 @@ export default {
           {
             validator: (rule, value, callback) => {
               if (value !== this.passwordForm.newPassword) {
-                callback(new Error('两次输入的密码不一致'))
+                callback(new Error('两次输入的密码不一致'));
               } else {
-                callback()
+                callback();
               }
-            }, trigger: 'blur'
+            },
+            trigger: 'blur'
           }
         ]
       },
@@ -128,7 +144,7 @@ export default {
       authForm: {
         username: '',
         blockchainAddress: '',
-        role: ''
+        password: ''
       },
 
       // 授权用户表单验证规则
@@ -136,66 +152,72 @@ export default {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
-        role: [
-          { required: true, message: '请选择角色', trigger: 'change' }
+        blockchainAddress: [
+          { required: true, message: '请输入区块链地址', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
         ]
       }
-    }
+    };
   },
   computed: {
-    // 从 Vuex 中获取用户的角色
-    role() {
-      console.log(this.$store.state.user.role)
-
-      return this.$store.state.user.role
+    // 从本地中获取用户的角色
+    role () {
+      const user = JSON.parse(getUser()); // 从 localStorage 中获取用户信息
+      return user ? user.role : ''; // 如果存在用户信息，则返回角色，否则返回空字符串
     }
+  },
+  created () {
+    const user = JSON.parse(getUser());
+    this.userInfo = user ? user : {};
   },
   methods: {
     // 打开修改密码对话框
-    openPasswordDialog() {
-      this.passwordDialogVisible = true
+    openPasswordDialog () {
+      this.passwordDialogVisible = true;
     },
 
     // 打开授权用户对话框
-    openAuthorizeDialog() {
-      this.authorizeDialogVisible = true
+    openAuthorizeDialog () {
+      this.authorizeDialogVisible = true;
     },
 
     // 提交修改密码表单
-    submitPasswordForm() {
+    submitPasswordForm () {
       this.$refs.passwordForm.validate((valid) => {
         if (valid) {
-          console.log('密码修改成功:', this.passwordForm)
-          this.passwordDialogVisible = false
+          console.log('密码修改成功:', this.passwordForm);
+          this.passwordDialogVisible = false;
           this.$message({
             type: 'success',
             message: '密码修改成功！'
-          })
+          });
         } else {
-          console.log('表单验证失败')
-          return false
+          console.log('表单验证失败');
+          return false;
         }
-      })
+      });
     },
 
     // 提交授权表单
-    submitAuthForm() {
+    submitAuthForm () {
       this.$refs.authForm.validate((valid) => {
         if (valid) {
-          console.log('授权信息:', this.authForm)
-          this.authorizeDialogVisible = false
+          console.log('授权信息:', this.authForm);
+          this.authorizeDialogVisible = false;
           this.$message({
             type: 'success',
             message: '授权成功！'
-          })
+          });
         } else {
-          console.log('表单验证失败')
-          return false
+          console.log('表单验证失败');
+          return false;
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped>

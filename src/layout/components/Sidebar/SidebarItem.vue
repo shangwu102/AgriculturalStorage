@@ -54,8 +54,6 @@ export default {
   computed: {
     // 从 localStorage 中获取用户角色信息
     role () {
-      console.log('获取角色信息');
-      
       const user = JSON.parse(getUser()) // 从 localStorage 中获取用户信息
       console.log(user);
       
