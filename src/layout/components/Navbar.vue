@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
 
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" />
+    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <breadcrumb class="breadcrumb-container" />
 
@@ -14,8 +14,8 @@
           <div style="font-size: 14px; font-weight: bold;">当前角色：{{ username }}</div>
         </div>
         <div @click="$router.push('/lshome')" style="cursor: pointer;">
-          <svg style="position: absolute; right: -30%; top: 20%; width: 24px; height: 24px;" t="1728870588733" class="icon"
-            viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2685">
+          <svg style="position: absolute; right: -30%; top: 20%; width: 24px; height: 24px;" t="1728870588733"
+            class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2685">
             <path
               d="M897 800H130c-35.3 0-64-28.7-64-64V161.4c0-35.3 28.7-64 64-64h767c35.3 0 64 28.7 64 64V736c0 35.3-28.7 64-64 64z m-766.9-64H897l0.1-0.1V161.4l-0.1-0.1H130.1l-0.1 0.1 0.1 574.6c-0.1 0-0.1 0 0 0z"
               fill="#666666" p-id="2686"></path>
