@@ -96,7 +96,7 @@
 </template>
 
 <script>
-// import { hqkc } from '@/api/kucunkongzhi'
+import { hqkc } from '@/api/kucunkongzhi'
 export default {
   data() {
     const options = [{
@@ -267,8 +267,8 @@ export default {
   methods: {
     async qingqui() {
       try {
-        // const ref = await hqkc()
-        console.log('数据')
+        const ref = await hqkc()
+        console.log('数据', ref)
       } catch (error) {
         console.log('错误', error)
       }
@@ -283,6 +283,9 @@ export default {
           newdata.push(item)
           console.log('搜索成功')
         } else if (item.repertoryName === this.value && this.sousuo === '') {
+          newdata.push(item)
+          console.log('搜索成功')
+        } else if (this.value === '' && item.productName.includes(this.sousuo)) {
           newdata.push(item)
           console.log('搜索成功')
         } else if (this.value === '' && this.sousuo === '') {

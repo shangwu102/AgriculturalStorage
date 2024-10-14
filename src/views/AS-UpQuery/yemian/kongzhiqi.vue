@@ -26,12 +26,21 @@
       :row-style="{height: '64px'}"
     >
       <el-table-column
-        prop="status"
+        prop="controllerStatus"
         label="状态"
         width="130"
-      />
+      >
+        <template slot-scope="scope">
+          <span v-if="scope.row.controllerStatus === 1" style="color: green;">
+            <i class="el-icon-check" /> 正常
+          </span>
+          <span v-else style="color: red;">
+            <i class="el-icon-close" /> 异常
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column
-        prop="device_id"
+        prop="controllerId"
         label="编号"
         width="70px"
       />
@@ -41,20 +50,20 @@
         width="130"
       />
       <el-table-column
-        prop="controller_name"
+        prop="controllerName"
         label="传感器名称"
       />
       <el-table-column
-        prop="value"
+        prop="controllerValue"
         label="数值"
         width="300"
       />
       <el-table-column
-        prop="controller_status"
+        prop="status"
         label="控制器状态"
       >
         <el-switch
-          value="controller_status"
+          v-model="kzqzt"
           active-color="#13ce66"
           inactive-color="#ff4949"
         />
@@ -105,19 +114,16 @@
 </template>
 
 <script>
+import { kzqsbhq } from '@/api/kongzhishebei.js'
 export default {
   data() {
     const options = [{
-      value: '✅',
+      value: 1,
       label: '正常'
     },
     {
-      value: '❌',
+      value: 0,
       label: '警告'
-    },
-    {
-      value: '⚠',
-      label: '故障'
     }
     ]
     const tableData = [
@@ -257,10 +263,21 @@ export default {
       shujujianyan: newrukuxxjianyan,
       table: true,
       dangqianyema: 1,
-      activeName: 'chuangganqi'
+      activeName: 'chuangganqi',
+      kzqzt: true
     }
   },
-  created() {
+  async created() {
+    try {
+      const ref = await kzqsbhq()
+      console.log('原始', this.tableData)
+
+      console.log('数据', ref)
+      this.tableData = ref.data.data
+      console.log('修改后', this.tableData)
+    } catch (error) {
+      console.log('错误', error)
+    }
     this.huqushuju()
     this.chaxun()
   },
@@ -271,10 +288,13 @@ export default {
     chaxun() {
       const newdata = []
       this.tableData.forEach(item => {
-        if (item.status === this.value && item.controller_name.includes(this.sousuo)) {
+        if (item.controllerStatus === this.value && item.controllerName.includes(this.sousuo)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (item.status === this.value && this.sousuo === '') {
+        } else if (item.controllerStatus === this.value && this.sousuo === '') {
+          newdata.push(item)
+          console.log('搜索成功')
+        } else if (this.value === '' && item.controllerName.includes(this.sousuo)) {
           newdata.push(item)
           console.log('搜索成功')
         } else if (this.value === '' && this.sousuo === '') {
@@ -283,9 +303,9 @@ export default {
         }
       }
       )
-      console.log(newdata)
+      console.log('搜索后的结果', newdata)
       this.zhongjianshuju = newdata
-      console.log('中间', this.zhonjianshuju)
+      console.log('中间', this.zhongjianshuju)
       this.dangqianyema = 1
       this.fenye(1)
     },
@@ -297,7 +317,7 @@ export default {
     fenye(e) {
       this.newdata = []
       for (let i = (e - 1) * 10; i < ((e - 1) * 10) + 10; i++) {
-        console.log(this.zhongjianshuju[i])
+        console.log(`第${e}页的数据${i}`, this.zhongjianshuju[i])
         if (this.zhongjianshuju[i] === undefined) {
           console.warn(`字段未定义，值为 undefined`)
           break

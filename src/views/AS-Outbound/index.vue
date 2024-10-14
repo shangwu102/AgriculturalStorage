@@ -276,6 +276,9 @@ export default {
         } else if (item.repertoryName === this.value && this.sousuo === '') {
           newdata.push(item)
           console.log('搜索成功')
+        } else if (this.value === '' && item.productName.includes(this.sousuo)) {
+          newdata.push(item)
+          console.log('搜索成功')
         } else if (this.value === '' && this.sousuo === '') {
           newdata.push(item)
           console.log('搜索成功')
@@ -284,7 +287,7 @@ export default {
       )
       console.log(newdata)
       this.zhongjianshuju = newdata
-      console.log('中间', this.zhonjianshuju)
+      console.log('中间', this.zhongjianshuju)
       this.dangqianyema = 1
       this.fenye(1)
     },
