@@ -1,15 +1,28 @@
 <template>
   <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+
+    <hamburger :is-active="sidebar.opened" class="hamburger-container" />
 
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+      <!-- <div style="position: absolute; left: 50%">hello</div> -->
+
       <el-dropdown class="avatar-container" trigger="click">
+
         <div class="avatar-wrapper">
-          <!-- <img width="40px" src="https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png" class="user-avatar"> -->
           <div style="font-size: 14px; font-weight: bold;">当前角色：{{ username }}</div>
-          <i class="el-icon-caret-bottom" />
+        </div>
+        <div @click="$router.push('/lshome')" style="cursor: pointer;">
+          <svg style="position: absolute; right: -30%; top: 20%; width: 24px; height: 24px;" t="1728870588733" class="icon"
+            viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2685">
+            <path
+              d="M897 800H130c-35.3 0-64-28.7-64-64V161.4c0-35.3 28.7-64 64-64h767c35.3 0 64 28.7 64 64V736c0 35.3-28.7 64-64 64z m-766.9-64H897l0.1-0.1V161.4l-0.1-0.1H130.1l-0.1 0.1 0.1 574.6c-0.1 0-0.1 0 0 0z"
+              fill="#666666" p-id="2686"></path>
+            <path
+              d="M801.3 705h-97.7c-17.7 0-32-14.3-32-32s14.3-32 32-32h97.5v-94.8c0-17.7 14.3-32 32-32s32 14.3 32 32V641c0.1 35.3-28.6 64-63.8 64zM833.2 385c-17.7 0-32-14.3-32-32v-96.2h-96c-17.7 0-32-14.3-32-32s14.3-32 32-32h96.1c35.2 0 63.9 28.7 63.9 64V353c0 17.7-14.4 32-32 32z m-31.9-128.2zM193 385c-17.7 0-32-14.3-32-32v-96.2c0-35.3 28.7-64 63.9-64H321c17.7 0 32 14.3 32 32s-14.3 32-32 32h-96v96.3c0 17.6-14.3 31.9-32 31.9zM320.7 705H225c-35.2 0-63.9-28.7-63.9-64v-95c0-17.7 14.3-32 32-32s32 14.3 32 32v95h95.6c17.7 0 32 14.3 32 32s-14.3 32-32 32zM96.9 928c-17.7 0-32-14.3-32-32s14.3-32 32-32l831.5-0.7c17.7 0 32 14.3 32 32s-14.3 32-32 32l-831.5 0.7c0.1 0 0 0 0 0z"
+              fill="#666666" p-id="2687"></path>
+          </svg>
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/ashome">
@@ -44,7 +57,7 @@ export default {
       'sidebar',
       'avatar'
     ]),
-    username() {
+    username () {
       // 获取存储的用户对象
       const user = getUser()
       console.log(user)
@@ -54,10 +67,10 @@ export default {
     }
   },
   methods: {
-    toggleSideBar() {
+    toggleSideBar () {
       this.$store.dispatch('app/toggleSideBar')
     },
-    logout() {
+    logout () {
       removeToken()
       removeUser()
       this.$router.push('/login')
@@ -72,7 +85,7 @@ export default {
   overflow: hidden;
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
 
   .hamburger-container {
     line-height: 20px;
@@ -80,7 +93,7 @@ export default {
     float: left;
     cursor: pointer;
     transition: width .3s;
-    -webkit-tap-highlight-color:transparent;
+    -webkit-tap-highlight-color: transparent;
 
     &:hover {
       background: rgba(0, 0, 0, .025)
