@@ -44,52 +44,52 @@ export const routes = [
     path: '/asuser',
     component: Layout,
     children: [
-      { path: '', component: UserCenter, meta: { title: '用户中心', icon: '安全预警' }}
+      { path: '', component: UserCenter, meta: { title: '用户中心', icon: '安全预警',roles: ['admin', 'operator'] }}
     ]
   },
   {
     path: '/asinformation',
     component: Layout,
-    meta: { title: '仓库管理', icon: '粮食安全考核' },
+    meta: { title: '仓库管理', icon: '粮食安全考核', roles: ['admin', 'operator'] },
     children: [
-      { path: 'blockchainwarehouse', component: BlockchainWarehouse, meta: { title: '链上仓库', icon: '链接' }},
-      { path: 'equipmentwarehouse', component: EquipmentWarehouse, meta: { title: '仓库设备', icon: '应用管理' }}
+      { path: 'blockchainwarehouse', component: BlockchainWarehouse, meta: { title: '链上仓库', icon: '链接',roles: ['admin', 'operator'] }},
+      { path: 'equipmentwarehouse', component: EquipmentWarehouse, meta: { title: '仓库设备', icon: '应用管理', roles: ['admin', 'operator'] }}
     ]
   },
   {
     path: '/asmanage',
     component: Layout,
-    meta: { title: '生产管理', icon: '生产管理' },
+    meta: { title: '生产管理', icon: '生产管理', roles: ['admin', 'operator'] },
     children: [
-      { path: 'controlwarehouse', component: ControlWarehouse, meta: { title: '库存控制', icon: '仓库信息' }},
-      { path: 'warehousing', component: Warehousing, meta: { title: '入库信息', icon: '新风神_扫码入库' }},
-      { path: 'outbound', component: Outbound, meta: { title: '出库信息', icon: '已出库' }}
+      { path: 'controlwarehouse', component: ControlWarehouse, meta: { title: '库存控制', icon: '仓库信息', roles: ['admin', 'operator'] }},
+      { path: 'warehousing', component: Warehousing, meta: { title: '入库信息', icon: '新风神_扫码入库', roles: ['admin', 'operator'] }},
+      { path: 'outbound', component: Outbound, meta: { title: '出库信息', icon: '已出库', roles: ['admin', 'operator'] }}
     ]
   },
   {
     path: '/astransaction',
     component: Layout,
     children: [
-      { path: '', component: Transaction, meta: { title: '交易监管', icon: '安全预警' }}
+      { path: '', component: Transaction, meta: { title: '交易监管', icon: '安全预警', roles: ['admin', 'operator'] }}
     ]
   },
   {
     path: '/asreport',
     component: Layout,
-    meta: { title: '数据报表', icon: '数据报表' },
+    meta: { title: '数据报表', icon: '数据报表', roles: ['admin', 'operator'] },
     children: [
-      { path: 'blockreport', component: BlockReport, meta: { title: '区块报表', icon: 'el-icon-s-data' }},
-      { path: 'warehousereport', component: WarehouseReport, meta: { title: '仓库报表', icon: 'el-icon-s-data' }}
+      { path: 'blockreport', component: BlockReport, meta: { title: '区块报表', icon: 'el-icon-s-data', roles: ['admin', 'operator'] }},
+      { path: 'warehousereport', component: WarehouseReport, meta: { title: '仓库报表', icon: 'el-icon-s-data', roles: ['admin', 'operator'] }}
     ]
   },
   {
     path: '/aswarning',
     component: Layout,
     children: [
-      { path: '', component: WarningDashboard, meta: { title: '安全预警', icon: '安全预警' }}
+      { path: '', component: WarningDashboard, meta: { title: '安全预警', icon: '安全预警', roles: ['admin', 'operator'] }}
     ]
   },
-  { path: '/lshome', component: LSHome },
+  { path: '/lshome', component: LSHome, roles: ['admin', 'operator'] },
   { path: '*', redirect: '/404' } // 捕获所有未匹配的路由，重定向到404
 ]
 
