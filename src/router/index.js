@@ -12,7 +12,7 @@ const NotFund = () => import('@/views/404/index') // 404 页面
 const ASHome = () => import('@/views/AS-Home/index') // 首页
 const Company = () => import('@/views/AS-company/index') // 公司首页
 const Companyorder = () => import('@/views/Company-order') // 发布订单
-const Companystatus = () => import('@/views/Company-status') // 订单状态
+const Companystatus = () => import('@/views/Company-status') // 公司订单状态
 const CompanyQuery = () => import('@/views/Company-query') // 公司查看链上库存
 const UserCenter = () => import('@/views/AS-user/index') // 用户中心
 const BlockchainWarehouse = () => import('@/views/AS-Tabulation') // 链上仓库
@@ -22,6 +22,7 @@ const Warehousing = () => import('@/views/AS-Warehousing') // 入库信息
 const Outbound = () => import('@/views/AS-Outbound') // 出库信息
 const Transaction = () => import('@/views/AS-transaction/index') // 交易监管
 const BlockReport = () => import('@/views/AS-block') // 区块报表
+const adminorder = () => import('@/views/AS-adminOrder') // 管理员订单管理
 const WarehouseReport = () => import('@/views/AS-report') // 仓库报表
 const WarningDashboard = () => import('@/views/AS-Waining/index') // 安全预警
 const LSHome = () => import('@/views/LS-Home/index') // 大屏展示
@@ -96,8 +97,10 @@ export const routes = [
   {
     path: '/astransaction',
     component: Layout,
+    meta: { title: '交易管理', icon: '数据报表', roles: ['admin'] },
     children: [
-      { path: '', component: Transaction, meta: { title: '交易监管', icon: '安全预警', roles: ['admin', 'operator'] }}
+      { path: 'order', component: adminorder, meta: { title: '订单查询', icon: 'el-icon-s-data' }},
+      { path: 'transaction', component: Transaction, meta: { title: '交易监管', icon: 'el-icon-s-data' }}
     ]
   },
   {
