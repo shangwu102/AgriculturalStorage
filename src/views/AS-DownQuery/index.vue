@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <!-- Form and Table Components -->
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
         <el-select v-model="value" placeholder="请选择" @change="chaxun">
@@ -10,7 +11,7 @@
         <el-input v-model="sousuo" placeholder="请输入产品姓名">''</el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="chaxun">搜素</el-button>
+        <el-button type="primary" @click="chaxun">搜索</el-button>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -25,16 +26,8 @@
             <el-form :model="form" :rules="shujujianyan" class="xingzengshuju">
               <div class="diyi">
                 <el-form-item label="仓库名称" prop="repertoryName">
-                  <el-select
-                    v-model="form.repertoryName"
-                    placeholder="请选择仓库"
-                  >
-                    <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
+                  <el-select v-model="form.repertoryName" placeholder="请选择仓库">
+                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
                   </el-select>
                 </el-form-item>
                 <el-form-item label="操作员" prop="account">
@@ -59,31 +52,20 @@
                   <el-input v-model="form.joinAmount" autocomplete="off" />
                 </el-form-item>
                 <el-form-item label="入库时间" prop="createTime">
-                  <el-date-picker
-                    v-model="form.createTime"
-                    type="datetime"
-                    placeholder="选择日期时间"
-                    style="width: 17vw"
-                  />
+                  <el-date-picker v-model="form.createTime" type="datetime" placeholder="选择日期时间" style="width: 17vw" />
                 </el-form-item>
               </div>
             </el-form>
           </div>
           <div slot="footer" class="dialog-footer">
-            <el-button
-              @click="xinzengdialogFormVisible = false"
-            >取 消</el-button>
+            <el-button @click="xinzengdialogFormVisible = false">取 消</el-button>
             <el-button type="primary" @click="xinzeng">确 定</el-button>
           </div>
         </el-dialog>
       </el-form-item>
     </el-form>
-    <el-table
-      :data="newdata"
-      style="width: 100%"
-      border
-      :row-style="{ height: '64px' }"
-    >
+
+    <el-table :data="newdata" style="width: 100%" border :row-style="{ height: '64px' }">
       <el-table-column prop="id" label="编号" width="130" />
       <el-table-column prop="repertoryName" label="仓库名称" width="140" />
       <el-table-column prop="productType" label="产品种类" />
@@ -93,119 +75,69 @@
       <el-table-column prop="createTime" label="入库时间" />
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button
-            type="primary"
-            size="small"
-            @click="chakan(scope.row)"
-          >查看</el-button>
-          <el-button
-            type="warning"
-            size="small"
-            @click="chukuxianshi(scope.row)"
-          >出库</el-button>
-          <el-drawer
-            title="库存详情"
-            :visible.sync="celan"
-            direction="rtl"
-            size="50%"
-          >
-            <div class="xiangqing">
-              <h3 class="el-icon-s-order">产品信息</h3>
-              <el-table :data="gridData">
-                <el-table-column property="date" label="企业名称" />
-                <el-table-column property="name" label="产品编号" />
-                <el-table-column property="address" label="产品名称" />
-                <el-table-column property="address" label="产品种类" />
-                <el-table-column property="address" label="仓库名称" />
-                <el-table-column property="address" label="库存" />
-              </el-table>
-              <h3 class="el-icon-s-order">入库记录</h3>
-              <el-table :data="gridData">
-                <el-table-column property="date" label="企业名称" />
-                <el-table-column property="name" label="产品编号" />
-                <el-table-column property="address" label="产品名称" />
-                <el-table-column property="address" label="产品种类" />
-                <el-table-column property="address" label="仓库名称" />
-                <el-table-column property="address" label="库存" />
-              </el-table>
-              <h3 class="el-icon-s-order">出库记录</h3>
-              <el-table :data="gridData">
-                <el-table-column property="date" label="企业名称" />
-                <el-table-column property="name" label="产品编号" />
-                <el-table-column property="address" label="产品名称" />
-                <el-table-column property="address" label="产品种类" />
-                <el-table-column property="address" label="仓库名称" />
-                <el-table-column property="address" label="库存" />
-              </el-table>
-            </div>
-          </el-drawer>
+          <el-button type="primary" size="small" @click="chakan(scope.row)">查看</el-button>
+          <el-button type="warning" size="small" @click="chukuxianshi(scope.row)">出库</el-button>
+          <!-- 出库弹窗 -->
           <el-dialog title="新增出库" :visible.sync="chukudialogFormVisible">
             <div class="biaodan">
-              <el-form
-                :model="form"
-                :rules="shujujianyan"
-                class="xingzengshuju"
-              >
-                <div class="diyi">
+              <el-form ref="chukuForm" :model="chukuForm" :rules="chukuShujujianyan" class="xingzengshuju">
+                <div class="form-row">
                   <el-form-item label="仓库名称" prop="repertoryName">
-                    <el-select
-                      v-model="form.repertoryName"
-                      placeholder="请选择仓库"
-                      disabled
-                    >
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
+                    <el-select v-model="chukuForm.repertoryName" placeholder="请选择仓库" disabled>
+                      <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
                     </el-select>
                   </el-form-item>
                   <el-form-item label="操作员" prop="account">
-                    <el-input v-model="form.account" disabled autocomplete="off" />
+                    <el-input v-model="chukuForm.account" disabled autocomplete="off" />
                   </el-form-item>
                 </div>
-                <div class="dier">
+                <div class="form-row">
                   <el-form-item label="产品种类" prop="productType">
-                    <el-input v-model="form.productType" disabled autocomplete="off" />
+                    <el-input v-model="chukuForm.productType" disabled autocomplete="off" />
                   </el-form-item>
                   <el-form-item label="合格率" prop="pass">
-                    <el-input v-model="form.pass" autocomplete="off" />
+                    <el-input v-model="chukuForm.pass" autocomplete="off" />
                   </el-form-item>
                 </div>
-                <div class="disan">
+                <div class="form-row">
                   <el-form-item label="产品名称" prop="productName">
-                    <el-input v-model="form.productName" disabled autocomplete="off" />
+                    <el-input v-model="chukuForm.productName" disabled autocomplete="off" />
                   </el-form-item>
                 </div>
-                <div class="disi">
+                <div class="form-row">
                   <el-form-item label="出库数量" prop="joinAmount">
-                    <el-input v-model="form.joinAmount" autocomplete="off" />
+                    <el-input v-model="chukuForm.joinAmount" autocomplete="off" />
                   </el-form-item>
                   <el-form-item label="出库时间" prop="createTime">
                     <el-date-picker
-                      v-model="form.createTime"
+                      v-model="chukuForm.createTime"
                       type="datetime"
                       placeholder="选择日期时间"
-                      style="width: 17vw"
+                      style="width: 100%"
                     />
+                  </el-form-item>
+                  <el-form-item label="订单名称" prop="orderName">
+                    <el-select v-model="chukuForm.orderName" placeholder="请选择订单">
+                      <el-option
+                        v-for="order in pendingOrders"
+                        :key="order.orderId"
+                        :label="order.orderName"
+                        :value="order.orderName"
+                      />
+                    </el-select>
                   </el-form-item>
                 </div>
               </el-form>
             </div>
             <div slot="footer" class="dialog-footer">
-              <el-button
-                @click="chukudialogFormVisible = false"
-              >取 消</el-button>
-              <el-button
-                type="primary"
-                @click="chuku()"
-              >确 定</el-button>
+              <el-button @click="chukudialogFormVisible = false">取 消</el-button>
+              <el-button type="primary" @click="chuku">确 定</el-button>
             </div>
           </el-dialog>
         </template>
       </el-table-column>
     </el-table>
+
     <div class="yema">
       <el-pagination
         background
@@ -217,6 +149,7 @@
     </div>
   </div>
 </template>
+
 <script>
 export default {
   data() {
@@ -380,6 +313,26 @@ export default {
       ],
       account: [{ required: true, message: '请输入操作账号', trigger: 'blur' }]
     }
+    const chukuShujujianyan = {
+      orderName: [{ required: true, message: '请选择订单名称', trigger: 'change' }],
+      repertoryName: [
+        { required: true, message: '请输入仓库名称', trigger: 'blur' }
+      ],
+      productType: [
+        { required: true, message: '请输入产品类型', trigger: 'blur' }
+      ],
+      productName: [
+        { required: true, message: '请输入产品名称', trigger: 'blur' }
+      ],
+      joinAmount: [
+        { required: true, message: '请输入出库数量', trigger: 'blur' }
+      ],
+      pass: [{ required: true, message: '请输入合格率', trigger: 'blur' }],
+      createTime: [
+        { required: true, message: '请输入出库时间', trigger: 'blur' }
+      ],
+      account: [{ required: true, message: '请输入操作账号', trigger: 'blur' }]
+    }
     const gridData = []
     return {
       options: options,
@@ -395,25 +348,50 @@ export default {
       celan: false,
       chukudialogFormVisible: false,
       gridData: gridData,
-      hangshuju: ''
+      hangshuju: '',
+      // 新增出库相关
+      chukuForm: {
+        orderName: '',
+        repertoryName: '',
+        account: '',
+        productType: '',
+        pass: '',
+        productName: '',
+        joinAmount: '',
+        createTime: ''
+      },
+      chukuShujujianyan: chukuShujujianyan
+    }
+  },
+  computed: {
+    // 计算待发货的订单
+    pendingOrders() {
+      return this.orders.filter(order => order.status === '待发货')
+    },
+    // 计算当前页显示的订单列表
+    paginatedOrderList() {
+      const start = (this.currentPage - 1) * this.pageSize
+      const end = this.currentPage * this.pageSize
+      return this.tableData.slice(start, end)
     }
   },
   created() {
     this.huqushuju()
     this.chaxun()
+    this.loadOrders() // 加载订单数据
   },
   methods: {
-    chukuxianshi(e) {
-      this.hangshuju = e
-      this.chukudialogFormVisible = true
-      this.form.repertoryName = e.repertoryName
-      this.form.productType = e.productType
-      this.form.productName = e.productName
-      this.form.account = e.account
+    // 加载订单数据从 localStorage
+    loadOrders() {
+      const savedOrders = localStorage.getItem('orderStatus')
+      if (savedOrders) {
+        this.orders = JSON.parse(savedOrders)
+      } else {
+        this.orders = []
+      }
+      console.log('加载的订单数据:', this.orders)
     },
-    huqushuju() {
-      this.newdata = this.tableData
-    },
+    // 查询功能
     chaxun() {
       const newdata = []
       this.tableData.forEach((item) => {
@@ -434,14 +412,15 @@ export default {
           console.log('搜索成功')
         }
       })
-      console.log(newdata)
+      console.log('搜索结果:', newdata)
       this.zhongjianshuju = newdata
-      console.log('中间', this.zhongjianshuju)
+      console.log('中间数据', this.zhongjianshuju)
       this.dangqianyema = 1
       this.fenye(1)
     },
+    // 分页处理
     handlePageChange(ym) {
-      console.log(ym)
+      console.log('当前页:', ym)
       this.currentPage = ym
       this.fenye(ym)
     },
@@ -458,6 +437,7 @@ export default {
       }
       console.log('分页数据', this.newdata)
     },
+    // 新增入库
     xinzeng() {
       if (
         this.form.repertoryName === '' ||
@@ -468,7 +448,6 @@ export default {
         this.form.createTime === '' ||
         this.form.account === ''
       ) {
-        // 如果所有字段都不为空时，执行这里的逻辑
         this.$message.error('请输入全部数据')
       } else {
         console.log(this.form)
@@ -476,7 +455,6 @@ export default {
           id: this.tableData.length + 1,
           ...this.form
         })
-        console.log(this.dangqianyema)
         this.fenye(this.dangqianyema)
         console.log(this.tableData)
         this.chaxun()
@@ -496,57 +474,104 @@ export default {
         })
       }
     },
-
+    // 查看详情
     chakan(e) {
       this.celan = true
       console.log(e)
     },
+    // 出库显示
+    chukuxianshi(e) {
+      this.hangshuju = e
+      this.chukudialogFormVisible = true
+      // 预填充出库表单数据
+      this.chukuForm.repertoryName = e.repertoryName
+      this.chukuForm.productType = e.productType
+      this.chukuForm.productName = e.productName
+      this.chukuForm.account = e.account
+    },
+    // 出库操作
     chuku() {
-      console.log('行数据', this.hangshuju)
-      this.form.repertoryName = this.hangshuju.repertoryName
-      this.form.productType = this.hangshuju.productType
-      this.form.productName = this.hangshuju.productName
-      this.form.account = this.hangshuju.account
-      if (
-        this.form.joinAmount === '' ||
-        this.form.pass === '' ||
-        this.form.createTime === ''
-      ) {
-        // 如果所有字段都不为空时，执行这里的逻辑
-        this.$message.error('请输入全部数据')
-      } else {
-        console.log('当前行的数据', this.hangshuju)
-        this.tableData.splice(this.hangshuju.id, 1)
-        console.log(this.dangqianyema)
-        this.fenye(this.dangqianyema)
-        console.log(this.tableData)
-        this.chaxun()
-        this.form = {
-          repertoryName: '',
-          productType: '',
-          productName: '',
-          joinAmount: '',
-          pass: '',
-          createTime: '',
-          account: ''
+      console.log('出库行数据:', this.hangshuju)
+      // 验证出库表单
+      this.$refs.chukuForm.validate((valid) => {
+        if (valid) {
+          // 从订单列表中找到对应的订单并更新状态
+          const orderIndex = this.orders.findIndex(
+            (order) => order.orderName === this.chukuForm.orderName && order.status === '待发货'
+          )
+          if (orderIndex !== -1) {
+            // 更新订单状态为已发货
+            this.orders[orderIndex].status = '已发货'
+            // 保存更新后的订单列表到 localStorage
+            localStorage.setItem('orderStatus', JSON.stringify(this.orders))
+            this.$message.success('出库完成，订单状态已更新为已发货！')
+          } else {
+            this.$message.error('未找到对应的待发货订单！')
+            return
+          }
+
+          // 更新出库记录
+          if (
+            this.chukuForm.joinAmount === '' ||
+            this.chukuForm.pass === '' ||
+            this.chukuForm.createTime === ''
+          ) {
+            this.$message.error('请输入全部出库数据')
+          } else {
+            console.log('当前行的数据', this.hangshuju)
+            // 使用 orderId 而不是 id 以确保唯一性
+            const index = this.tableData.findIndex(item => item.id === this.hangshuju.id)
+            if (index !== -1) {
+              // 移除出库后的入库记录
+              this.tableData.splice(index, 1)
+              console.log(this.dangqianyema)
+              this.fenye(this.dangqianyema)
+              console.log(this.tableData)
+              this.chaxun()
+              this.chukudialogFormVisible = false
+              this.$message({
+                message: '出库信息保存成功',
+                type: 'success'
+              })
+            } else {
+              this.$message.error('未找到对应的入库记录！')
+            }
+
+            // 重置出库表单
+            this.chukuForm = {
+              orderName: '',
+              repertoryName: '',
+              account: '',
+              productType: '',
+              pass: '',
+              productName: '',
+              joinAmount: '',
+              createTime: ''
+            }
+          }
+        } else {
+          this.$message.error('表单验证失败，请检查输入内容！')
+          return false
         }
-        this.chukudialogFormVisible = false
-        this.$message({
-          message: '出库库信息保存成功',
-          type: 'success'
-        })
-      }
+      })
+    },
+    // 获取初始数据
+    huqushuju() {
+      this.newdata = this.tableData
     }
   }
 }
 </script>
+
 <style scoped>
-.el-select{
+.el-select {
   width: 17vw;
 }
+
 .xiangqing {
   padding: 20px;
 }
+
 .yema {
   /* border: 1px solid red; */
   /* position: absolute;
@@ -558,6 +583,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 .xingzengshuju {
   display: flex;
   flex-direction: column;
@@ -569,35 +595,43 @@ export default {
 .el-input {
   width: 17vw;
 }
+
 .diyi {
   display: flex;
   justify-content: space-between;
 }
+
 .dier {
   display: flex;
   justify-content: space-between;
 }
+
 .disan .el-input {
   width: calc(50vw - 160px);
 }
+
 .disi {
   display: flex;
   justify-content: space-between;
 }
+
 .app-container {
   position: relative;
   height: calc(100vh - 50px);
   overflow-y: auto;
   /* border: 1px solid red; */
 }
+
 .el-form-item__content {
   display: inline-block;
 }
-.xingzengshuju .el-form-item{
+
+.xingzengshuju .el-form-item {
   display: flex;
   flex-direction: row;
   margin: 0;
 }
+
 /* .el-dialog {
   margin-bottom: 0;
   border: 55px;
@@ -605,3 +639,4 @@ export default {
   -webkit-box-shadow:0 !important;
 } */
 </style>
+

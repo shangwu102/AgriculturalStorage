@@ -99,7 +99,7 @@ export const routes = [
     component: Layout,
     meta: { title: '交易管理', icon: '数据报表', roles: ['admin'] },
     children: [
-      { path: 'order', component: adminorder, meta: { title: '订单查询', icon: 'el-icon-s-data' }},
+      { path: 'order', component: adminorder, meta: { title: '订单审批', icon: 'el-icon-s-data' }},
       { path: 'transaction', component: Transaction, meta: { title: '交易监管', icon: 'el-icon-s-data' }}
     ]
   },

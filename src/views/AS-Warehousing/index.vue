@@ -15,7 +15,7 @@
         <el-input v-model="sousuo" placeholder="请输入产品姓名">''</el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="chaxun">搜素</el-button>
+        <el-button type="primary" @click="chaxun">搜索</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -58,30 +58,6 @@
         prop="account"
         label="操作员"
       />
-      <!-- <el-table-column
-        label="操作"
-      >
-        <template>
-          <el-button
-            type="primary"
-            size="small"
-            @click="table = true"
-          >查看</el-button>
-        </template>
-        <el-drawer
-          title="我嵌套了表格!"
-          :visible.sync="table"
-          direction="rtl"
-          size="30%"
-          modal="false"
-        >
-          <el-table :data="gridData">
-            <el-table-column property="date" label="日期" width="150" />
-            <el-table-column property="name" label="姓名" width="200" />
-            <el-table-column property="address" label="地址" />
-          </el-table>
-        </el-drawer>
-      </el-table-column> -->
     </el-table>
     <div class="yema">
       <el-pagination
