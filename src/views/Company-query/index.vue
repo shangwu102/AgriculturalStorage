@@ -1,5 +1,5 @@
 <template>
   <div>
-    公司首页1
+    查看链上库存
   </div>
 </template>

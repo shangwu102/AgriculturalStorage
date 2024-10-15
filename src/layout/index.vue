@@ -30,7 +30,8 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain, CompanyMain } from './components'
+import { Navbar, Sidebar, AppMain } from './components'
+import CompanyMain from './components/CompanyMain.vue'
 import ResizeMixin from './mixin/ResizeHandler'
 import { getUser } from '@/utils/auth' // 引入你封装的本地存储工具
 
@@ -63,8 +64,8 @@ export default {
     },
     role() {
       const user = JSON.parse(getUser()) // 从 localStorage 中获取用户信息
-      console.log(user);
-      return user ? user.role : ''; // 如果存在用户信息，则返回角色，否则返回空字符串
+      console.log(user)
+      return user ? user.role : '' // 如果存在用户信息，则返回角色，否则返回空字符串
     }
   },
   methods: {

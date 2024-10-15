@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { Message } from 'element-ui'
-import { getToken } from '@/utils/auth' // 引入获取 token 的工具函数
-import store from '@/store' // 引入 Vuex store，用于获取用户角色信息
+// import { Message } from 'element-ui'
+// import { getToken } from '@/utils/auth' // 引入获取 token 的工具函数
+// import store from '@/store' // 引入 Vuex store，用于获取用户角色信息
 
 Vue.use(Router)
 // 懒加载组件
@@ -10,7 +10,10 @@ const Layout = () => import('@/layout') // 主布局
 const Login = () => import('@/views/login/index') // 登录页面
 const NotFund = () => import('@/views/404/index') // 404 页面
 const ASHome = () => import('@/views/AS-Home/index') // 首页
-const ASCompany = () => import('@/views/AS-company/index') // 公司首页
+const Company = () => import('@/views/AS-company/index') // 公司首页
+const Companyorder = () => import('@/views/Company-order') // 发布订单
+const Companystatus = () => import('@/views/Company-status') // 订单状态
+const CompanyQuery = () => import('@/views/Company-query') // 公司查看链上库存
 const UserCenter = () => import('@/views/AS-user/index') // 用户中心
 const BlockchainWarehouse = () => import('@/views/AS-Tabulation') // 链上仓库
 const EquipmentWarehouse = () => import('@/views/AS-UpQuery') // 仓库设备
@@ -34,17 +37,41 @@ export const routes = [
     ]
   },
   {
-    path: '/ascompany',
+    path: '/company',
     component: Layout,
     children: [
-      { path: '', component: ASCompany, meta: { title: '公司首页', icon: 'company', roles: ['company'] }}
+      { path: '', component: Company, meta: { title: '公司首页', icon: 'editor-left-alignment', roles: ['company'] }}
+    ]
+  },
+  {
+    path: '/order-management',
+    component: Layout,
+    meta: { title: '订单管理', icon: 'editor-left-alignment', roles: ['company'] }, // 一级菜单的meta信息
+    children: [
+      {
+        path: 'publish',
+        component: Companyorder,
+        meta: { title: '发布订单', icon: 'editor-left-alignment', roles: ['company'] }
+      },
+      {
+        path: 'status',
+        component: Companystatus,
+        meta: { title: '订单状态', icon: 'editor-left-alignment', roles: ['company'] }
+      }
+    ]
+  },
+  {
+    path: '/query',
+    component: Layout,
+    children: [
+      { path: '', component: CompanyQuery, meta: { title: '查看链上库存', icon: 'editor-left-alignment', roles: ['company'] }}
     ]
   },
   {
     path: '/asuser',
     component: Layout,
     children: [
-      { path: '', component: UserCenter, meta: { title: '用户中心', icon: '安全预警',roles: ['admin', 'operator'] }}
+      { path: '', component: UserCenter, meta: { title: '用户中心', icon: '安全预警', roles: ['admin', 'operator'] }}
     ]
   },
   {
@@ -52,7 +79,7 @@ export const routes = [
     component: Layout,
     meta: { title: '仓库管理', icon: '粮食安全考核', roles: ['admin', 'operator'] },
     children: [
-      { path: 'blockchainwarehouse', component: BlockchainWarehouse, meta: { title: '链上仓库', icon: '链接',roles: ['admin', 'operator'] }},
+      { path: 'blockchainwarehouse', component: BlockchainWarehouse, meta: { title: '链上仓库', icon: '链接', roles: ['admin', 'operator'] }},
       { path: 'equipmentwarehouse', component: EquipmentWarehouse, meta: { title: '仓库设备', icon: '应用管理', roles: ['admin', 'operator'] }}
     ]
   },

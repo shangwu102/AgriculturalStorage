@@ -417,7 +417,7 @@ export default {
         if (this.loginForm.role === 'admin' || this.loginForm.role === 'operator') {
           this.$router.push('/ashome') // 管理员或操作员跳转 ashome
         } else if (this.loginForm.role === 'company') {
-          this.$router.push('/ascompany') // 公司用户跳转 ascompany
+          this.$router.push('/company') // 公司用户跳转 ascompany
         }
       } catch (error) {
         console.error('登录请求失败:', error)
