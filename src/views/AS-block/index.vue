@@ -164,8 +164,8 @@ export default {
       const formattedEndDate = this.formatDateTime(new Date(endDate))
 
       // 构建请求URL
-      const url = `WeBASE-Front/chain?beginDate=${formattedBeginDate}&endDate=${formattedEndDate}`
-      const url2 = `WeBASE-Front/performance?beginDate=${formattedBeginDate}&endDate=${formattedEndDate}`
+      const url = `/WeBASE-Front/chain?beginDate=${formattedBeginDate}&endDate=${formattedEndDate}`
+      const url2 = `/WeBASE-Front/performance?beginDate=${formattedBeginDate}&endDate=${formattedEndDate}`
 
       try {
         // 发起请求
