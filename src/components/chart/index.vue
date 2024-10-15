@@ -125,13 +125,12 @@ export default {
 }
 </style> -->
 
-
 <template>
-  <div :id="chartId" class="chart"></div>
+  <div :id="chartId" class="chart" />
 </template>
 
 <script>
-import * as echarts from 'echarts';
+import * as echarts from 'echarts'
 
 export default {
   name: 'ChartComponent',
@@ -146,7 +145,7 @@ export default {
     },
     title: {
       type: String,
-      default: '区块高度'
+      default: '图表'
     },
     yAxisMin: {
       type: Number,
@@ -159,29 +158,45 @@ export default {
     yAxisInterval: {
       type: Number,
       default: 10
+    },
+    tooltipFormatter: {
+      type: Function, // 父组件传递的函数
+      default: (params) => { // 提供默认格式化函数
+        const b0 = params[0].name
+        const c0 = params[0].value
+        return `${b0}<br>图标: ${c0}`
+      }
     }
   },
-  mounted () {
-    this.initChart();
+  watch: {
+    lineData: {
+      deep: true,
+      handler(newValue) {
+        this.initChart() // 数据变化时重新初始化图表
+      }
+    }
+  },
+  mounted() {
+    this.initChart()
   },
   methods: {
-    // 将时间戳转换为人类可读的格式 (MM-DD HH:mm)
-    formatTimestamp (timestamp) {
-      const date = new Date(timestamp);
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      const hours = date.getHours();
-      const minutes = date.getMinutes();
-      return `${month}-${day} ${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+    // 将时间戳转换为 (MM-DD HH:mm) 格式
+    formatTimestamp(timestamp) {
+      const date = new Date(timestamp)
+      const month = date.getMonth() + 1
+      const day = date.getDate()
+      const hours = date.getHours()
+      const minutes = date.getMinutes()
+      return `${month}-${day} ${hours}:${minutes < 10 ? '0' + minutes : minutes}`
     },
 
     // 初始化图表
-    initChart () {
-      const chartDom = document.getElementById(this.chartId);
-      const myChart = echarts.init(chartDom);
+    initChart() {
+      const chartDom = document.getElementById(this.chartId)
+      const myChart = echarts.init(chartDom)
 
       // 获取格式化后的时间戳列表
-      const formattedTimestamps = this.lineData.timestampList.map(ts => this.formatTimestamp(ts));
+      const formattedTimestamps = this.lineData.timestampList.map(ts => this.formatTimestamp(ts))
 
       const option = {
         title: {
@@ -191,20 +206,16 @@ export default {
         },
         tooltip: {
           trigger: 'axis',
-          formatter: (params) => {
-            const b0 = params[0].name;
-            const c0 = params[0].value;
-            return `${b0}<br>区块高度: ${c0}`;
-          }
+          formatter: this.tooltipFormatter
         },
         xAxis: {
           type: 'category',
           data: formattedTimestamps // 使用转换后的时间戳
         },
         yAxis: {
-          min: this.yAxisMin,  // 动态最小值
-          max: this.yAxisMax,  // 动态最大值
-          interval: this.yAxisInterval,  // 动态区间
+          min: this.yAxisMin, // 动态最小值
+          max: this.yAxisMax, // 动态最大值
+          interval: this.yAxisInterval, // 动态区间
           type: 'value'
         },
         series: [
@@ -231,21 +242,13 @@ export default {
             end: 100
           }
         ]
-      };
-
-      myChart.setOption(option);
-    }
-  },
-  watch: {
-    lineData: {
-      deep: true,
-      handler (newValue) {
-        this.initChart(); // 数据变化时重新初始化图表
       }
+
+      myChart.setOption(option)
     }
   }
 
-};
+}
 </script>
 
 <style scoped>
