@@ -160,11 +160,31 @@
     </el-dialog>
 
     <!-- Drawer 抽屉 -->
-    <el-drawer title="操作员详情信息" :visible.sync="drawerVisible" direction="rtl" size="40%">
+    <!-- <el-drawer title="操作员详情信息" :visible.sync="drawerVisible" direction="rtl" size="40%">
       <div v-if="currentOperator">
         <p><strong>用户名：</strong> {{ currentOperator.username }}</p>
         <p><strong>区块链地址：</strong> {{ currentOperator.address }}</p>
         <p><strong>管理的仓库：</strong> {{ currentOperator.warehouse.join(', ') || '无' }}</p>
+      </div>
+    </el-drawer> -->
+
+    <el-drawer title="操作员详情信息" :visible.sync="drawerVisible" direction="rtl" size="40%">
+      <div v-if="currentOperator" class="drawer-content">
+        <el-row class="drawer-row">
+          <el-col :span="8"><strong>用户名:</strong></el-col>
+          <el-col :span="16">{{ currentOperator.username }}</el-col>
+        </el-row>
+        <el-divider />
+        <el-row class="drawer-row">
+          <el-col :span="8"><strong>区块链地址:</strong></el-col>
+          <el-col :span="16">{{ currentOperator.address }}</el-col>
+        </el-row>
+        <el-divider />
+        <el-row class="drawer-row">
+          <el-col :span="8"><strong>所管仓库:</strong></el-col>
+          <el-col :span="16">{{ currentOperator.warehouse.join(', ') || '无' }}</el-col>
+        </el-row>
+        <el-divider />
       </div>
     </el-drawer>
   </div>
@@ -331,5 +351,38 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: middle;
+}
+/* 每一行样式 */
+.drawer-row {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+/* 设置文本样式 */
+.drawer-row strong {
+  font-size: 14px;
+  color: #666;
+}
+
+.el-divider {
+  margin: 15px 0;
+}
+
+/* 行内文本样式 */
+.drawer-row el-col:nth-child(2) {
+  font-size: 14px;
+  color: #333;
+}
+.drawer-content {
+  padding: 10px;
+}
+
+.drawer-content .el-row {
+  margin-bottom: 15px;
+}
+
+.drawer-content .el-divider {
+  margin: 10px 0;
 }
 </style>
