@@ -1,51 +1,100 @@
 <template>
   <div class="user-center">
-    <el-card class="user-card" shadow="hover">
-      <div slot="header">
-        <span style="font-weight: bold;">用户管理中心</span>
-      </div>
-      <el-form :model="userInfo" class="user-info-form" label-width="100px">
-        <!-- 角色 -->
-        <el-form-item label="角色">
-          <el-row>
-            <el-col :span="24">
-              <el-input v-model="userInfo.role" disabled />
-            </el-col>
-          </el-row>
-        </el-form-item>
+    <!-- 用户信息卡片布局 -->
+    <el-row :gutter="20">
+      <!-- 第一个用户信息卡片 -->
+      <el-col :span="12">
+        <el-card class="user-card" shadow="hover" style="max-height: 450px; height: 450px;">
+          <div slot="header">
+            <span style="font-weight: bold;">管理员中心</span>
+          </div>
+          <el-form :model="userInfo" class="user-info-form" label-width="100px">
+            <!-- 角色 -->
+            <el-form-item label="角色">
+              <el-row>
+                <el-col :span="24">
+                  <el-input v-model="userInfo.role" disabled />
+                </el-col>
+              </el-row>
+            </el-form-item>
 
-        <!-- 用户名 -->
-        <el-form-item label="用户名">
-          <el-row>
-            <el-col :span="24">
-              <el-input v-model="userInfo.username" disabled />
-            </el-col>
-          </el-row>
-        </el-form-item>
+            <!-- 用户名 -->
+            <el-form-item label="用户名">
+              <el-row>
+                <el-col :span="24">
+                  <el-input v-model="userInfo.username" disabled />
+                </el-col>
+              </el-row>
+            </el-form-item>
 
-        <!-- 区块链地址 -->
-        <el-form-item label="区块链地址">
-          <el-row>
-            <el-col :span="24">
-              <el-input v-model="userInfo.address" disabled />
-            </el-col>
-          </el-row>
-        </el-form-item>
+            <!-- 区块链地址 -->
+            <el-form-item label="区块链地址">
+              <el-row>
+                <el-col :span="24">
+                  <el-input v-model="userInfo.address" disabled />
+                </el-col>
+              </el-row>
+            </el-form-item>
 
-        <!-- 功能按钮 -->
-        <el-form-item>
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <el-button type="primary" @click="openPasswordDialog">修改密码</el-button>
-            </el-col>
-            <!-- 只有角色是 'admin' 时显示授权用户按钮 -->
-            <el-col v-if="role === 'admin'" :span="12">
-              <el-button type="primary" @click="openAuthorizeDialog">授权操作员</el-button>
-            </el-col>
-          </el-row>
-        </el-form-item>
-      </el-form>
-    </el-card>
+            <!-- 功能按钮 -->
+            <el-form-item>
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-button type="primary" @click="openPasswordDialog">修改密码</el-button>
+                </el-col>
+                <!-- 只有角色是 'admin' 时显示授权用户按钮 -->
+                <el-col v-if="role === 'admin'" :span="12">
+                  <el-button type="primary" @click="openAuthorizeDialog">授权操作员</el-button>
+                </el-col>
+              </el-row>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-col>
+
+      <!-- 第二个用户信息卡片 -->
+      <el-col :span="12">
+        <el-card class="user-card" shadow="hover" style="max-height: 450px;height: 450px;">
+          <div slot="header">
+            <span style="font-weight: bold;">操作员列表</span>
+          </div>
+          <el-form>
+            <el-form-item>
+              <el-table
+                v-if="operators.length > 0"
+                :data="operators"
+                style="width: 100%; max-height: 350px; overflow-y: auto;"
+              >
+                <!-- 第一列：用户名 -->
+                <el-table-column prop="username" label="用户名" width="100" />
+
+                <!-- 第二列：区块链地址 -->
+                <el-table-column prop="address" label="区块链地址" width="180">
+                  <template slot-scope="scope">
+                    <el-tooltip class="item" effect="dark" :content="scope.row.address" placement="top">
+                      <span class="ellipsis-text">{{ scope.row.address || '无' }}</span>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+
+                <!-- 第三列：操作 -->
+                <el-table-column label="操作" width="200">
+                  <template slot-scope="scope">
+                    <div style="border: none;">
+                      <el-button type="primary" size="mini" @click="showDetails(scope.row)">详情</el-button>
+                      <el-button type="danger" size="mini" @click="removeOperator(scope.row)">删除</el-button>
+                    </div>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <div v-else style="text-align: center; padding: 20px;">
+                当前无操作员
+              </div>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-col>
+    </el-row>
 
     <!-- 修改密码的对话框 -->
     <el-dialog title="修改密码" :visible.sync="passwordDialogVisible" width="30%">
@@ -67,23 +116,20 @@
     </el-dialog>
 
     <!-- 角色授权的对话框 -->
-    <el-dialog title="角色授权" :visible.sync="authorizeDialogVisible" width="30%">
+    <el-dialog title="角色授权" :visible.sync="authorizeDialogVisible" width="50%">
       <el-form ref="authForm" :model="authForm" :rules="authFormRules" label-width="100px">
-        <!-- 用户名输入框 -->
         <el-form-item label="用户名" prop="username">
           <el-input v-model="authForm.username" placeholder="请输入要授权的用户名" />
         </el-form-item>
-        <!-- 密码输入框 -->
         <el-form-item label="密码" prop="password">
           <el-input v-model="authForm.password" type="password" placeholder="请输入密码" />
         </el-form-item>
-        <!-- 区块链地址输入框 -->
         <el-form-item label="区块链地址" prop="blockchainAddress">
           <el-input v-model="authForm.blockchainAddress" placeholder="请输入区块链地址" />
         </el-form-item>
         <!-- 主管仓库 -->
-        <el-form-item label="主管仓库" prop="supervisorWarehouse">
-          <el-checkbox-group v-model="checkList">
+        <el-form-item label="主管仓库" prop="warehouse">
+          <el-checkbox-group v-model="authForm.warehouse">
             <el-row>
               <el-col :span="8">
                 <el-checkbox label="一号仓库" />
@@ -106,45 +152,44 @@
             </el-row>
           </el-checkbox-group>
         </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="authorizeDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="submitAuthForm">确认授权</el-button>
       </div>
     </el-dialog>
+
+    <!-- Drawer 抽屉 -->
+    <el-drawer title="操作员详情信息" :visible.sync="drawerVisible" direction="rtl" size="40%">
+      <div v-if="currentOperator">
+        <p><strong>用户名：</strong> {{ currentOperator.username }}</p>
+        <p><strong>区块链地址：</strong> {{ currentOperator.address }}</p>
+        <p><strong>管理的仓库：</strong> {{ currentOperator.warehouse.join(', ') || '无' }}</p>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
-import { getUser } from '@/utils/auth' // 引入你封装的本地存储工具
+import { getUser } from '@/utils/auth'
 
 export default {
   data() {
     return {
-      // 主管仓库
-      checkList: [],
-      // 用户信息
       userInfo: {
         username: '',
         address: '',
         role: ''
       },
-
-      // 修改密码对话框的可见状态
       passwordDialogVisible: false,
-
-      // 授权用户对话框的可见状态
       authorizeDialogVisible: false,
-
-      // 修改密码表单数据
+      drawerVisible: false,
+      currentOperator: null,
       passwordForm: {
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       },
-
-      // 修改密码表单验证规则
       passwordRules: {
         currentPassword: [
           { required: true, message: '请输入当前密码', trigger: 'blur' }
@@ -167,16 +212,12 @@ export default {
           }
         ]
       },
-
-      // 授权用户表单数据
       authForm: {
         username: '',
         blockchainAddress: '',
         password: '',
-        supervisorWarehouse: ''
+        warehouse: []
       },
-
-      // 授权用户表单验证规则
       authFormRules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
@@ -187,14 +228,14 @@ export default {
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' }
         ]
-      }
+      },
+      operators: JSON.parse(localStorage.getItem('AS-operators')) || []
     }
   },
   computed: {
-    // 从本地中获取用户的角色
     role() {
-      const user = JSON.parse(getUser()) // 从 localStorage 中获取用户信息
-      return user ? user.role : '' // 如果存在用户信息，则返回角色，否则返回空字符串
+      const user = JSON.parse(getUser())
+      return user ? user.role : ''
     }
   },
   created() {
@@ -202,17 +243,12 @@ export default {
     this.userInfo = user || {}
   },
   methods: {
-    // 打开修改密码对话框
     openPasswordDialog() {
       this.passwordDialogVisible = true
     },
-
-    // 打开授权用户对话框
     openAuthorizeDialog() {
       this.authorizeDialogVisible = true
     },
-
-    // 提交修改密码表单
     submitPasswordForm() {
       this.$refs.passwordForm.validate((valid) => {
         if (valid) {
@@ -228,31 +264,51 @@ export default {
         }
       })
     },
-
-    // 提交授权表单
     submitAuthForm() {
       this.$refs.authForm.validate((valid) => {
         if (valid) {
-          console.log('授权信息:', this.authForm)
+          this.operators.push({
+            username: this.authForm.username,
+            address: this.authForm.blockchainAddress,
+            warehouse: Array.isArray(this.authForm.warehouse) ? this.authForm.warehouse : []
+          })
+          localStorage.setItem('AS-operators', JSON.stringify(this.operators))
           this.authorizeDialogVisible = false
           this.$message({
             type: 'success',
             message: '授权成功！'
           })
         } else {
-          console.log('表单验证失败')
           return false
         }
       })
+    },
+    removeOperator(operator) {
+      this.operators = this.operators.filter(op => op.username !== operator.username)
+      localStorage.setItem('AS-operators', JSON.stringify(this.operators))
+      this.$message({
+        type: 'success',
+        message: '操作员已删除！'
+      })
+    },
+    showDetails(operator) {
+      this.currentOperator = operator
+      this.drawerVisible = true
     }
   }
 }
 </script>
 
 <style scoped>
+.el-table::before , .el-form-item::before {
+  content: none;
+  border: none;
+}
 .user-center {
-  width: 500px;
+  width: 100%;
+  max-width: 1200px;
   margin: 50px auto;
+  padding: 20px;
 }
 
 .user-card {
@@ -260,19 +316,20 @@ export default {
 }
 
 .user-info-form {
+  position: relative;
+  margin-top: 7%;
   width: 100%;
 }
 
 .dialog-footer {
   text-align: right;
 }
-.el-form-item .el-checkbox-group {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.el-form-item .el-checkbox-group .el-col {
-  display: flex;
-  align-items: center;
+.ellipsis-text {
+  display: inline-block;
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
 }
 </style>

@@ -12,7 +12,7 @@ const Company = () => import('@/views/AS-company/index') // 公司首页
 const Companyorder = () => import('@/views/Company-order') // 发布订单
 const Companystatus = () => import('@/views/Company-status') // 公司订单状态
 const CompanyQuery = () => import('@/views/Company-query') // 公司查看链上库存
-const UserCenter = () => import('@/views/AS-user/index') // 用户中心
+const UserCenter = () => import('@/views/AS-user/index') // 管理员授权页面
 const BlockchainWarehouse = () => import('@/views/AS-Tabulation') // 链上仓库
 const EquipmentWarehouse = () => import('@/views/AS-UpQuery') // 仓库设备
 const ControlWarehouse = () => import('@/views/AS-DownQuery') // 库存控制
@@ -76,7 +76,7 @@ export const routes = [
     component: Layout,
     redirect: '/asuser',
     children: [
-      { path: '', component: UserCenter, meta: { title: '用户中心', icon: '安全预警', roles: ['admin', 'operator'] }}
+      { path: '', component: UserCenter, meta: { title: '操作授权', icon: '安全预警', roles: ['admin', 'operator'] }}
     ]
   },
   {
