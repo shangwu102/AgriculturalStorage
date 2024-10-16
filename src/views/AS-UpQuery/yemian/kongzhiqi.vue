@@ -51,7 +51,7 @@
       />
       <el-table-column
         prop="controllerName"
-        label="传感器名称"
+        label="控制器名称"
       />
       <el-table-column
         prop="controllerValue"
@@ -102,7 +102,7 @@
               <br>
               <h3 class="el-icon-refresh">循环</h3>
               <el-table :data="gridData2">
-                <el-table-column property="controller_type" label="循环结束类型" />
+                <el-table-column property="controllerEndtype" label="循环结束类型" />
                 <el-table-column property="controllerOpentime" label="开启时间" />
                 <el-table-column property="controllerEndtime" label="关闭时间" />
                 <el-table-column property="controllerCount" label="循环次数" />
@@ -538,6 +538,14 @@
 
 <script>
 import { kzqsbhq } from '@/api/kongzhishebei.js'
+import { hqdskzq } from '@/api/kongzhishebei.js'
+import { hqxhkzq } from '@/api/kongzhishebei.js'
+import { hqznkzq } from '@/api/kongzhishebei.js'
+import { chongmingming } from '@/api/kongzhishebei.js'
+import { hqkzqmc } from '@/api/kongzhishebei.js'
+import { xzdssz } from '@/api/kongzhishebei.js'
+import { xzxhsz } from '@/api/kongzhishebei.js'
+import { xzznsz } from '@/api/kongzhishebei.js'
 export default {
   data() {
     const options = [{
@@ -673,7 +681,7 @@ export default {
       controllerConditionvalue: '',
       controllerOffvalue: ''
     }
-    const newrukuxxcs = {
+    const newrukuxxcz = {
       kzqType: 'type1',
       controllerOpentime: '',
       controllerEndtime: '',
@@ -711,82 +719,82 @@ export default {
       controllerName: [{ required: true, message: '请输入控制器名称', trigger: 'blur' }]
     }
     const gridData1 = [
-      {
-        'controllerOpentime': '00:00',
-        'controllerEndtime': '01:00',
-        'controllerCount': 5,
-        'controllerStatus': 10,
-        'controllerCycle': '正常'
-      },
-      {
-        'sensorStart': '02:00',
-        'sensorEnd': '03:00',
-        'lessValue': 3,
-        'bigValue': 12,
-        'sensorStatus': '警报'
-      },
-      {
-        'sensorStart': '04:00',
-        'sensorEnd': '05:00',
-        'lessValue': 1,
-        'bigValue': 15,
-        'sensorStatus': '正常'
-      }
+      // {
+      //   'controllerOpentime': '00:00',
+      //   'controllerEndtime': '01:00',
+      //   'controllerCount': 5,
+      //   'controllerStatus': 10,
+      //   'controllerCycle': '正常'
+      // },
+      // {
+      //   'sensorStart': '02:00',
+      //   'sensorEnd': '03:00',
+      //   'lessValue': 3,
+      //   'bigValue': 12,
+      //   'sensorStatus': '警报'
+      // },
+      // {
+      //   'sensorStart': '04:00',
+      //   'sensorEnd': '05:00',
+      //   'lessValue': 1,
+      //   'bigValue': 15,
+      //   'sensorStatus': '正常'
+      // }
     ]
     const gridData2 = [
-      {
-        'controllerEndtype': '00:00',
-        'controllerOpentime': '01:00',
-        'controllerEndtime': 5,
-        'controllerCount': 10,
-        'controllerTime': '正常',
-        'controllerInterval': 10,
-        'controllerStatus': 10,
-        'controllerCycle': 10
+      // {
+      //   'controllerEndtype': '00:00',
+      //   'controllerOpentime': '01:00',
+      //   'controllerEndtime': 5,
+      //   'controllerCount': 10,
+      //   'controllerTime': '正常',
+      //   'controllerInterval': 10,
+      //   'controllerStatus': 10,
+      //   'controllerCycle': 10
 
-      },
-      {
-        'sensorStart': '02:00',
-        'sensorEnd': '03:00',
-        'lessValue': 3,
-        'bigValue': 12,
-        'sensorStatus': '警报'
-      },
-      {
-        'sensorStart': '04:00',
-        'sensorEnd': '05:00',
-        'lessValue': 1,
-        'bigValue': 15,
-        'sensorStatus': '正常'
-      }
+      // },
+      // {
+      //   'sensorStart': '02:00',
+      //   'sensorEnd': '03:00',
+      //   'lessValue': 3,
+      //   'bigValue': 12,
+      //   'sensorStatus': '警报'
+      // },
+      // {
+      //   'sensorStart': '04:00',
+      //   'sensorEnd': '05:00',
+      //   'lessValue': 1,
+      //   'bigValue': 15,
+      //   'sensorStatus': '正常'
+      // }
     ]
     const gridData3 = [
-      {
-        'controller_type': '00:00',
-        'controllerOpenname': '01:00',
-        'controllerControl': 5,
-        'controllerOpencondition': 10,
-        'controllerValue': 10,
-        'controllerOpentime': 10,
-        'controller_offcondition': 10,
-        'controllerConditionvalue': 10,
-        'controllerOffvalue': 10,
-        'controllerStatus': '正常'
-      },
-      {
-        'sensorStart': '02:00',
-        'sensorEnd': '03:00',
-        'lessValue': 3,
-        'bigValue': 12,
-        'sensorStatus': '警报'
-      },
-      {
-        'sensorStart': '04:00',
-        'sensorEnd': '05:00',
-        'lessValue': 1,
-        'bigValue': 15,
-        'sensorStatus': '正常'
-      }
+      // {
+      //   'controller_type': '00:00',
+      //   'controllerOpenname': '01:00',
+      //   'controllerControl': 5,
+      //   'controllerOpencondition': 10,
+      //   'controllerValue': 10,
+      //   'controllerOpentime': 10,
+      //   'controller_offcondition': 10,
+      //   'controllerConditionvalue': 10,
+      //   'controllerOffvalue': 10,
+      //   'controllerStatus': '正常'
+      // },
+      // {
+      //   'sensorStart': '02:00',
+      //   'sensorEnd': '03:00',
+      //   'lessValue': 3,
+      //   'bigValue': 12,
+      //   'sensorStatus': '警报'
+      // },
+      // {
+      //   'sensorStart': '04:00',
+      //   'sensorEnd': '05:00',
+      //   'lessValue': 1,
+      //   'bigValue': 15,
+      //   'sensorStatus': '正常'
+      // }
     ]
     const leixing = [{
       value: 'type1',
@@ -873,7 +881,7 @@ export default {
       zhongjianshuju: '',
       dialogFormVisible: false,
       form: newrukuxx,
-      fromcz: newrukuxxcs,
+      fromcz: newrukuxxcz,
       shujujianyan: newrukuxxjianyan,
       shujujianyan1: newrukuxxjianyan1,
       table: false,
@@ -900,7 +908,6 @@ export default {
     try {
       const ref = await kzqsbhq()
       console.log('原始', this.tableData)
-
       console.log('数据', ref)
       this.tableData = ref.data.data
       console.log('修改后', this.tableData)
@@ -1069,16 +1076,28 @@ export default {
     },
     async shezhi(e) {
       this.shezhidqhsj = e
+      console.log('当前行id', e.id)
       try {
+        const json = {
+          id: e.id
+        }
         const ls = []
         for (let i = 0; i < this.tableData.length; i++) {
           ls.push(this.tableData[i])
         }
         this.cgqmc = ls
-        const ref = await qgqszhq()
-        console.log('数据', ref)
-        this.gridData = ref.data.data
-        console.log('替换完的数据', this.gridData)
+        const ref1 = await hqdskzq(json)
+        const ref2 = await hqxhkzq(json)
+        const ref3 = await hqznkzq(json)
+        console.log('定时数据', ref1)
+        console.log('循环数据', ref2)
+        console.log('智能数据', ref3)
+        this.gridData1 = ref1.data.data
+        this.gridData2 = ref2.data.data
+        this.gridData3 = ref3.data.data
+        console.log('替换完的定时数据', this.gridData1)
+        console.log('替换完的循环数据', this.gridData2)
+        console.log('替换完的智能数据', this.gridData3)
       } catch (error) {
         console.log('错误', error)
       }
@@ -1098,7 +1117,12 @@ export default {
             this.$message.error('请输入全部数据')
           } else {
             try {
-              const ref = await xzcgqsz(this.form)
+              const form1 =
+                {
+                  id: this.dangqianhangshuju.id,
+                  ...this.form
+                }
+              const ref = await xzdssz(form1)
               console.log('返回数据', ref.data.code)
               this.$message({
                 message: '修改成功',
@@ -1125,7 +1149,12 @@ export default {
             this.$message.error('请输入全部数据')
           } else {
             try {
-              const ref = await xzcgqsz(this.form)
+              const form1 =
+                {
+                  id: this.dangqianhangshuju.id,
+                  ...this.form
+                }
+              const ref = await xzxhsz(form1)
               console.log('返回数据', ref.data.code)
               this.$message({
                 message: '修改成功',
@@ -1154,12 +1183,17 @@ export default {
             this.$message.error('请输入全部数据')
           } else {
             try {
-              const ref = await xzcgqsz(this.form)
+              const form1 =
+                {
+                  id: this.dangqianhangshuju.id,
+                  ...this.form
+                }
+              const ref = await xzznsz(form1)
+              console.log('返回数据', ref.data.code)
               this.$message({
                 message: '修改成功',
                 type: 'success'
               })
-              console.log('返回数据', ref.data.code)
             } catch (error) {
               console.log('错误', error)
             }
@@ -1171,7 +1205,21 @@ export default {
           break
       }
     },
-    xinzeng() {
+    async xinzeng() {
+      try {
+        const ref = await hqkzqmc()
+        console.log('所有传感器名称', ref)
+        const newcgqmc = []
+        for (let i = 0; i < ref.data.data.length; i++) {
+          newcgqmc.push({
+            value: `${ref.data.data[i].controllerName}`,
+            label: `${ref.data.data[i].controllerName}`
+          })
+        }
+        this.cgqmc = newcgqmc
+      } catch (error) {
+        console.log('错误', error)
+      }
       this.dialogFormVisible = true
       console.log('新增那条数据的设置', this.dangqianhangshuju)
     },

@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-
 export function kzqsbhq() {
   return request({
     url: '/getController',
@@ -7,17 +6,65 @@ export function kzqsbhq() {
   })
 }
 
-export function getInfo(token) {
+export function hqdskzq(e) {
   return request({
-    url: '/users/info',
-    method: 'get',
-    params: { token }
+    url: '/getInsertController',
+    method: 'post',
+    data: e
   })
 }
 
-export function logout() {
+export function hqxhkzq(e) {
   return request({
-    url: '/logout',
-    method: 'post'
+    url: '/getInsertSet',
+    method: 'post',
+    data: e
+  })
+}
+
+export function hqznkzq(e) {
+  return request({
+    url: '/getInsertSmartSet',
+    method: 'post',
+    data: e
+  })
+}
+
+export function chongmingming(e) {
+  return request({
+    url: '/updateControllerName',
+    method: 'post',
+    data: e
+  })
+}
+
+export function hqkzqmc() {
+  return request({
+    url: '/getKZ',
+    method: 'get'
+  })
+}
+
+export function xzdssz(e) {
+  return request({
+    url: '/insertRegularController',
+    method: 'post',
+    data: e
+  })
+}
+
+export function xzxhsz(e) {
+  return request({
+    url: '/insertCycleController',
+    method: 'post',
+    data: e
+  })
+}
+
+export function xzznsz(e) {
+  return request({
+    url: '/insertSmartController',
+    method: 'post',
+    data: e
   })
 }
