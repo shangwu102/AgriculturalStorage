@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
-      <router-link key="collapse" class="sidebar-logo-link" to="/">
+      <router-link key="collapse" class="sidebar-logo-link" to="/ashome">
         <img src="@/assets/logo/hm-logo5.png" class="sidebar-logo">
         <h1 class="sidebar-title">{{ title }} </h1>
       </router-link>

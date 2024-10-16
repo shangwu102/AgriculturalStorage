@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import { Message } from 'element-ui'
-// import { getToken } from '@/utils/auth' // 引入获取 token 的工具函数
-// import store from '@/store' // 引入 Vuex store，用于获取用户角色信息
 
 Vue.use(Router)
+
 // 懒加载组件
 const Layout = () => import('@/layout') // 主布局
 const Login = () => import('@/views/login/index') // 登录页面
@@ -26,6 +24,7 @@ const adminorder = () => import('@/views/AS-adminOrder') // 管理员订单管�
 const WarehouseReport = () => import('@/views/AS-report') // 仓库报表
 const WarningDashboard = () => import('@/views/AS-Waining/index') // 安全预警
 const LSHome = () => import('@/views/LS-Home/index') // 大屏展示
+
 export const routes = [
   { path: '/', redirect: '/login' }, // 重定向到登录页面
   { path: '/login', component: Login },
@@ -33,6 +32,7 @@ export const routes = [
   {
     path: '/ashome',
     component: Layout,
+    redirect: '/ashome',
     children: [
       { path: '', component: ASHome, meta: { title: '首页', icon: 'editor-left-alignment', roles: ['admin', 'operator'] }}
     ]
@@ -40,6 +40,7 @@ export const routes = [
   {
     path: '/company',
     component: Layout,
+    redirect: '/company',
     children: [
       { path: '', component: Company, meta: { title: '公司首页', icon: 'editor-left-alignment', roles: ['company'] }}
     ]
@@ -47,7 +48,8 @@ export const routes = [
   {
     path: '/order-management',
     component: Layout,
-    meta: { title: '订单管理', icon: 'editor-left-alignment', roles: ['company'] }, // 一级菜单的meta信息
+    redirect: '/order-management/publish', // 重定向到第一个子菜单路径
+    meta: { title: '订单管理', icon: 'editor-left-alignment', roles: ['company'] },
     children: [
       {
         path: 'publish',
@@ -64,6 +66,7 @@ export const routes = [
   {
     path: '/query',
     component: Layout,
+    redirect: '/query',
     children: [
       { path: '', component: CompanyQuery, meta: { title: '查看链上库存', icon: 'editor-left-alignment', roles: ['company'] }}
     ]
@@ -71,6 +74,7 @@ export const routes = [
   {
     path: '/asuser',
     component: Layout,
+    redirect: '/asuser',
     children: [
       { path: '', component: UserCenter, meta: { title: '用户中心', icon: '安全预警', roles: ['admin', 'operator'] }}
     ]
@@ -78,6 +82,7 @@ export const routes = [
   {
     path: '/asinformation',
     component: Layout,
+    redirect: '/asinformation/blockchainwarehouse', // 重定向到第一个子菜单路径
     meta: { title: '仓库管理', icon: '粮食安全考核', roles: ['admin', 'operator'] },
     children: [
       { path: 'blockchainwarehouse', component: BlockchainWarehouse, meta: { title: '链上仓库', icon: '链接', roles: ['admin', 'operator'] }},
@@ -87,6 +92,7 @@ export const routes = [
   {
     path: '/asmanage',
     component: Layout,
+    redirect: '/asmanage/controlwarehouse', // 重定向到第一个子菜单路径
     meta: { title: '生产管理', icon: '生产管理', roles: ['admin', 'operator'] },
     children: [
       { path: 'controlwarehouse', component: ControlWarehouse, meta: { title: '库存控制', icon: '仓库信息', roles: ['admin', 'operator'] }},
@@ -97,6 +103,7 @@ export const routes = [
   {
     path: '/astransaction',
     component: Layout,
+    redirect: '/astransaction/order', // 重定向到第一个子菜单路径
     meta: { title: '交易管理', icon: '数据报表', roles: ['admin'] },
     children: [
       { path: 'order', component: adminorder, meta: { title: '订单审批', icon: 'el-icon-s-data' }},
@@ -106,6 +113,7 @@ export const routes = [
   {
     path: '/asreport',
     component: Layout,
+    redirect: '/asreport/blockreport', // 重定向到第一个子菜单路径
     meta: { title: '数据报表', icon: '数据报表', roles: ['admin', 'operator'] },
     children: [
       { path: 'blockreport', component: BlockReport, meta: { title: '区块报表', icon: 'el-icon-s-data', roles: ['admin', 'operator'] }},
@@ -115,6 +123,7 @@ export const routes = [
   {
     path: '/aswarning',
     component: Layout,
+    redirect: '/aswarning',
     children: [
       { path: '', component: WarningDashboard, meta: { title: '安全预警', icon: '安全预警', roles: ['admin', 'operator'] }}
     ]
