@@ -13,7 +13,7 @@
             label-position="left"
           >
             <div class="title-container">
-              <h3 class="title">系统登录</h3>
+              <h3 class="title">藏粮于链平台</h3>
             </div>
 
             <!-- 用户名输入框 -->
@@ -25,11 +25,12 @@
                 <el-input
                   ref="username"
                   v-model="loginForm.username"
-                  placeholder="用户名"
+                  placeholder="请输入用户名"
                   name="username"
                   type="text"
                   tabindex="1"
                   auto-complete="on"
+                  class="custom-input"
                   @focus="handleFocus1"
                   @blur="handleBlur1"
                 />
@@ -47,19 +48,17 @@
                   ref="password"
                   v-model="loginForm.password"
                   :type="passwordType"
-                  placeholder="密码"
+                  placeholder="请输入密码"
                   name="password"
                   tabindex="2"
                   auto-complete="on"
+                  class="custom-input"
                   @keyup.enter.native="handleLogin"
                   @focus="handleFocus2"
                   @blur="handleBlur2"
                 />
                 <span class="show-pwd" @click="showPwd">
-                  <svg-icon
-                    :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
-                    style="position: absolute;left: 92%;top: 30%; font-size: 20px;"
-                  />
+                  <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
                 </span>
               </div>
             </el-form-item>
@@ -68,14 +67,15 @@
             <el-form-item :class="{ 'focused': isFocused3 }" prop="address">
               <div class="input-group">
                 <span class="svg-container">
-                  <svg-icon icon-class="location" />
+                  <svg-icon icon-class="block" style="font-size: 17px;" />
                 </span>
                 <el-input
                   v-model="loginForm.address"
-                  placeholder="地址"
+                  placeholder="请输入区块链地址"
                   name="address"
                   tabindex="3"
                   auto-complete="on"
+                  class="custom-input"
                   @focus="handleFocus3"
                   @blur="handleBlur3"
                 />
@@ -84,131 +84,141 @@
 
             <!-- 角色选择单选框 -->
             <el-form-item :class="{ 'focused': isFocused4 }" prop="role">
-              <el-radio-group v-model="loginForm.role" class="role-selector">
-                <el-radio label="admin">管理员</el-radio>
-                <el-radio label="operator">操作员</el-radio>
-                <el-radio label="company">公司</el-radio>
-              </el-radio-group>
+              <div class="role-and-remember">
+                <el-radio-group v-model="loginForm.role" class="role-selector">
+                  <el-radio label="admin">管理员</el-radio>
+                  <el-radio label="operator">操作员</el-radio>
+                  <el-radio label="company">公司</el-radio>
+                </el-radio-group>
+                <el-checkbox v-model="checked" class="remember-me">记住信息</el-checkbox>
+              </div>
             </el-form-item>
 
-            <el-checkbox v-model="checked">记住信息</el-checkbox>
-            <el-button style="position: relative;right: 0;float: right;" @click="showRegisterDialog">注册公司</el-button>
-            <!-- 注册对话框 -->
-            <el-dialog :visible.sync="registerDialogVisible" title="注册公司" width="80%" top="5vh">
-              <el-form ref="registerFormRef" :model="registerForm" :rules="rules" label-width="150px">
-                <!-- 第一行 -->
-                <el-row :gutter="20">
-                  <el-col :span="12">
-                    <el-form-item label="企业或个体户名称" prop="companyName">
-                      <el-input v-model="registerForm.companyName" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="统一社会信用代码" prop="creditCode">
-                      <el-input v-model="registerForm.creditCode" />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-
-                <!-- 第二行 -->
-                <el-row :gutter="20">
-                  <el-col :span="12">
-                    <el-form-item label="企业类型" prop="companyTypes">
-                      <el-checkbox-group v-model="registerForm.companyTypes">
-                        <el-checkbox label="生产企业" />
-                        <el-checkbox label="粮油经营户" />
-                        <el-checkbox label="粮品电商" />
-                        <el-checkbox label="餐饮企业" />
-                        <el-checkbox label="粮食储备库" />
-                        <el-checkbox label="仓储物流企业" />
-                      </el-checkbox-group>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="法定代表人" prop="legalPerson">
-                      <el-input v-model="registerForm.legalPerson" />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-
-                <!-- 第三行 -->
-                <el-row :gutter="20">
-                  <el-col :span="12">
-                    <el-form-item label="经营场所" prop="businessPlace">
-                      <el-input v-model="registerForm.businessPlace" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="营业期限(年)" prop="businessTerm">
-                      <el-input v-model="registerForm.businessTerm" />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-
-                <!-- 第四行：上传图片 -->
-                <el-row :gutter="20">
-                  <el-col :span="12">
-                    <el-form-item label="营业执照" prop="businessLicense">
-                      <el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card">
-                        <i class="el-icon-plus" />
-                      </el-upload>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="身份证件" prop="idCard">
-                      <el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card" multiple>
-                        <i class="el-icon-plus" />
-                      </el-upload>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-
-                <!-- 第五行：手机号码、经营范围 -->
-                <el-row :gutter="20">
-                  <el-col :span="12">
-                    <el-form-item label="手机号码" prop="phone">
-                      <el-input v-model="registerForm.phone" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="经营范围" prop="businessScope">
-                      <el-input v-model="registerForm.businessScope" type="textarea" />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-
-                <!-- 第六行：密码和核验状态 -->
-                <el-row :gutter="20">
-                  <el-col :span="12">
-                    <el-form-item label="密码" prop="password">
-                      <el-input v-model="registerForm.password" type="password" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="核验状态" prop="verificationStatus">
-                      <el-input v-model="registerForm.verificationStatus" disabled />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-              <div slot="footer" class="dialog-footer">
-                <el-button @click="registerDialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="submitForm('registerFormRef')">提交</el-button>
-              </div>
-            </el-dialog>
+            <el-button
+              type="primary"
+              style="position: relative;right: 0;float: right;margin-top: -30px;"
+              plain
+              @click="showRegisterDialog"
+            >注册公司</el-button>
 
             <el-button
               :loading="loading"
               type="primary"
               class="login-button"
+              style="position: relative;right: 0;float: right;margin-top: 20px;border-radius: 15px;"
               @click.prevent="handleLogin"
             >登录</el-button>
           </el-form>
+          <!-- 注册对话框 -->
+          <el-dialog :visible.sync="registerDialogVisible" title="注册公司" width="80%" top="5vh">
+            <el-form ref="registerFormRef" :model="registerForm" :rules="rules" label-width="150px">
+              <!-- 第一行 -->
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item label="企业或个体户名称" prop="companyName">
+                    <el-input v-model="registerForm.companyName" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="统一社会信用代码" prop="creditCode">
+                    <el-input v-model="registerForm.creditCode" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <!-- 第二行 -->
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item label="企业类型" prop="companyTypes">
+                    <el-checkbox-group v-model="registerForm.companyTypes">
+                      <el-checkbox label="生产企业" />
+                      <el-checkbox label="粮油经营户" />
+                      <el-checkbox label="粮品电商" />
+                      <el-checkbox label="餐饮企业" />
+                      <el-checkbox label="粮食储备库" />
+                      <el-checkbox label="仓储物流企业" />
+                    </el-checkbox-group>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="法定代表人" prop="legalPerson">
+                    <el-input v-model="registerForm.legalPerson" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <!-- 第三行 -->
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item label="经营场所" prop="businessPlace">
+                    <el-input v-model="registerForm.businessPlace" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="营业期限(年)" prop="businessTerm">
+                    <el-input v-model="registerForm.businessTerm" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <!-- 第四行：上传图片 -->
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item label="营业执照" prop="businessLicense">
+                    <el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card">
+                      <i class="el-icon-plus" />
+                    </el-upload>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="身份证件" prop="idCard">
+                    <el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card" multiple>
+                      <i class="el-icon-plus" />
+                    </el-upload>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <!-- 第五行：手机号码、经营范围 -->
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item label="手机号码" prop="phone">
+                    <el-input v-model="registerForm.phone" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="经营范围" prop="businessScope">
+                    <el-input v-model="registerForm.businessScope" type="textarea" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <!-- 第六行：密码和核验状态 -->
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-form-item label="密码" prop="password">
+                    <el-input v-model="registerForm.password" type="password" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="核验状态" prop="verificationStatus">
+                    <el-input v-model="registerForm.verificationStatus" disabled />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="registerDialogVisible = false">取消</el-button>
+              <el-button type="primary" @click="submitForm('registerFormRef')">提交</el-button>
+            </div>
+          </el-dialog>
+
         </div>
       </el-main>
     </el-container>
   </div>
 </template>
+>
 
 <script>
 import { validUsername } from '@/utils/validate'
@@ -421,7 +431,7 @@ export default {
         }
       } catch (error) {
         console.error('登录请求失败:', error)
-        this.$message.error('登录请求失败')
+        this.$message.error('请检查输入项')
       } finally {
         this.loading = false
       }
@@ -467,15 +477,16 @@ export default {
 }
 
 .el-aside {
-  background-image: url(../../assets/login.png);
+  background-image: url(../../assets/login.jpg);
   background-size: cover;
 }
 
 .el-main {
-  background-color: #648479;
+  background-color: #88bd86;
   display: flex;
   justify-content: center;
   align-items: center;
+  // opacity: 0.8;
 }
 
 .el-container {
@@ -492,6 +503,43 @@ export default {
 
 .el-form-item {
   margin-bottom: 25px;
+
+  .input-group {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 5px 0;
+
+    .svg-container {
+      margin-right: 10px;
+      color: #889aa4;
+      display: flex;
+      align-items: center;
+    }
+
+    .custom-input {
+      flex: 1;
+      border: none;
+      font-size: 16px;
+      color: #333;
+
+      ::v-deep .el-input__inner {
+        border: none;
+        box-shadow: none;
+      }
+
+      ::v-deep .el-input__inner:focus {
+        border: none;
+        box-shadow: none;
+      }
+    }
+
+    .show-pwd {
+      cursor: pointer;
+      color: #889aa4;
+      margin-left: auto;
+    }
+  }
 }
 
 .title-container {
@@ -500,13 +548,13 @@ export default {
 }
 
 .title {
-  font-size: 36px;
+  font-size: 30px;
   font-weight: bold;
   color: #333;
 }
 
 .el-checkbox {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .login-button {
@@ -515,27 +563,9 @@ export default {
   font-size: 18px;
 }
 
-/* 让图标和输入框在同一行 */
-.input-group {
+.role-and-remember {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-}
-
-.svg-container {
-  padding-right: 10px;
-  color: #889aa4;
-}
-
-.el-input {
-  flex: 1;
-}
-
-.show-pwd {
-  cursor: pointer;
-  color: #889aa4;
-}
-.el-radio-group {
-  margin-top: 5%;
-  margin-left: 20%;
 }
 </style>
