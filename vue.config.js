@@ -19,6 +19,11 @@ module.exports = {
   assetsDir: 'static',
   // 是否在保存时使用 eslint-loader 进行代码检查，仅在开发环境下开启
   lintOnSave: process.env.NODE_ENV === 'development',
+  // 指定需要 Babel 转译的特定依赖包，以解决第三方库的兼容性问题
+  transpileDependencies: [
+    'color-parse',
+    'ol'
+  ],
   // 是否在生产环境下生成 source map 文件，设置为 false 以加速生产环境构建
   productionSourceMap: false,
   // 开发服务器配置
@@ -37,11 +42,6 @@ module.exports = {
       }
     }
   },
-  // 指定需要 Babel 转译的特定依赖包，以解决第三方库的兼容性问题
-  transpileDependencies: [
-    'color-parse',
-    'ol'
-  ],
   // Webpack 的简单配置，可以覆盖默认的配置
   configureWebpack: {
     // 为项目提供一个名称，以便在页面标题或其他地方使用

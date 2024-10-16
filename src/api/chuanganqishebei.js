@@ -7,10 +7,11 @@ export function cgqsbhq() {
   })
 }
 
-export function qgqszhq() {
+export function qgqszhq(e) {
   return request({
     url: '/getAllSetSensor',
-    method: 'get'
+    method: 'post',
+    data: e
   })
 }
 
@@ -24,6 +25,20 @@ export function xzcgqsz(e) {
 export function shanchu(e) {
   return request({
     url: `/Sensor`,
+    method: 'post',
+    data: e
+  })
+}
+export function chongmingming(e) {
+  return request({
+    url: `/updateSensorName`,
+    method: 'post',
+    data: e
+  })
+}
+export function xuigaishuju(e) {
+  return request({
+    url: `/updateSensor`,
     method: 'post',
     data: e
   })

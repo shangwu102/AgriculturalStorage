@@ -42,7 +42,7 @@
       />
       <el-table-column
         prop="cameraCount"
-        label="通道"
+        label="仓库"
         width="130"
       />
       <el-table-column
@@ -62,36 +62,22 @@
       <el-table-column
         label="操作"
       >
-        <template>
-
-          <el-button size="small" type="warning">重命名</el-button>
+        <template slot-scope="scope">
+          <el-button size="small" type="warning" @click="chongmm(scope.row)">重命名</el-button>
           <el-button size="small" type="primary">视频查看</el-button>
+          <el-dialog title="重命名" :visible.sync="chongmmxs">
+            <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="chongmingming">
+              <el-form-item label="控制器名称" prop="cameraName">
+                <el-input v-model="dangqianhangshuju.cameraName" placeholder="请输入内容" />
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="chongmmxs = false">取 消</el-button>
+              <el-button type="primary" @click="chongmmqr()">确 定</el-button>
+            </div>
+          </el-dialog>
         </template>
       </el-table-column>
-      <!-- <el-table-column
-        label="操作"
-      >
-        <template>
-          <el-button
-            type="primary"
-            size="small"
-            @click="table = true"
-          >查看</el-button>
-        </template>
-        <el-drawer
-          title="我嵌套了表格!"
-          :visible.sync="table"
-          direction="rtl"
-          size="30%"
-          modal="false"
-        >
-          <el-table :data="gridData">
-            <el-table-column property="date" label="日期" width="150" />
-            <el-table-column property="name" label="姓名" width="200" />
-            <el-table-column property="address" label="地址" />
-          </el-table>
-        </el-drawer>
-      </el-table-column> -->
     </el-table>
     <div class="yema">
       <el-pagination
@@ -112,27 +98,27 @@ export default {
   data() {
     const options = [{
       value: 1,
-      label: '通道1'
+      label: '仓库1'
     },
     {
       value: 2,
-      label: '通道2'
+      label: '仓库2'
     },
     {
       value: 3,
-      label: '通道3'
+      label: '仓库3'
     },
     {
       value: 4,
-      label: '通道4'
+      label: '仓库4'
     },
     {
       value: 5,
-      label: '通道5'
+      label: '仓库5'
     },
     {
       value: 6,
-      label: '通道6'
+      label: '仓库6'
     }
     ]
     const tableData = [
@@ -256,13 +242,7 @@ export default {
     ]
 
     const newrukuxx = {
-      repertoryName: '',
-      productType: '',
-      productName: '',
-      joinAmount: '',
-      pass: '',
-      createTime: '',
-      account: ''
+      repertoryName: ''
     }
     const newrukuxxjianyan = {
       repertoryName: [{ required: true, message: '请输入仓库名称', trigger: 'blur' }],
@@ -272,6 +252,9 @@ export default {
       pass: [{ required: true, message: '请输入合格率', trigger: 'blur' }],
       createTime: [{ required: true, message: '请输入入库时间', trigger: 'blur' }],
       account: [{ required: true, message: '请输入操作账号', trigger: 'blur' }]
+    }
+    const newrukuxxjianyan1 = {
+      cameraName: [{ required: true, message: '请输入摄像头名称', trigger: 'blur' }]
     }
     return {
       options: options,
@@ -283,9 +266,11 @@ export default {
       dialogFormVisible: false,
       form: newrukuxx,
       shujujianyan: newrukuxxjianyan,
-      table: true,
+      shujujianyan1: newrukuxxjianyan1,
+      chongmmxs: false,
       dangqianyema: 1,
-      activeName: 'chuangganqi'
+      activeName: 'chuangganqi',
+      dangqianhangshuju: ''
     }
   },
   async created() {
@@ -303,6 +288,15 @@ export default {
     this.chaxun()
   },
   methods: {
+    chongmmqr() {
+      console.log(this.dangqianhangshuju)
+      this.chongmmxs = false
+    },
+    chongmm(e) {
+      this.chongmmxs = true
+      this.dangqianhangshuju = e
+      console.log('当前行', this.dangqianhangshuju)
+    },
     huqushuju() {
       this.newdata = this.tableData
     },
@@ -353,6 +347,12 @@ export default {
 </script>
 
 <style scoped>
+.chongmingming{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .el-select{
   width: 17vw;
 }

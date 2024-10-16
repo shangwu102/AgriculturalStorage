@@ -2,7 +2,8 @@
   <div v-if="!item.hidden && (!item.meta || !item.meta.roles || item.meta.roles.includes(role))">
     <!-- 一级菜单 -->
     <template
-      v-if="hasOneShowingChild(item.children, item) && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow">
+      v-if="hasOneShowingChild(item.children, item) && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow"
+    >
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'submenu-title-noDropdown': !isNest }">
           <item :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" :title="onlyOneChild.meta.title" />
@@ -14,8 +15,14 @@
       <template slot="title">
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
       </template>
-      <sidebar-item v-for="child in item.children" :key="child.path" :is-nest="true" :item="child"
-        :base-path="resolvePath(child.path)" class="nest-menu" />
+      <sidebar-item
+        v-for="child in item.children"
+        :key="child.path"
+        :is-nest="true"
+        :item="child"
+        :base-path="resolvePath(child.path)"
+        class="nest-menu"
+      />
     </el-submenu>
   </div>
 </template>
@@ -47,22 +54,22 @@ export default {
       default: ''
     }
   },
-  data () {
+  data() {
     this.onlyOneChild = null
     return {}
   },
   computed: {
     // 从 localStorage 中获取用户角色信息
-    role () {
+    role() {
       const user = JSON.parse(getUser()) // 从 localStorage 中获取用户信息
-      console.log(user);
-      
-      return user ? user.role : ''; // 如果存在用户信息，则返回角色，否则返回空字符串
+      console.log(user)
+
+      return user ? user.role : '' // 如果存在用户信息，则返回角色，否则返回空字符串
     }
   },
   methods: {
     // 判断是否只显示一个子菜单
-    hasOneShowingChild (children = [], parent) {
+    hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {
         // 过滤菜单项的逻辑，检查菜单是否隐藏和角色权限
         if (item.hidden || (item.meta.roles && !item.meta.roles.includes(this.role))) {
@@ -86,7 +93,7 @@ export default {
       return false
     },
     // 解析路由路径
-    resolvePath (routePath) {
+    resolvePath(routePath) {
       if (isExternal(routePath)) {
         return routePath
       }

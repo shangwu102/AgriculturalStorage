@@ -76,20 +76,60 @@
           <el-button size="small" type="primary">查看报表</el-button>
           <el-button size="small" type="warning" @click="chongmm(scope.row)">重命名</el-button>
           <el-drawer
-            title="传感器设置列表"
+            title="控制器设置列表"
             :visible.sync="table"
             direction="rtl"
             size="50%"
           >
             <div class="celan">
               <el-button type="primary" @click="xinzeng()">新增设置</el-button>
-              <el-table :data="gridData">
-                <el-table-column property="sensorStart" label="开始时间" width="150" />
-                <el-table-column property="sensorEnd" label="结束时间" width="200" />
-                <el-table-column property="lessValue" label="小于报警值" />
-                <el-table-column property="bigValue" label="大于报警值" />
-                <el-table-column property="sensorStatus" label="状态" />
-                <el-table-column label="操作">
+              <br>
+              <br>
+              <h3 class="el-icon-alarm-clock">定时</h3>
+              <el-table :data="gridData1">
+                <el-table-column property="controllerOpentime" label="开始时间" />
+                <el-table-column property="controllerEndtime" label="结束时间" />
+                <el-table-column property="controllerCount" label="循环次数" />
+                <el-table-column property="controllerStatus" label="状态" />
+                <el-table-column property="controllerCycle" label="循环周期" />
+                <el-table-column width="140px" label="操作">
+                  <template slot-scope="szscope">
+                    <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
+                    <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
+                  </template>
+                </el-table-column>
+              </el-table>
+              <br>
+              <h3 class="el-icon-refresh">循环</h3>
+              <el-table :data="gridData2">
+                <el-table-column property="controller_type" label="循环结束类型" />
+                <el-table-column property="controllerOpentime" label="开启时间" />
+                <el-table-column property="controllerEndtime" label="关闭时间" />
+                <el-table-column property="controllerCount" label="循环次数" />
+                <el-table-column property="controllerTime" label="持续时间(分钟)" />
+                <el-table-column property="controllerInterval" label="间隔(分钟)" />
+                <el-table-column property="controllerStatus" label="状态" />
+                <el-table-column property="controllerCycle" label="循环周期" />
+                <el-table-column width="140px" label="操作">
+                  <template slot-scope="szscope">
+                    <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
+                    <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
+                  </template>
+                </el-table-column>
+              </el-table>
+              <br>
+              <h3 class="el-icon-help">智能</h3>
+              <el-table :data="gridData3">
+                <el-table-column property="controllerOpenname" label="智能控制打开设备名称" />
+                <el-table-column property="controllerControl" label="智能控制关闭设备名称" />
+                <el-table-column property="controllerOpencondition" label="打开设备条件" />
+                <el-table-column property="controllerValue" label="关闭设备条件" />
+                <el-table-column property="controllerOpentime" label="开启时间" />
+                <el-table-column property="controller_offcondition" label="关闭时间" />
+                <el-table-column property="controllerConditionvalue" label="打开条件数值" />
+                <el-table-column property="controllerOffvalue" label="关闭条件数值" />
+                <el-table-column property="controllerStatus" label="状态" />
+                <el-table-column width="140px" label="操作">
                   <template slot-scope="szscope">
                     <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
                     <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
@@ -98,96 +138,382 @@
               </el-table>
             </div>
           </el-drawer>
-          <el-dialog title="新增传感器设置" :visible.sync="dialogFormVisible">
+          <el-dialog width="30vw" title="新增控制器设置" :visible.sync="dialogFormVisible">
             <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
-              <div class="diyi">
-                <el-form-item label="开始时间" prop="sensorStart">
-                  <el-time-select
-                    v-model="form.sensorStart"
-                    :picker-options="{
-                      start: '00:00',
-                      step: '00:05',
-                      end: '23:55'
-                    }"
-                    placeholder="选择时间"
+              <div class="if">
+                <el-form-item label-width="130px" label="控制类型">
+                  <el-select v-model="form.kzqType" placeholder="请选择">
+                    <el-option
+                      v-for="item in leixing"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type3'"
+                  label-width="130px"
+                  label="智能控制打开设备"
+                  prop="controllerOpenname"
+                >
+                  <el-select v-model="form.controllerOpenname" placeholder="请选择">
+                    <el-option
+                      v-for="item in cgqmc"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type3'"
+                  label-width="130px"
+                  label="智能控制关闭设备"
+                  prop="controllerControl"
+                >
+                  <el-select v-model="form.controllerControl" placeholder="请选择">
+                    <el-option
+                      v-for="item in cgqmc"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type3'"
+                  label-width="130px"
+                  label="打开设备条件"
+                  prop="controllerOpencondition"
+                >
+                  <el-select v-model="form.controllerOpencondition" placeholder="请选择">
+                    <el-option
+                      v-for="item in tj"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type3'"
+                  label-width="130px"
+                  label="关闭设备条件"
+                  prop="controllerValue"
+                >
+                  <el-select v-model="form.controllerValue" placeholder="请选择">
+                    <el-option
+                      v-for="item in tj"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type2'"
+                  label-width="130px"
+                  label="循环结束类型"
+                  prop="controllerEndtype"
+                >
+                  <el-select v-model="form.controllerEndtype" placeholder="请选择">
+                    <el-option
+                      v-for="item in xhjslx"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  label-width="130px"
+                  label="开始时间"
+                  prop="controllerOpentime"
+                >
+                  <el-date-picker
+                    v-model="form.controllerOpentime"
+                    type="datetime"
+                    placeholder="选择日期时间"
                   />
                 </el-form-item>
-                <el-form-item label="小于报警值" prop="lessValue">
-                  <el-input v-model="form.lessValue" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label="状态" prop="sensorStatus">
-                  <el-input v-model="form.sensorStatus" autocomplete="off" />
-                </el-form-item>
-              </div>
-              <div class="dier">
-                <el-form-item label="结束时间" prop="sensorEnd">
-                  <el-time-select
-                    v-model="form.sensorEnd"
-                    :picker-options="{
-                      start: '00:00',
-                      step: '00:05',
-                      end: '23:55'
-                    }"
-                    placeholder="选择时间"
+                <el-form-item
+                  label-width="130px"
+                  label="关闭时间"
+                  prop="controllerEndtime"
+                >
+                  <el-date-picker
+                    v-model="form.controllerEndtime"
+                    type="datetime"
+                    placeholder="选择日期时间"
                   />
                 </el-form-item>
-                <el-form-item label="大于报警值" prop="bigValue">
-                  <el-input v-model="form.bigValue" autocomplete="off" />
+                <el-form-item
+                  v-if="form.kzqType === 'type3'"
+                  label-width="130px"
+                  label="打开条件数值"
+                  prop="controllerConditionvalue"
+                >
+                  <el-input v-model="form.controllerConditionvalue" placeholder="请输入内容" />
                 </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type3'"
+                  label-width="130px"
+                  label="关闭条件数值"
+                  prop="controllerOffvalue"
+                >
+                  <el-input v-model="form.controllerOffvalue" placeholder="请输入内容" />
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type2' || form.kzqType ==='type1'"
+                  label-width="130px"
+                  label="循环次数"
+                  prop="controllerCount"
+                >
+                  <el-input v-model="form.controllerCount" placeholder="请输入内容" />
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type2'"
+                  label-width="130px"
+                  label="持续时间分钟"
+                  prop="controllerTime"
+                >
+                  <el-input v-model="form.controllerTime" placeholder="请输入内容" />
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type2'"
+                  label-width="130px"
+                  label="间隔分钟"
+                  prop="controllerInterval"
+                >
+                  <el-input v-model="form.controllerInterval" placeholder="请输入内容" />
+                </el-form-item>
+                <el-form-item
+                  label-width="130px"
+                  label="状态"
+                  prop="controllerStatus"
+                >
+                  <el-select v-model="form.controllerStatus" placeholder="请选择">
+                    <el-option
+                      v-for="item in zt"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type2' || form.kzqType ==='type1'"
+                  label-width="130px"
+                  label="循环周期"
+                  prop="controllerCycle"
+                >
+                  <el-select v-model="form.controllerCycle" placeholder="请选择">
+                    <el-option
+                      v-for="item in xhzq"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <div slot="footer" class="dialog-footer">
+                  <el-button @click="dialogFormVisible = false">取 消</el-button>
+                  <el-button type="primary" @click="xinzengqr()">确 定</el-button>
+                </div>
               </div>
             </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="xinzengqr()">确 定</el-button>
-            </div>
           </el-dialog>
-          <el-dialog title="修改设置" :visible.sync="xuigaixs">
+          <el-dialog width="30vw" title="修改设置" :visible.sync="xuigaixs">
             <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
-              <div class="diyi">
-                <el-form-item label="开始时间" prop="sensorStart">
-                  <el-time-select
-                    v-model="form.sensorStart"
-                    :picker-options="{
-                      start: '00:00',
-                      step: '00:05',
-                      end: '23:55'
-                    }"
-                    placeholder="选择时间"
+              <div class="if">
+                <el-form-item label-width="130px" label="控制类型">
+                  <el-select v-model="form.kzqType" placeholder="请选择">
+                    <el-option
+                      v-for="item in leixing"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type3'"
+                  label-width="130px"
+                  label="智能控制打开设备"
+                  prop="controllerOpenname"
+                >
+                  <el-select v-model="form.controllerOpenname" placeholder="请选择">
+                    <el-option
+                      v-for="item in cgqmc"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type3'"
+                  label-width="130px"
+                  label="智能控制关闭设备"
+                  prop="controllerControl"
+                >
+                  <el-select v-model="form.controllerControl" placeholder="请选择">
+                    <el-option
+                      v-for="item in cgqmc"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type3'"
+                  label-width="130px"
+                  label="打开设备条件"
+                  prop="controllerOpencondition"
+                >
+                  <el-select v-model="form.controllerOpencondition" placeholder="请选择">
+                    <el-option
+                      v-for="item in tj"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type3'"
+                  label-width="130px"
+                  label="关闭设备条件"
+                  prop="controllerValue"
+                >
+                  <el-select v-model="form.controllerValue" placeholder="请选择">
+                    <el-option
+                      v-for="item in tj"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type2'"
+                  label-width="130px"
+                  label="循环结束类型"
+                  prop="controllerEndtype"
+                >
+                  <el-select v-model="form.controllerEndtype" placeholder="请选择">
+                    <el-option
+                      v-for="item in xhjslx"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  label-width="130px"
+                  label="开始时间"
+                  prop="controllerOpentime"
+                >
+                  <el-date-picker
+                    v-model="form.controllerOpentime"
+                    type="datetime"
+                    placeholder="选择日期时间"
                   />
                 </el-form-item>
-                <el-form-item label="小于报警值" prop="lessValue">
-                  <el-input v-model="form.lessValue" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label="状态" prop="sensorStatus">
-                  <el-input v-model="form.sensorStatus" autocomplete="off" />
-                </el-form-item>
-              </div>
-              <div class="dier">
-                <el-form-item label="结束时间" prop="sensorEnd">
-                  <el-time-select
-                    v-model="form.sensorEnd"
-                    :picker-options="{
-                      start: '00:00',
-                      step: '00:05',
-                      end: '23:55'
-                    }"
-                    placeholder="选择时间"
+                <el-form-item
+                  label-width="130px"
+                  label="关闭时间"
+                  prop="controllerEndtime"
+                >
+                  <el-date-picker
+                    v-model="form.controllerEndtime"
+                    type="datetime"
+                    placeholder="选择日期时间"
                   />
                 </el-form-item>
-                <el-form-item label="大于报警值" prop="bigValue">
-                  <el-input v-model="form.bigValue" autocomplete="off" />
+                <el-form-item
+                  v-if="form.kzqType === 'type3'"
+                  label-width="130px"
+                  label="打开条件数值"
+                  prop="controllerConditionvalue"
+                >
+                  <el-input v-model="form.controllerConditionvalue" placeholder="请输入内容" />
                 </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type3'"
+                  label-width="130px"
+                  label="关闭条件数值"
+                  prop="controllerOffvalue"
+                >
+                  <el-input v-model="form.controllerOffvalue" placeholder="请输入内容" />
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type2' || form.kzqType ==='type1'"
+                  label-width="130px"
+                  label="循环次数"
+                  prop="controllerCount"
+                >
+                  <el-input v-model="form.controllerCount" placeholder="请输入内容" />
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type2'"
+                  label-width="130px"
+                  label="持续时间分钟"
+                  prop="controllerTime"
+                >
+                  <el-input v-model="form.controllerTime" placeholder="请输入内容" />
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type2'"
+                  label-width="130px"
+                  label="间隔分钟"
+                  prop="controllerInterval"
+                >
+                  <el-input v-model="form.controllerInterval" placeholder="请输入内容" />
+                </el-form-item>
+                <el-form-item
+                  label-width="130px"
+                  label="状态"
+                  prop="controllerStatus"
+                >
+                  <el-select v-model="form.controllerStatus" placeholder="请选择">
+                    <el-option
+                      v-for="item in zt"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  v-if="form.kzqType === 'type2' || form.kzqType ==='type1'"
+                  label-width="130px"
+                  label="循环周期"
+                  prop="controllerCycle"
+                >
+                  <el-select v-model="form.controllerCycle" placeholder="请选择">
+                    <el-option
+                      v-for="item in xhzq"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <div slot="footer" class="dialog-footer">
+                  <el-button @click="xuigaixs = false">取 消</el-button>
+                  <el-button type="primary" @click="xuigaiqr()">确 定</el-button>
+                </div>
               </div>
             </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="xuigaixs = false">取 消</el-button>
-              <el-button type="primary" @click="xuigaiqr()">确 定</el-button>
-            </div>
           </el-dialog>
           <el-dialog title="重命名" :visible.sync="chongmmxs">
-            <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="xinzenshuju">
-              <el-form-item label="传感器名称" prop="sensorName">
-                <el-input v-model="dangqianhangshuju.sensorName" placeholder="请输入内容" />
+            <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="chongmingming">
+              <el-form-item label="控制器名称" prop="controllerName">
+                <el-input v-model="dangqianhangshuju.controllerName" placeholder="请输入内容" />
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -197,30 +523,6 @@
           </el-dialog>
         </template>
       </el-table-column>
-      <!-- <el-table-column
-        label="操作"
-      >
-        <template>
-          <el-button
-            type="primary"
-            size="small"
-            @click="table = true"
-          >查看</el-button>
-        </template>
-        <el-drawer
-          title="我嵌套了表格!"
-          :visible.sync="table"
-          direction="rtl"
-          size="30%"
-          modal="false"
-        >
-          <el-table :data="gridData">
-            <el-table-column property="date" label="日期" width="150" />
-            <el-table-column property="name" label="姓名" width="200" />
-            <el-table-column property="address" label="地址" />
-          </el-table>
-        </el-drawer>
-      </el-table-column> -->
     </el-table>
     <div class="yema">
       <el-pagination
@@ -254,7 +556,7 @@ export default {
         'icon': '正常图标.png',
         'controller_name': '温度控制器',
         'value': 23.5,
-        'controller_status': 1
+        'controllerStatus': 1
       },
       {
         'status': '❌',
@@ -262,7 +564,7 @@ export default {
         'icon': '警告图标.png',
         'controller_name': '湿度控制器',
         'value': 68.2,
-        'controller_status': 0
+        'controllerStatus': 0
       },
       {
         'status': '⚠',
@@ -270,7 +572,7 @@ export default {
         'icon': '故障图标.png',
         'controller_name': '压力控制器',
         'value': null,
-        'controller_status': 1
+        'controllerStatus': 1
       },
       {
         'status': '✅',
@@ -278,7 +580,7 @@ export default {
         'icon': '正常图标.png',
         'controller_name': '气体控制器',
         'value': 15.3,
-        'controller_status': 0
+        'controllerStatus': 0
       },
       {
         'status': '✅',
@@ -286,7 +588,7 @@ export default {
         'icon': '正常图标.png',
         'controller_name': '温度控制器',
         'value': 22.8,
-        'controller_status': 1
+        'controllerStatus': 1
       },
       {
         'status': '❌',
@@ -294,7 +596,7 @@ export default {
         'icon': '警告图标.png',
         'controller_name': '湿度控制器',
         'value': 72.5,
-        'controller_status': 0
+        'controllerStatus': 0
       },
       {
         'status': '⚠',
@@ -302,7 +604,7 @@ export default {
         'icon': '故障图标.png',
         'controller_name': '压力控制器',
         'value': null,
-        'controller_status': 1
+        'controllerStatus': 1
       },
       {
         'status': '✅',
@@ -310,7 +612,7 @@ export default {
         'icon': '正常图标.png',
         'controller_name': '气体控制器',
         'value': 12.6,
-        'controller_status': 0
+        'controllerStatus': 0
       },
       {
         'status': '❌',
@@ -318,7 +620,7 @@ export default {
         'icon': '警告图标.png',
         'controller_name': '温度控制器',
         'value': 30.2,
-        'controller_status': 1
+        'controllerStatus': 1
       },
       {
         'status': '✅',
@@ -326,7 +628,7 @@ export default {
         'icon': '正常图标.png',
         'controller_name': '湿度控制器',
         'value': 55.4,
-        'controller_status': 0
+        'controllerStatus': 0
       },
       {
         'status': '⚠',
@@ -334,7 +636,7 @@ export default {
         'icon': '故障图标.png',
         'controller_name': '气压控制器',
         'value': null,
-        'controller_status': 1
+        'controllerStatus': 1
       },
       {
         'status': '✅',
@@ -342,7 +644,7 @@ export default {
         'icon': '正常图标.png',
         'controller_name': '风速控制器',
         'value': 5.4,
-        'controller_status': 0
+        'controllerStatus': 0
       },
       {
         'status': '❌',
@@ -350,35 +652,71 @@ export default {
         'icon': '警告图标.png',
         'controller_name': '温度控制器',
         'value': 29.9,
-        'controller_status': 1
+        'controllerStatus': 1
       }
     ]
 
     const newrukuxx = {
-      repertoryName: '',
-      productType: '',
-      productName: '',
-      joinAmount: '',
-      pass: '',
-      createTime: '',
-      account: ''
+      kzqType: 'type1',
+      controllerOpentime: '',
+      controllerEndtime: '',
+      controllerCount: '',
+      controllerStatus: '',
+      controllerCycle: '',
+      controllerEndtype: '',
+      controllerTime: '',
+      controllerInterval: '',
+      controllerOpenname: '',
+      controllerControl: '',
+      controllerOpencondition: '',
+      controllerValue: '',
+      controllerConditionvalue: '',
+      controllerOffvalue: ''
+    }
+    const newrukuxxcs = {
+      kzqType: 'type1',
+      controllerOpentime: '',
+      controllerEndtime: '',
+      controllerCount: '',
+      controllerStatus: '',
+      controllerCycle: '',
+      controllerEndtype: '',
+      controllerTime: '',
+      controllerInterval: '',
+      controllerOpenname: '',
+      controllerControl: '',
+      controllerOpencondition: '',
+      controllerValue: '',
+      controllerConditionvalue: '',
+      controllerOffvalue: ''
     }
     const newrukuxxjianyan = {
-      repertoryName: [{ required: true, message: '请输入仓库名称', trigger: 'blur' }],
-      productType: [{ required: true, message: '请输入产品类型', trigger: 'blur' }],
-      productName: [{ required: true, message: '请输入产品名称', trigger: 'blur' }],
-      joinAmount: [{ required: true, message: '请输入入库数量', trigger: 'blur' }],
-      pass: [{ required: true, message: '请输入合格率', trigger: 'blur' }],
-      createTime: [{ required: true, message: '请输入入库时间', trigger: 'blur' }],
-      account: [{ required: true, message: '请输入操作账号', trigger: 'blur' }]
+      controllerOpentime: [{ required: true, message: '请输入开启时间', trigger: 'blur' }],
+      controllerEndtime: [{ required: true, message: '请输入关闭时间', trigger: 'blur' }],
+      controllerCount: [{ required: true, message: '请输入循环次数', trigger: 'blur' }],
+      controllerStatus: [{ required: true, message: '请输入状态', trigger: 'blur' }],
+      controllerCycle: [{ required: true, message: '请输入循环周期', trigger: 'blur' }],
+      controllerEndtype: [{ required: true, message: '请输入循环结束类型', trigger: 'blur' }],
+      controllerTime: [{ required: true, message: '请输入持续时间(分钟)', trigger: 'blur' }],
+      controllerInterval: [{ required: true, message: '请输入间隔(分钟)', trigger: 'blur' }],
+      controllerOpenname: [{ required: true, message: '请输入智能控制打开设备名称', trigger: 'blur' }],
+      controllerControl: [{ required: true, message: '请输入智能控制关闭设备名称', trigger: 'blur' }],
+      controllerOpencondition: [{ required: true, message: '请输入打开设备条件', trigger: 'blur' }],
+      controllerValue: [{ required: true, message: '请输入关闭设备条件', trigger: 'blur' }],
+      controllerConditionvalue: [{ required: true, message: '请输入打开条件数值', trigger: 'blur' }],
+      controllerOffvalue: [{ required: true, message: '请输入关闭条件数值', trigger: 'blur' }]
+
     }
-    const gridData = [
+    const newrukuxxjianyan1 = {
+      controllerName: [{ required: true, message: '请输入控制器名称', trigger: 'blur' }]
+    }
+    const gridData1 = [
       {
-        'sensorStart': '00:00',
-        'sensorEnd': '01:00',
-        'lessValue': 5,
-        'bigValue': 10,
-        'sensorStatus': '正常'
+        'controllerOpentime': '00:00',
+        'controllerEndtime': '01:00',
+        'controllerCount': 5,
+        'controllerStatus': 10,
+        'controllerCycle': '正常'
       },
       {
         'sensorStart': '02:00',
@@ -393,13 +731,137 @@ export default {
         'lessValue': 1,
         'bigValue': 15,
         'sensorStatus': '正常'
+      }
+    ]
+    const gridData2 = [
+      {
+        'controllerEndtype': '00:00',
+        'controllerOpentime': '01:00',
+        'controllerEndtime': 5,
+        'controllerCount': 10,
+        'controllerTime': '正常',
+        'controllerInterval': 10,
+        'controllerStatus': 10,
+        'controllerCycle': 10
+
       },
       {
-        'sensorStart': '06:00',
-        'sensorEnd': '07:00',
-        'lessValue': 7,
-        'bigValue': 20,
+        'sensorStart': '02:00',
+        'sensorEnd': '03:00',
+        'lessValue': 3,
+        'bigValue': 12,
         'sensorStatus': '警报'
+      },
+      {
+        'sensorStart': '04:00',
+        'sensorEnd': '05:00',
+        'lessValue': 1,
+        'bigValue': 15,
+        'sensorStatus': '正常'
+      }
+    ]
+    const gridData3 = [
+      {
+        'controller_type': '00:00',
+        'controllerOpenname': '01:00',
+        'controllerControl': 5,
+        'controllerOpencondition': 10,
+        'controllerValue': 10,
+        'controllerOpentime': 10,
+        'controller_offcondition': 10,
+        'controllerConditionvalue': 10,
+        'controllerOffvalue': 10,
+        'controllerStatus': '正常'
+      },
+      {
+        'sensorStart': '02:00',
+        'sensorEnd': '03:00',
+        'lessValue': 3,
+        'bigValue': 12,
+        'sensorStatus': '警报'
+      },
+      {
+        'sensorStart': '04:00',
+        'sensorEnd': '05:00',
+        'lessValue': 1,
+        'bigValue': 15,
+        'sensorStatus': '正常'
+      }
+    ]
+    const leixing = [{
+      value: 'type1',
+      label: '定时'
+    },
+    {
+      value: 'type2',
+      label: '循环'
+    },
+    {
+      value: 'type3',
+      label: '智能'
+    }
+    ]
+    const cgqmc = [{
+
+    }]
+    const tj = [
+      {
+        value: '大于',
+        label: '大于'
+      },
+      {
+        value: '小于',
+        label: '小于'
+      }
+    ]
+    const zt = [
+      {
+        value: '开启',
+        label: '开启'
+      },
+      {
+        value: '关闭',
+        label: '关闭'
+      }
+    ]
+    const xhjslx = [
+      {
+        value: '时间',
+        label: '时间'
+      },
+      {
+        value: '次数',
+        label: '次数'
+      }
+    ]
+    const xhzq = [
+      {
+        value: '1',
+        label: '1'
+      },
+      {
+        value: '2',
+        label: '2'
+      },
+      {
+        value: '3',
+        label: '3'
+      },
+      {
+        value: '4',
+        label: '4'
+      },
+      {
+        value: '5',
+        label: '5'
+      },
+      {
+        value: '6',
+        label: '6'
+      },
+      {
+        value: '7',
+        label: '7'
       }
     ]
     return {
@@ -411,15 +873,27 @@ export default {
       zhongjianshuju: '',
       dialogFormVisible: false,
       form: newrukuxx,
+      fromcz: newrukuxxcs,
       shujujianyan: newrukuxxjianyan,
+      shujujianyan1: newrukuxxjianyan1,
       table: false,
       dangqianyema: 1,
       activeName: 'chuangganqi',
       kzqzt: true,
       dangqianhangshuju: '',
-      gridData: gridData,
+      gridData1: gridData1,
+      gridData2: gridData2,
+      gridData3: gridData3,
+      shezhidqhsj: '',
       xuigaixs: false,
-      chongmmxs: false
+      chongmmxs: false,
+      leixing: leixing,
+      cgqmc: cgqmc,
+      tj: tj,
+      zt: zt,
+      xhjslx: xhjslx,
+      xhzq: xhzq,
+      cmmmc: ''
     }
   },
   async created() {
@@ -437,6 +911,270 @@ export default {
     this.chaxun()
   },
   methods: {
+    async chongmmqr() {
+      if (!this.dangqianhangshuju.controllerName) {
+        this.$message.error('请输入传感器名称')
+        this.dangqianhangshuju.controllerName = this.cmmmc
+      } else {
+        try {
+          const e = this.dangqianhangshuju
+          console.log('重命名', e)
+          const json = {
+            id: e.id,
+            controllerName: e.controllerName
+          }
+          const ref = await chongmingming(json)
+          this.$message({
+            message: '重命名成功',
+            type: 'success'
+          })
+          console.log(json)
+          console.log(ref)
+        } catch (error) {
+          console.log('错误', error)
+        }
+        console.log(this.dangqianhangshuju)
+        this.chongmmxs = false
+      }
+    },
+    chongmm(e) {
+      this.cmmmc = e.controllerName
+      this.chongmmxs = true
+      this.dangqianhangshuju = e
+      console.log('当前行', this.dangqianhangshuju)
+    },
+    async shanchushezhi(e) {
+      try {
+        const json = {
+          id: e.id
+        }
+        const ref = await shanchu(json)
+        console.log(json)
+        console.log(ref)
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
+      } catch (error) {
+        console.log('错误', error)
+      }
+      console.log('删除', e.id)
+      this.shezhi(this.shezhidqhsj)
+      this.shezhi(this.shezhidqhsj)
+    },
+    async xuigaiqr() {
+      switch (this.form.kzqType) {
+        case 'type1':
+          if (!this.form.controllerOpentime ||
+          !this.form.controllerEndtime ||
+          !this.form.controllerCount ||
+          !this.form.controllerStatus ||
+          !this.form.controllerCycle) {
+            this.$message.error('请输入全部数据')
+          } else {
+            try {
+              const ref = await xzcgqsz(this.form)
+              console.log('返回数据', ref.data.code)
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+            } catch (error) {
+              console.log('错误', error)
+            }
+            this.form = JSON.parse(JSON.stringify(this.fromcz))
+
+            console.log('修改后的数据', this.form)
+            this.xuigaixs = false
+            this.shezhi(this.shezhidqhsj)
+          }
+          break
+
+        case 'type2':
+          if (!this.form.controllerOpentime ||
+          !this.form.controllerEndtime ||
+          !this.form.controllerCount ||
+          !this.form.controllerStatus ||
+          !this.form.controllerCycle ||
+          !this.form.controllerTime ||
+          !this.form.controllerInterval) {
+            this.$message.error('请输入全部数据')
+          } else {
+            try {
+              const ref = await xzcgqsz(this.form)
+              console.log('返回数据', ref.data.code)
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+            } catch (error) {
+              console.log('错误', error)
+            }
+            this.form = JSON.parse(JSON.stringify(this.fromcz))
+            console.log('修改后的数据', this.form)
+            this.xuigaixs = false
+            this.shezhi(this.shezhidqhsj)
+          }
+          break
+
+        case 'type3':
+          if (!this.form.controllerOpenname ||
+          !this.form.controllerControl ||
+          !this.form.controllerOpencondition ||
+          !this.form.controllerValue ||
+          !this.form.controllerOpentime ||
+          !this.form.controllerEndtime ||
+          !this.form.controllerConditionvalue ||
+          !this.form.controllerOffvalue ||
+          !this.form.controllerStatus) {
+            this.$message.error('请输入全部数据')
+          } else {
+            try {
+              const ref = await xzcgqsz(this.form)
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+              console.log('返回数据', ref.data.code)
+            } catch (error) {
+              console.log('错误', error)
+            }
+            this.form = JSON.parse(JSON.stringify(this.fromcz))
+
+            console.log('修改后的数据', this.form)
+            this.xuigaixs = false
+            this.shezhi(this.shezhidqhsj)
+          }
+          break
+      }
+    },
+    xuigai(e) {
+      this.xuigaixs = true
+      console.log('修改', e)
+      this.form.kzqType = e.kzqType
+      this.form.controllerOpentime = e.controllerOpentime
+      this.form.controllerEndtime = e.controllerEndtime
+      this.form.controllerCount = e.controllerCount
+      this.form.controllerStatus = e.controllerStatus
+      this.form.controllerCycle = e.controllerCycle
+      this.form.controllerEndtype = e.controllerEndtype
+      this.form.controllerTime = e.controllerTime
+      this.form.controllerInterval = e.controllerInterval
+      this.form.controllerOpenname = e.controllerOpenname
+      this.form.controllerControl = e.controllerControl
+      this.form.controllerOpencondition = e.controllerOpencondition
+      this.form.controllerValue = e.controllerValue
+      this.form.controllerConditionvalue = e.controllerConditionvalue
+      this.form.controllerOffvalue = e.controllerOffvalue
+    },
+    async shezhi(e) {
+      this.shezhidqhsj = e
+      try {
+        const ls = []
+        for (let i = 0; i < this.tableData.length; i++) {
+          ls.push(this.tableData[i])
+        }
+        this.cgqmc = ls
+        const ref = await qgqszhq()
+        console.log('数据', ref)
+        this.gridData = ref.data.data
+        console.log('替换完的数据', this.gridData)
+      } catch (error) {
+        console.log('错误', error)
+      }
+      this.table = true
+      console.log('当前行数据', e)
+      this.dangqianhangshuju = e
+      console.log('新增那条数据的设置', this.dangqianhangshuju)
+    },
+    async xinzengqr() {
+      switch (this.form.kzqType) {
+        case 'type1':
+          if (!this.form.controllerOpentime ||
+          !this.form.controllerEndtime ||
+          !this.form.controllerCount ||
+          !this.form.controllerStatus ||
+          !this.form.controllerCycle) {
+            this.$message.error('请输入全部数据')
+          } else {
+            try {
+              const ref = await xzcgqsz(this.form)
+              console.log('返回数据', ref.data.code)
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+            } catch (error) {
+              console.log('错误', error)
+            }
+            console.log(this.form)
+            this.form = JSON.parse(JSON.stringify(this.fromcz))
+            this.dialogFormVisible = false
+            this.shezhi(this.shezhidqhsj)
+          }
+          break
+
+        case 'type2':
+          if (!this.form.controllerOpentime ||
+          !this.form.controllerEndtime ||
+          !this.form.controllerCount ||
+          !this.form.controllerStatus ||
+          !this.form.controllerCycle ||
+          !this.form.controllerTime ||
+          !this.form.controllerInterval) {
+            this.$message.error('请输入全部数据')
+          } else {
+            try {
+              const ref = await xzcgqsz(this.form)
+              console.log('返回数据', ref.data.code)
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+            } catch (error) {
+              console.log('错误', error)
+            }
+            console.log(this.form)
+            this.form = JSON.parse(JSON.stringify(this.fromcz))
+            this.dialogFormVisible = false
+            this.shezhi(this.shezhidqhsj)
+          }
+          break
+
+        case 'type3':
+          if (!this.form.controllerOpenname ||
+          !this.form.controllerControl ||
+          !this.form.controllerOpencondition ||
+          !this.form.controllerValue ||
+          !this.form.controllerOpentime ||
+          !this.form.controllerEndtime ||
+          !this.form.controllerConditionvalue ||
+          !this.form.controllerOffvalue ||
+          !this.form.controllerStatus) {
+            this.$message.error('请输入全部数据')
+          } else {
+            try {
+              const ref = await xzcgqsz(this.form)
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+              console.log('返回数据', ref.data.code)
+            } catch (error) {
+              console.log('错误', error)
+            }
+            console.log(this.form)
+            this.form = JSON.parse(JSON.stringify(this.fromcz))
+            this.dialogFormVisible = false
+            this.shezhi(this.shezhidqhsj)
+          }
+          break
+      }
+    },
+    xinzeng() {
+      this.dialogFormVisible = true
+      console.log('新增那条数据的设置', this.dangqianhangshuju)
+    },
     huqushuju() {
       this.newdata = this.tableData
     },
@@ -485,10 +1223,27 @@ export default {
   }
 }
 </script>
-
+<style>
+.el-drawer__header {
+  margin-bottom: 0;
+}
+</style>
 <style scoped>
+.chongmingming{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .el-select{
   width: 17vw;
+}
+.celan{
+  padding: 20px;
+}
+.dialog-footer{
+  text-align: right;
+  padding-right: 30px;
 }
 .yema{
   /* border: 1px solid red; */
@@ -501,31 +1256,27 @@ export default {
   justify-content: center;
   align-items:center;
 }
-.xingzengshuju{
+.xinzenshuju{
+  /* border: 7px solid red; */
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin: 20px;
-  /* width: 90%; */
+  justify-content: space-between;
+  box-sizing: content-box;
+  max-height: 55vh;
+  overflow-y: auto;
+  /* padding: 30px; */
+  /* border:  5px solid red; */
 }
 .el-input {
   width: 17vw;
 }
 .diyi{
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
 }
 .dier{
   display: flex;
-  justify-content: space-between;
-
-}
-.disan input{
-  width: 40vw;
-}
-.disi{
-  display: flex;
-  justify-content: space-between;
+  flex-direction: column;
 }
 .app-container{
   padding: 0;
@@ -535,3 +1286,4 @@ export default {
   /* border: 1px solid rgb(46, 251, 0); */
 }
 </style>
+

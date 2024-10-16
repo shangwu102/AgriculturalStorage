@@ -193,10 +193,12 @@
 </template>
 
 <script>
-import { cgqsbhq } from '@/api/cangkushebei.js'
-import { qgqszhq } from '@/api/cangkushebei.js'
-import { xzcgqsz } from '@/api/cangkushebei.js'
-import { shanchu } from '@/api/cangkushebei.js'
+import { cgqsbhq } from '@/api/chuanganqishebei.js'
+import { qgqszhq } from '@/api/chuanganqishebei.js'
+import { xzcgqsz } from '@/api/chuanganqishebei.js'
+import { shanchu } from '@/api/chuanganqishebei.js'
+import { chongmingming } from '@/api/chuanganqishebei.js'
+import { xuigaishuju } from '@/api/chuanganqishebei.js'
 export default {
   data() {
     const options = [{
@@ -296,6 +298,15 @@ export default {
     ]
 
     const newrukuxx = {
+      id: '',
+      sensorStart: '',
+      sensorEnd: '',
+      lessValue: '',
+      bigValue: '',
+      sensorStatus: ''
+    }
+    const newrukuxxcz = {
+      id: '',
       sensorStart: '',
       sensorEnd: '',
       lessValue: '',
@@ -361,7 +372,10 @@ export default {
       gridData: gridData,
       xuigaixs: false,
       chongmmxs: false,
-      shezhidqhsj: ''
+      shezhidqhsj: '',
+      sensorId: '',
+      cmmmc: '',
+      fromcz: newrukuxxcz
     }
   },
   async created() {
@@ -380,36 +394,95 @@ export default {
     this.chaxun()
   },
   methods: {
-    chongmmqr() {
-      console.log(this.dangqianhangshuju)
-      this.chongmmxs = false
+    async chongmmqr() {
+      if (!this.dangqianhangshuju.sensorName) {
+        this.$message.error('请输入传感器名称')
+        this.dangqianhangshuju.sensorName = this.cmmmc
+      } else {
+        try {
+          const e = this.dangqianhangshuju
+          console.log('重命名', e)
+          const json = {
+            id: e.id,
+            sensorName: e.sensorName
+          }
+          const ref = await chongmingming(json)
+          this.$message({
+            message: '重命名成功',
+            type: 'success'
+          })
+          console.log(json)
+          console.log(ref)
+        } catch (error) {
+          console.log('错误', error)
+        }
+        console.log(this.dangqianhangshuju)
+        this.chongmmxs = false
+      }
     },
     chongmm(e) {
+      this.cmmmc = e.sensorName
       this.chongmmxs = true
       this.dangqianhangshuju = e
       console.log('当前行', this.dangqianhangshuju)
     },
     async shanchushezhi(e) {
       try {
+        console.log('删除', e)
         const json = {
-          id: e.id
+          sensorId: e.sensorId
         }
         const ref = await shanchu(json)
         console.log(json)
         console.log(ref)
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
       } catch (error) {
         console.log('错误', error)
       }
       console.log('删除', e.id)
       this.shezhi(this.shezhidqhsj)
     },
-    xuigaiqr() {
-      console.log('修改后的数据', this.form)
-      this.xuigaixs = false
+    async xuigaiqr() {
+      if (!this.sensorId || // 新增的字段
+          !this.form.bigValue || // 新增的字段
+          !this.form.sensorStart || // 新增的字段
+          !this.form.sensorEnd || // 新增的字段
+          !this.form.lessValue || // 新增的字段
+          !this.form.sensorStatus) { // 新增的字段
+        this.$message.error('请输入全部数据')
+      } else {
+        try {
+          const json = {
+            sensorId: this.sensorId,
+            ...this.form
+          }
+          console.log(json.sensorId)
+          console.log('修改后', json)
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+          const ref = await xuigaishuju(json)
+          console.log(json)
+          console.log(ref)
+        } catch (error) {
+          console.log('错误', error)
+        }
+        this.form = JSON.parse(JSON.stringify(this.fromcz))
+
+        console.log('修改后的数据', this.form)
+        this.xuigaixs = false
+        this.shezhi(this.shezhidqhsj)
+      }
     },
     xuigai(e) {
       this.xuigaixs = true
       console.log('修改', e)
+      this.sensorId = e.sensorId
+      this.form.id = e.id
       this.form.bigValue = e.bigValue
       this.form.sensorStart = e.sensorStart
       this.form.sensorEnd = e.sensorEnd
@@ -417,9 +490,13 @@ export default {
       this.form.sensorStatus = e.sensorStatus
     },
     async shezhi(e) {
+      console.log('ID', e.id)
       this.shezhidqhsj = e
       try {
-        const ref = await qgqszhq()
+        const json = {
+          id: e.id
+        }
+        const ref = await qgqszhq(json)
         console.log('数据', ref)
         this.gridData = ref.data.data
         console.log('替换完的数据', this.gridData)
@@ -432,16 +509,32 @@ export default {
       console.log('新增那条数据的设置', this.dangqianhangshuju)
     },
     async xinzengqr() {
-      try {
-        const ref = await xzcgqsz(this.form)
-        console.log('返回数据', ref.data.code)
-      } catch (error) {
-        console.log('错误', error)
+      if (!this.form.bigValue || // 新增的字段
+          !this.form.sensorStart || // 新增的字段
+          !this.form.sensorEnd || // 新增的字段
+          !this.form.lessValue || // 新增的字段
+          !this.form.sensorStatus) { // 新增的字段
+        this.$message.error('请输入全部数据')
+      } else {
+        try {
+          this.form.id = this.dangqianhangshuju.id
+          const ref = await xzcgqsz(this.form)
+          console.log('返回数据', ref.data.code)
+          this.$message({
+            message: '新增设置成功',
+            type: 'success'
+          })
+        } catch (error) {
+          console.log('错误', error)
+        }
+        console.log(this.form)
+        this.dialogFormVisible = false
+        this.shezhi(this.shezhidqhsj)
       }
-      console.log(this.form)
-      this.dialogFormVisible = false
     },
     xinzeng() {
+      console.log('重置数据', this.fromcz)
+      this.form = JSON.parse(JSON.stringify(this.fromcz))
       this.dialogFormVisible = true
       console.log('新增那条数据的设置', this.dangqianhangshuju)
     },
