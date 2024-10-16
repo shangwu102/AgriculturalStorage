@@ -1,5 +1,5 @@
 <template>
-  <div style="max-height: 100vh; overflow-y: auto; padding: 10px;">
+  <div v-loading="loading" style="max-height: 100vh; overflow-y: auto; padding: 10px;">
     <!-- 时间选择器，默认选中时间范围 -->
     <el-row style="position: relative; left: 5%; margin-top: 30px;">
       <el-col>
@@ -13,7 +13,9 @@
           style="position: relative;"
         />
         <!-- 搜索按钮，点击后触发数据请求 -->
-        <el-button type="primary" plain style="margin-left: 10px;" @click="fetchData">搜索</el-button>
+        <el-button type="primary" plain style="margin-left: 10px;" :disabled="loading" @click="fetchData">
+          搜索
+        </el-button>
       </el-col>
     </el-row>
 
@@ -59,9 +61,9 @@
           chart-id="blockHeightChart4"
           :line-data="cpu"
           :y-axis-min="0"
-          :y-axis-max="1"
+          :y-axis-max="1.2"
           :y-axis-interval="0.2"
-          title="CUP利用率"
+          title="CPU利用率"
           :tooltip-formatter="tooltipFormatter4"
         />
       </el-col>
@@ -72,6 +74,7 @@
 <script>
 import ChartComponent from '@/components/chart'
 import axios from 'axios'
+import { Message } from 'element-ui' // Import Element UI's Message component for notifications
 
 export default {
   components: {
@@ -80,6 +83,7 @@ export default {
   data() {
     return {
       title: '',
+      loading: false, // Loading state
       timeRange: [], // 保存时间范围，用户选择或默认
       blockHeightData: {
         timestampList: [], // 时间戳列表
@@ -107,6 +111,8 @@ export default {
     // 时间格式化函数 (HH:mm:ss)
     formatTimestampToTime(timestamp) {
       const date = new Date(timestamp)
+      const month = date.getMonth() + 1 // 月份从 0 开始，需要加 1
+      const day = date.getDate()
       const hours = date.getHours()
       const minutes = date.getMinutes()
       const seconds = date.getSeconds()
@@ -114,29 +120,28 @@ export default {
       // 补零操作
       const pad = (n) => (n < 10 ? '0' + n : n)
 
-      return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+      return `${pad(month)}-${pad(day)} ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
     },
 
-    // 定义不同的 tooltip 格式化函数
+    // tooltipFormatter 函数用于格式化 tooltip 信息
     tooltipFormatter1(params) {
-      const b0 = this.formatTimestampToTime(params[0].name) // 使用时间格式化
       const c0 = params[0].value
-      return `${b0}<br>区块高度: ${c0}`
+      return `时间： ${params[0].name}<br>区块高度: ${c0}`
     },
+
     tooltipFormatter2(params) {
-      const b0 = this.formatTimestampToTime(params[0].name)
       const c0 = params[0].value
-      return `${b0}<br>PBFT View: ${c0}`
+      return `时间： ${params[0].name}<br>PBFT View: ${c0}`
     },
+
     tooltipFormatter3(params) {
-      const b0 = this.formatTimestampToTime(params[0].name)
       const c0 = params[0].value
-      return `${b0}<br>交易数量: ${c0}`
+      return `时间： ${params[0].name}<br>交易数量: ${c0}`
     },
+
     tooltipFormatter4(params) {
-      const b0 = this.formatTimestampToTime(params[0].name)
       const c0 = params[0].value
-      return `${b0}<br>cpu利用率%: ${c0}`
+      return `时间： ${params[0].name}<br>CPU利用率%: ${c0}`
     },
 
     // 设置默认时间范围为当前时间的前一小时到现在
@@ -145,16 +150,22 @@ export default {
       const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000)
       this.timeRange = [oneHourAgo, now] // 默认时间范围设置
     },
+
     // 格式化日期为 YYYY-MM-DDTHH:MM:SS 格式
     formatDateTime(date) {
       const pad = (n) => (n < 10 ? '0' + n : n)
       return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
     },
+
     // 获取数据并更新图表
     async fetchData() {
       if (this.timeRange.length !== 2) {
+        Message.warning('请完整选择时间范围')
         return // 如果没有选择完整的时间范围，退出
       }
+
+      // Set loading to true before starting the request
+      this.loading = true
 
       // 获取时间范围
       const [beginDate, endDate] = this.timeRange
@@ -169,8 +180,10 @@ export default {
 
       try {
         // 发起请求
-        const response = await axios.get(url)
-        const response2 = await axios.get(url2)
+        const [response, response2] = await Promise.all([
+          axios.get(url),
+          axios.get(url2)
+        ])
         console.log(response)
         console.log(response2)
 
@@ -187,13 +200,26 @@ export default {
         this.cpu.timestampList = response2.data[0].data.lineDataList.timestampList
         this.cpu.valueList = response2.data[0].data.lineDataList.valueList
 
-        console.log(this.cpu.timestampList)
-        console.log(this.cpu.valueList)
+        // 调整时间戳（减去8小时）
+        const newTimestamp = response.data[0].data.lineDataList.timestampList.map(times => {
+          // 将时间戳转换为毫秒，并减去 8 小时（8 * 60 * 60 * 1000 毫秒）
+          return times - 8 * 60 * 60 * 1000
+        })
+        const newTimestamp1 = response2.data[0].data.lineDataList.timestampList.map(times => {
+          // 将时间戳转换为毫秒，并减去 8 小时（8 * 60 * 60 * 1000 毫秒）
+          return times - 8 * 60 * 60 * 1000
+        })
+        this.blockHeightData.timestampList = newTimestamp
+        this.blockPbftViewData.timestampList = newTimestamp
+        this.blockPendingCount.timestampList = newTimestamp
+        this.cpu.timestampList = newTimestamp1
 
         // 强制更新图表
         this.$forceUpdate()
       } catch (error) {
-        console.error('数据请求失败', error)
+        Message.error('数据请求失败')
+      } finally {
+        this.loading = false
       }
     }
   }
