@@ -2,13 +2,13 @@
   <div class="app-container">
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
-        <el-label>TxHash</el-label>
-        <el-input v-model="sousuo" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="chaxun">搜索</el-button>
-      </el-form-item>
-    </el-form>
+        <el-form-item label="TxHash">
+          <el-input v-model="sousuo" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="chaxun">搜索</el-button>
+        </el-form-item>
+      </el-form-item></el-form>
     <el-table :data="newdata" style="width: 100%" border :row-style="{ height: '64px' }">
       <el-table-column prop="id" label="编号" width="60" />
       <el-table-column prop="repertoryName" label="交易哈希" width="500" />

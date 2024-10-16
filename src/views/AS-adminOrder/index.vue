@@ -1,5 +1,13 @@
 <template>
   <div class="app-container">
+    <el-form :inline="true" class="demo-form-inline">
+      <el-form-item label="订单名称">
+        <el-input v-model="name" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="queryOrder">搜索</el-button>
+      </el-form-item>
+    </el-form>
     <!-- 表格展示订单数据 -->
     <el-table :data="paginatedOrderList" style="width: 100%" border :row-style="{ height: '64px' }">
       <!-- 订单名称 -->
@@ -13,7 +21,7 @@
 
       <!-- 交货日期 -->
       <el-table-column prop="deliveryDate" label="交货日期" width="180">
-        <template slot-scope="scope">
+        <template #default="scope">
           {{ new Date(scope.row.deliveryDate).toLocaleString() }}
         </template>
       </el-table-column>
@@ -23,28 +31,19 @@
 
       <!-- 操作 -->
       <el-table-column label="操作" width="200">
-        <template slot-scope="scope">
-          <!-- 同意订单按钮 -->
+        <template #default="scope">
           <el-button v-if="scope.row.status === '待接单'" type="primary" size="small" @click="agreeOrder(scope.row)">
             同意
           </el-button>
-
-          <!-- 已同意按钮，禁用状态 -->
           <el-button v-else-if="scope.row.status === '待发货'" type="success" size="small" disabled>
             已审批✅
           </el-button>
-
-          <!-- 已完成按钮，禁用状态 -->
           <el-button v-else-if="scope.row.status === '已完成'" type="success" size="small" disabled>
-            已审批✅
+            已完成✅
           </el-button>
-
-          <!-- 已关闭按钮，禁用状态 -->
           <el-button v-else-if="scope.row.status === '已关闭'" type="danger" size="small" disabled>
-            已审批❎
+            已关闭❎
           </el-button>
-
-          <!-- 取消订单按钮 -->
           <el-button v-if="scope.row.status === '待接单'" type="danger" size="small" @click="cancelOrder(scope.row)">
             取消
           </el-button>
@@ -53,7 +52,7 @@
     </el-table>
 
     <!-- 分页组件 -->
-    <div class="yema">
+    <div class="pagination-container">
       <el-pagination
         background
         layout="prev, pager, next"
@@ -67,19 +66,19 @@
     <!-- 同意订单的确认对话框 -->
     <el-dialog title="确认同意订单" :visible.sync="agreeDialogVisible" width="30%">
       <span v-if="currentOrder">确认同意订单：{{ currentOrder.orderName }}?</span>
-      <div slot="footer" class="dialog-footer">
+      <template #footer>
         <el-button @click="agreeDialogVisible = false">取消</el-button>
         <el-button type="primary" :disabled="!currentOrder" @click="confirmAgreeOrder">确认</el-button>
-      </div>
+      </template>
     </el-dialog>
 
     <!-- 取消订单的确认对话框 -->
     <el-dialog title="取消订单" :visible.sync="cancelDialogVisible" width="30%">
       <span v-if="currentOrder">确认取消订单：{{ currentOrder.orderName }}?</span>
-      <div slot="footer" class="dialog-footer">
+      <template #footer>
         <el-button @click="cancelDialogVisible = false">关闭</el-button>
         <el-button type="danger" :disabled="!currentOrder" @click="confirmCancelOrder">确认取消</el-button>
-      </div>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -89,19 +88,21 @@ export default {
   data() {
     return {
       orderList: [], // 订单列表
+      filteredOrderList: [], // 根据订单名称过滤后的订单列表
       loading: true, // 加载状态
       agreeDialogVisible: false, // 同意订单对话框状态
       cancelDialogVisible: false, // 取消订单对话框状态
       currentOrder: null, // 当前操作的订单
       currentPage: 1, // 当前页
       pageSize: 10, // 每页显示条数
-      total: 0 // 总条数
+      total: 0, // 总条数
+      name: '' // 查询订单的名称
     }
   },
   computed: {
     // 计算当前页显示的订单列表，并将 "待接单" 的订单排在前面
     paginatedOrderList() {
-      const sortedOrders = [...this.orderList].sort((a, b) => {
+      const sortedOrders = [...this.filteredOrderList].sort((a, b) => {
         if (a.status === '待接单' && b.status !== '待接单') {
           return -1
         } else if (a.status !== '待接单' && b.status === '待接单') {
@@ -123,14 +124,26 @@ export default {
       try {
         const orders = JSON.parse(localStorage.getItem('orderStatus')) || []
         this.orderList = orders
-        this.total = this.orderList.length
-        console.log(this.orderList) // 检查订单数据是否正确加载
-        console.log('总条目数:', this.total) // 检查总条目数是否正确
+        this.filteredOrderList = orders // 默认展示全部订单
+        this.total = this.filteredOrderList.length
       } catch (error) {
         this.$message.error('加载订单失败！')
       } finally {
         this.loading = false
       }
+    },
+
+    // 查询订单，根据订单名称过滤
+    queryOrder() {
+      if (this.name.trim() === '') {
+        this.filteredOrderList = this.orderList // 如果查询条件为空，则显示全部订单
+      } else {
+        this.filteredOrderList = this.orderList.filter(order =>
+          order.orderName.includes(this.name.trim())
+        )
+      }
+      this.total = this.filteredOrderList.length // 更新总条目数
+      this.currentPage = 1 // 重置分页到第一页
     },
 
     // 同意订单操作
@@ -176,7 +189,8 @@ export default {
           order.orderName === this.currentOrder.orderName ? this.currentOrder : order
         )
         this.orderList = updatedOrders
-        this.total = this.orderList.length
+        this.filteredOrderList = updatedOrders
+        this.total = this.filteredOrderList.length
         localStorage.setItem('orderStatus', JSON.stringify(updatedOrders))
       }
     },
@@ -184,20 +198,23 @@ export default {
     // 处理页码变化
     handlePageChange(page) {
       this.currentPage = page
-      console.log('当前页码:', this.currentPage) // 确认页码更新是否生效
     }
   }
 }
 </script>
 
 <style scoped>
+.el-input {
+  width: 17vw;
+}
+
 .app-container {
   position: relative;
   height: calc(100vh - 50px);
   overflow-y: auto;
 }
 
-.yema {
+.pagination-container {
   height: 6vh;
   display: flex;
   justify-content: center;
