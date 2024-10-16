@@ -1,8 +1,3 @@
-<!--
- 描述: 柱饼组合联动
- 作者: Jack Chen
- 日期: 2020-04-30
--->
 
 <template>
   <div class="wrap-container sn-container">
@@ -444,7 +439,7 @@ export default {
 
 <style lang="scss" scoped>
 .sn-container {
-  left: 650px;
+  left: 665px;
   top: 700px;
   width: 586px;
   height: 400px;

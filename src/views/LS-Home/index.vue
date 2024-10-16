@@ -4,40 +4,16 @@
       <div class="top" />
       <!-- 粮食储备排名 -->
       <sinan />
-      <!-- 双轴柱状图 -->
-      <pyramid />
-      <!-- 新闻无缝滚动 -->
-      <seamless />
       <!-- 区块链信息 -->
       <dynamicList />
+      <!-- 新闻无缝滚动 -->
+      <seamless />
+      <!-- 天气状况 -->
+      <pyramid />
       <!-- 粮仓出入库占比 -->
       <cakeLinkage />
       <!-- 环境监测 -->
       <pyramidTrend />
-
-      <!-- <scrollArc /> -->
-      <!-- 滚动弧形线 -->
-      <!-- <szBar /> -->
-
-      <!-- <ringPin />
-      <rotateColorful />
-      <circleRunway />
-      <scanRadius />
-
-      <dynamicLine />
-
-      <staffMix />
-      <flashCloud />
-      <ringPie />
-      <colorfulRadar />
-
-      <bar3d />
-      <colorfulArea />
-
-      <rainbow />
-
-      <waterPolo />
-      <circleNesting /> -->
 
       <div class="divider" />
 

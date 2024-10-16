@@ -1,9 +1,3 @@
-<!--
- 描述: 动态列表动画
- 作者: Jack Chen
- 日期: 2020-04-18
--->
-
 <template>
   <div class="wrap-container sn-container">
     <div class="sn-content">
@@ -32,7 +26,7 @@
                         <span class="odometer-ribbon">
                           <span class="odometer-ribbon-inner">
                             <span class="odometer-value">
-                              <countTo :start-val="startVal" :end-val="12356" :duration="6000" separator="" />
+                              <countTo :start-val="startVal" :end-val="Number(blockNumber)" :duration="6000" separator="" />
                             </span>
                           </span>
                         </span>
@@ -56,7 +50,7 @@
                         <span class="odometer-ribbon">
                           <span class="odometer-ribbon-inner">
                             <span class="odometer-value">
-                              <countTo :start-val="startVal" :end-val="65321" :duration="6000" separator="" />
+                              <countTo :start-val="startVal" :end-val="Number(blockTransaction)" :duration="6000" separator="" />
                             </span>
                           </span>
                         </span>
@@ -80,7 +74,7 @@
                         <span class="odometer-ribbon">
                           <span class="odometer-ribbon-inner">
                             <span class="odometer-value">
-                              <countTo :start-val="startVal" :end-val="8686" :duration="6000" separator="" />
+                              <countTo :start-val="startVal" :end-val="Number(blockNode)" :duration="6000" separator="" />
                             </span>
                           </span>
                         </span>
@@ -104,7 +98,7 @@
                         <span class="odometer-ribbon">
                           <span class="odometer-ribbon-inner">
                             <span class="odometer-value">
-                              <countTo :start-val="startVal" :end-val="258" :duration="6000" separator="" />
+                              <countTo :start-val="startVal" :end-val="Number(blockPbft)" :duration="6000" separator="" />
                             </span>
                           </span>
                         </span>
@@ -123,6 +117,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import countTo from 'vue-count-to'
 
 export default {
@@ -132,17 +127,29 @@ export default {
   },
   data() {
     return {
-      startVal: 0
+      startVal: 0,
+      blockNumber: '',
+      blockTransaction: '',
+      blockPbft: '',
+      blockNode: ''
     }
   },
   mounted() {
-
+    this.getInfo()
   },
   beforeDestroy() {
 
   },
   methods: {
-
+    async getInfo() {
+      const blockNumber = await axios.get('/WeBASE-Front/1/web3/transaction-total')
+      const blockNode = await axios.get('/WeBASE-Front/1/web3/groupPeers')
+      const blockPbft = await axios.get('/WeBASE-Front/1/web3/pbftView')
+      this.blockNumber = blockNumber.data.blockNumber
+      this.blockTransaction = blockNumber.data.txSum
+      this.blockNode = blockNode.data.length
+      this.blockPbft = blockPbft.data
+    }
   }
 }
 </script>
@@ -150,25 +157,31 @@ export default {
 <style lang="scss" scoped>
 .sn-container {
   left: 630px;
-  top: 110px;
-  width: 660px;
-  height: 550px;
+    top: 110px;
+    width: 660px;
+    height: 550px;
+
   .pd-info {
     left: 0;
     top: 35px;
     width: 100%;
     height: 80%;
   }
+
   .pd-info-center {
     width: 100%;
     height: 100%;
+    position: absolute;
+    left: 10%;
+    top: 10%;
     .y-center {
       position: absolute;
-      top: 86px;
-      left: 90px;
+      top: 24px;
+      left: 30px;
       width: 234px;
       height: 234px;
-      > [class^=info-1] {
+
+      >[class^=info-1] {
         width: 100%;
         height: 100%;
         position: absolute;
@@ -177,6 +190,7 @@ export default {
         background-repeat: no-repeat;
         background-position: center center;
       }
+
       .info-1-0 {
         background-image: url(../../assets/img/dynamic/info-1-0.png);
         -webkit-animation-duration: 20s;
@@ -184,6 +198,7 @@ export default {
         -o-animation-duration: 20s;
         animation-duration: 20s;
       }
+
       .info-1-1 {
         background-image: url(../../assets/img/dynamic/info-1-1.png);
         -webkit-animation-duration: 20s;
@@ -195,6 +210,7 @@ export default {
         -o-animation-delay: 3s;
         animation-delay: 3s;
       }
+
       .info-1-2 {
         background-image: url(../../assets/img/dynamic/info-1-2.png);
         -webkit-animation-duration: 20s;
@@ -206,6 +222,7 @@ export default {
         -o-animation-delay: 8s;
         animation-delay: 8s;
       }
+
       .info-1-3 {
         background-image: url(../../assets/img/dynamic/info-1-3.png);
         -webkit-animation-duration: 10s;
@@ -217,6 +234,7 @@ export default {
         -o-animation-delay: 5s;
         animation-delay: 5s;
       }
+
       .info-1-4 {
         background-image: url(../../assets/img/dynamic/info-1-4.png);
         -webkit-animation-duration: 5s;
@@ -234,9 +252,10 @@ export default {
       -moz-animation-timing-function: cubic-bezier(1, 0, 0.6, 0.6);
       -o-animation-timing-function: cubic-bezier(1, 0, 0.6, 0.6);
       animation-timing-function: cubic-bezier(1, 0, 0.6, 0.6);
+
       .y-number-bg {
-        width: 250px;
-        height: 63px;
+        width: 54px;
+        height: 54px;
         position: absolute;
         top: 5px;
         -webkit-animation-duration: 5s;
@@ -244,19 +263,23 @@ export default {
         -o-animation-duration: 5s;
         animation-duration: 5s;
       }
+
       .y-number-icon {
-        width: 254px;
-        height: 74px;
+        width: 54px;
+        height: 54px;
         position: absolute;
         top: 5px;
       }
+
       .y-number-text {
         display: inline-block;
         color: #0072bc;
         font-size: 18px;
-        padding: 10px 0 0 160px;
-        > span {
+        padding: 10px 0 0 60px;
+
+        >span {
           display: block;
+
           &:nth-child(2) {
             font-size: 22px;
             color: #00aeef;
@@ -275,6 +298,7 @@ export default {
         background: url(../../assets/img/dynamic/info-line-01.png) no-repeat 180px center;
         height: 60px;
         top: 15px;
+
         .y-number-bg {
           -webkit-animation-delay: 2s;
           -moz-animation-delay: 2s;
@@ -282,10 +306,12 @@ export default {
           animation-delay: 2s;
           background: url(../../assets/img/dynamic/info-bg-01.png) no-repeat 50% 50%;
         }
+
         .y-number-icon {
           background: url(../../assets/img/dynamic/info-icon-1.png) no-repeat 50% 50%;
         }
       }
+
       &.y-number-2 {
         -webkit-animation-delay: 1.25s;
         -moz-animation-delay: 1.25s;
@@ -295,6 +321,7 @@ export default {
         height: 60px;
         top: 70px;
         padding-left: 350px;
+
         .y-number-bg {
           -webkit-animation-delay: 2.5s;
           -moz-animation-delay: 2.5s;
@@ -302,10 +329,12 @@ export default {
           animation-delay: 2.5s;
           background: url(../../assets/img/dynamic/info-bg-02.png) no-repeat 50% 50%;
         }
+
         .y-number-icon {
           background: url(../../assets/img/dynamic/info-icon-2.png) no-repeat 50% 50%;
         }
       }
+
       &.y-number-3 {
         -webkit-animation-delay: 1.5s;
         -moz-animation-delay: 1.5s;
@@ -315,6 +344,7 @@ export default {
         height: 60px;
         top: 135px;
         padding-left: 350px;
+
         .y-number-bg {
           -webkit-animation-delay: 3s;
           -moz-animation-delay: 3s;
@@ -322,10 +352,12 @@ export default {
           animation-delay: 3s;
           background: url(../../assets/img/dynamic/info-bg-03.png) no-repeat 50% 50%;
         }
+
         .y-number-icon {
           background: url(../../assets/img/dynamic/info-icon-3.png) no-repeat 50% 50%;
         }
       }
+
       &.y-number-4 {
         -webkit-animation-delay: 1.75s;
         -moz-animation-delay: 1.75s;
@@ -334,6 +366,7 @@ export default {
         background: url(../../assets/img/dynamic/info-line-01.png) no-repeat 180px center;
         height: 60px;
         top: 190px;
+
         .y-number-bg {
           -webkit-animation-delay: 3.5s;
           -moz-animation-delay: 3.5s;
@@ -341,6 +374,7 @@ export default {
           animation-delay: 3.5s;
           background: url(../../assets/img/dynamic/info-bg-04.png) no-repeat 50% 50%;
         }
+
         .y-number-icon {
           background: url(../../assets/img/dynamic/info-icon-4.png) no-repeat 50% 50%;
         }
@@ -361,6 +395,7 @@ export default {
   -o-animation-fill-mode: both;
   animation-fill-mode: both;
 }
+
 .animated.infinite {
   -webkit-animation-iteration-count: infinite;
   -moz-animation-iteration-count: infinite;
@@ -375,6 +410,7 @@ export default {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform-origin: center;
     transform-origin: center;
@@ -392,6 +428,7 @@ export default {
     -moz-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform-origin: center;
     -moz-transform-origin: center;
@@ -411,6 +448,7 @@ export default {
     -o-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform-origin: center;
     -o-transform-origin: center;
@@ -432,6 +470,7 @@ export default {
     -o-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform-origin: center;
     -moz-transform-origin: center;
@@ -511,14 +550,17 @@ export default {
 }
 
 @-webkit-keyframes flashPD {
+
   0%,
   90% {
     opacity: 1;
   }
+
   92%,
   98% {
     opacity: 0;
   }
+
   96%,
   100% {
     opacity: 1;
@@ -526,14 +568,17 @@ export default {
 }
 
 @-moz-keyframes flashPD {
+
   0%,
   90% {
     opacity: 1;
   }
+
   92%,
   98% {
     opacity: 0;
   }
+
   96%,
   100% {
     opacity: 1;
@@ -541,14 +586,17 @@ export default {
 }
 
 @-o-keyframes flashPD {
+
   0%,
   90% {
     opacity: 1;
   }
+
   92%,
   98% {
     opacity: 0;
   }
+
   96%,
   100% {
     opacity: 1;
@@ -556,14 +604,17 @@ export default {
 }
 
 @keyframes flashPD {
+
   0%,
   90% {
     opacity: 1;
   }
+
   92%,
   98% {
     opacity: 0;
   }
+
   96%,
   100% {
     opacity: 1;

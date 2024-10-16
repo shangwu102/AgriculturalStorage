@@ -4,9 +4,21 @@
       <div class="sn-title">粮仓环境监测</div>
       <div class="sn-body">
         <div class="wrap-container">
-          <div id="pyramidTrend1" class="chartsdom" />
-          <div id="pyramidTrend2" class="chartsdom" />
-          <div id="pyramidTrend3" class="chartsdom" />
+          <!-- 第一个仪表盘 -->
+          <div class="chart-container">
+            <div class="chart-title">传感器</div>
+            <div id="pyramidTrend1" class="chartsdom" />
+          </div>
+          <!-- 第二个仪表盘 -->
+          <div class="chart-container">
+            <div class="chart-title">控制器</div>
+            <div id="pyramidTrend2" class="chartsdom" />
+          </div>
+          <!-- 第三个仪表盘 -->
+          <div class="chart-container">
+            <div class="chart-title">hello</div>
+            <div id="pyramidTrend3" class="chartsdom" />
+          </div>
         </div>
       </div>
     </div>
@@ -111,7 +123,7 @@ export default {
               }
             },
             data: [{
-              value: Math.random() * 220, // 初始值随机
+              value: Math.random() * 100, // 初始值随机
               name: i === 0 ? '°C/h' : '%/h' // 根据仪表盘索引设置单位
             }]
           }]
@@ -126,7 +138,7 @@ export default {
 
         // 设置定时器更新数据
         this.timers[i] = setInterval(() => {
-          this.options[i].series[0].data[0].value = (Math.random() * 220).toFixed(2) - 0 // 更新随机值
+          this.options[i].series[0].data[0].value = (Math.random() * 100).toFixed(2) - 0 // 更新随机值
           myChart.setOption(this.options[i], true)
         }, 2000)
       }
@@ -140,20 +152,31 @@ export default {
   left: 1275px;
   top: 700px;
   width: 600px;
-  /* 修改为适合的宽度 */
   height: 400px;
-  /* 修改为适合的高度 */
 
   .wrap-container {
     display: flex;
-    /* 使用 flexbox 布局 */
     flex-direction: row;
-    /* 水平排列 */
     justify-content: space-around;
 
-    /* 在水平方向上均匀分布 */
-    .chartsdom {
-      margin-left: -1%;
+    .chart-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100px;
+
+      .chart-title {
+        font-size: 24px;
+        color: #095bd6;
+        margin-bottom: 10px;
+        position: relative;
+        top: 20%;
+      }
+
+      .chartsdom {
+        width: 210px;
+        height: 200px;
+      }
     }
   }
 }
