@@ -7,17 +7,10 @@ export function sxtsbhq() {
   })
 }
 
-export function getInfo(token) {
+export function chongmingming(e) {
   return request({
-    url: '/users/info',
-    method: 'get',
-    params: { token }
-  })
-}
-
-export function logout() {
-  return request({
-    url: '/logout',
-    method: 'post'
+    url: '/updateCamera',
+    method: 'post',
+    data: e
   })
 }

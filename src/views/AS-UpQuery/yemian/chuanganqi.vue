@@ -15,7 +15,7 @@
         <el-input v-model="sousuo" placeholder="请输入传感器名称">''</el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="chaxun">搜素</el-button>
+        <el-button type="primary" @click="chaxun">搜索</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -52,6 +52,7 @@
       />
       <el-table-column
         label="操作"
+        width="270px"
       >
         <template slot-scope="scope">
           <el-button size="small" type="success" @click="shezhi(scope.row)">设置</el-button>
@@ -71,7 +72,7 @@
                 <el-table-column property="lessValue" label="小于报警值" />
                 <el-table-column property="bigValue" label="大于报警值" />
                 <el-table-column property="sensorStatus" label="状态" />
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="150px">
                   <template slot-scope="szscope">
                     <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
                     <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
@@ -378,20 +379,8 @@ export default {
       fromcz: newrukuxxcz
     }
   },
-  async created() {
-    try {
-      const ref = await cgqsbhq()
-      console.log('原始', this.tableData)
-
-      console.log('数据', ref)
-      this.tableData = ref.data.data
-      console.log('修改后', this.tableData)
-    } catch (error) {
-      console.log('错误', error)
-    }
-    // this.hqcgq()
-    this.huqushuju()
-    this.chaxun()
+  created() {
+    this.chushihua()
   },
   methods: {
     async chongmmqr() {
@@ -413,6 +402,7 @@ export default {
           })
           console.log(json)
           console.log(ref)
+          this.chushihua()
         } catch (error) {
           console.log('错误', error)
         }
@@ -423,7 +413,7 @@ export default {
     chongmm(e) {
       this.cmmmc = e.sensorName
       this.chongmmxs = true
-      this.dangqianhangshuju = e
+      this.dangqianhangshuju = JSON.parse(JSON.stringify(e))
       console.log('当前行', this.dangqianhangshuju)
     },
     async shanchushezhi(e) {
@@ -538,6 +528,19 @@ export default {
       this.dialogFormVisible = true
       console.log('新增那条数据的设置', this.dangqianhangshuju)
     },
+    async chushihua() {
+      try {
+        const ref = await cgqsbhq()
+        console.log('原始', this.tableData)
+        console.log('数据', ref)
+        this.tableData = ref.data.data
+        console.log('修改后', this.tableData)
+      } catch (error) {
+        console.log('错误', error)
+      }
+      this.huqushuju()
+      this.chaxun()
+    },
     huqushuju() {
       this.newdata = this.tableData
     },
@@ -627,6 +630,7 @@ export default {
   /* position: relative; */
   height: calc(100vh - 50px);
   overflow-y: auto;
+  /* overflow: auto; */
   /* border: 1px solid rgb(46, 251, 0); */
 }
 </style>

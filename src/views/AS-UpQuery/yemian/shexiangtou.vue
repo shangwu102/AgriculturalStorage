@@ -15,7 +15,7 @@
         <el-input v-model="sousuo" placeholder="请输入摄像头名称">''</el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="chaxun">搜素</el-button>
+        <el-button type="primary" @click="chaxun">搜索</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -28,32 +28,26 @@
       <el-table-column
         prop="icon"
         label="图标"
-        width="130"
       />
       <el-table-column
         prop="cameraName"
         label="摄像头名称"
-        width="130"
       />
       <el-table-column
         prop="cameraUrl"
         label="摄像头URL"
-        width="130"
       />
       <el-table-column
         prop="cameraCount"
         label="仓库"
-        width="130"
       />
       <el-table-column
         prop="cameraUsername"
         label="用户名"
-        width="200"
       />
       <el-table-column
         prop="cameraPassword"
         label="密码"
-        width="200"
       />
       <el-table-column
         prop="cameraCreatetime"
@@ -61,13 +55,14 @@
       />
       <el-table-column
         label="操作"
+        width="200px"
       >
         <template slot-scope="scope">
           <el-button size="small" type="warning" @click="chongmm(scope.row)">重命名</el-button>
           <el-button size="small" type="primary">视频查看</el-button>
           <el-dialog title="重命名" :visible.sync="chongmmxs">
             <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="chongmingming">
-              <el-form-item label="控制器名称" prop="cameraName">
+              <el-form-item label="摄像头名称" prop="cameraName">
                 <el-input v-model="dangqianhangshuju.cameraName" placeholder="请输入内容" />
               </el-form-item>
             </el-form>
@@ -93,6 +88,7 @@
 
 <script>
 import { sxtsbhq } from '@/api/shexiangtoushebei.js'
+import { chongmingming } from '@/api/shexiangtoushebei.js'
 
 export default {
   data() {
@@ -270,32 +266,59 @@ export default {
       chongmmxs: false,
       dangqianyema: 1,
       activeName: 'chuangganqi',
-      dangqianhangshuju: ''
+      dangqianhangshuju: '',
+      cmmmc: ''
     }
   },
-  async created() {
-    try {
-      const ref = await sxtsbhq()
-      console.log('原始', this.tableData)
-
-      console.log('数据', ref)
-      this.tableData = ref.data.data
-      console.log('修改后', this.tableData)
-    } catch (error) {
-      console.log('错误', error)
-    }
-    this.huqushuju()
-    this.chaxun()
+  created() {
+    this.chushihua()
   },
   methods: {
-    chongmmqr() {
-      console.log(this.dangqianhangshuju)
-      this.chongmmxs = false
+    async chongmmqr() {
+      if (!this.dangqianhangshuju.cameraName) {
+        this.$message.error('请输入摄像头名称')
+        this.dangqianhangshuju.cameraName = this.cmmmc
+      } else {
+        try {
+          const e = this.dangqianhangshuju
+          console.log('重命名', e)
+          const json = {
+            id: e.id,
+            cameraName: e.cameraName
+          }
+          const ref = await chongmingming(json)
+          this.$message({
+            message: '重命名成功',
+            type: 'success'
+          })
+          console.log(json)
+          console.log(ref)
+          this.chushihua()
+        } catch (error) {
+          console.log('错误', error)
+        }
+        console.log(this.dangqianhangshuju)
+        this.chongmmxs = false
+      }
     },
     chongmm(e) {
+      this.cmmmc = e.cameraName
       this.chongmmxs = true
-      this.dangqianhangshuju = e
+      this.dangqianhangshuju = JSON.parse(JSON.stringify(e))
       console.log('当前行', this.dangqianhangshuju)
+    },
+    async chushihua() {
+      try {
+        const ref = await sxtsbhq()
+        console.log('原始', this.tableData)
+        console.log('数据', ref)
+        this.tableData = ref.data.data
+        console.log('修改后', this.tableData)
+      } catch (error) {
+        console.log('错误', error)
+      }
+      this.huqushuju()
+      this.chaxun()
     },
     huqushuju() {
       this.newdata = this.tableData
