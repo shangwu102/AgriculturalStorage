@@ -13,7 +13,7 @@
             label-position="left"
           >
             <div class="title-container">
-              <h3 class="title">面向区块链管理系统</h3>
+              <h3 class="title">面向区块链粮仓管理系统</h3>
             </div>
 
             <!-- 用户名输入框 -->
@@ -95,20 +95,20 @@
             </el-form-item>
 
             <el-button
-              type="primary"
-              style="position: relative;right: 0;float: right;margin-top: -30px;"
-              plain
-              @click="showRegisterDialog"
-            >注册公司</el-button>
-
-            <el-button
               :loading="loading"
               type="primary"
               class="login-button"
-              style="position: relative;right: 0;float: right;margin-top: 20px;border-radius: 15px;"
+              style="position: relative;left: 25px;float: right;border-radius: 15px; width: 400px;"
               @click.prevent="handleLogin"
             >登录</el-button>
+
           </el-form>
+          <div style="position: relative;height: 100px;width: 390px;left: 10%;">
+            <span
+              style="position: absolute;cursor:pointer;left: 70%;padding-top: 17%; color: #409EFF;display: inline-block;"
+              @click="showRegisterDialog"
+            >注册公司</span>
+          </div>
           <!-- 注册对话框 -->
           <el-dialog :visible.sync="registerDialogVisible" title="注册公司" width="80%" top="5vh">
             <el-form ref="registerFormRef" :model="registerForm" :rules="rules" label-width="150px">
@@ -493,10 +493,12 @@ export default {
 
 .login-form-wrapper {
   width: 450px;
+  height: 530px;
   padding: 20px;
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 50px;
 }
 
 .el-form-item {
@@ -549,6 +551,7 @@ export default {
   font-size: 30px;
   font-weight: bold;
   color: #333;
+  font-family: '仿宋';
 }
 
 .el-checkbox {
