@@ -94,18 +94,17 @@
               </div>
             </el-form-item>
 
-            <el-button
-              :loading="loading"
-              type="primary"
-              class="login-button"
-              style="position: relative;left: 25px;float: right;border-radius: 15px; width: 400px;"
-              @click.prevent="handleLogin"
-            >登录</el-button>
-
           </el-form>
-          <div style="position: relative;height: 100px;width: 390px;left: 10%;">
+          <el-button
+            :loading="loading"
+            type="primary"
+            class="login-button"
+            style="position: relative;left: 25px;float: right;border-radius: 15px; width: 400px;"
+            @click="handleLogin"
+          >登录</el-button>
+          <div style="position: relative;left: 10%;">
             <span
-              style="position: absolute;cursor:pointer;left: 70%;padding-top: 17%; color: #409EFF;display: inline-block;"
+              style="position: absolute;cursor:pointer;left: 77%;padding-top: 17%; color: #409EFF;display: inline-block;"
               @click="showRegisterDialog"
             >注册公司</span>
           </div>
@@ -218,7 +217,6 @@
     </el-container>
   </div>
 </template>
->
 
 <script>
 import { validUsername } from '@/utils/validate'
@@ -358,6 +356,8 @@ export default {
       })
     },
     async handleLogin() {
+      console.log(1111)
+
       try {
         const valid = await this.$refs.loginForm.validate()
         if (!valid) {
@@ -481,10 +481,10 @@ export default {
   background-image: url(../../assets/login.jpg);
   background-size: cover;
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   align-items: center;
   padding-right: 10%;
-  // opacity: 0.8;
+
 }
 
 .el-container {
@@ -499,6 +499,7 @@ export default {
   border-radius: 15px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   padding: 50px;
+opacity: 0.9;
 }
 
 .el-form-item {
