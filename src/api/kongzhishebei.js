@@ -68,3 +68,51 @@ export function xzznsz(e) {
     data: e
   })
 }
+
+export function xgdssz(e) {
+  return request({
+    url: '/updateInsertController',
+    method: 'post',
+    data: e
+  })
+}
+
+export function xgxhsz(e) {
+  return request({
+    url: '/updateInsertSet',
+    method: 'post',
+    data: e
+  })
+}
+
+export function xgznsz(e) {
+  return request({
+    url: '/updateInsertSmartSet',
+    method: 'post',
+    data: e
+  })
+}
+
+export function scdssz(e) {
+  return request({
+    url: `/delInsertController/${e.id}`,
+    method: 'post',
+    data: e
+  })
+}
+
+export function scxhsz(e) {
+  return request({
+    url: `/delInsertSet/${e.id}`,
+    method: 'post',
+    data: e
+  })
+}
+
+export function scznsz(e) {
+  return request({
+    url: `/delInsertSmartSet/${e.id}`,
+    method: 'post',
+    data: e
+  })
+}

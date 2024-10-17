@@ -28,7 +28,6 @@
       <el-table-column
         prop="controllerStatus"
         label="状态"
-        width="130"
       >
         <template slot-scope="scope">
           <span v-if="scope.row.controllerStatus === 1" style="color: green;">
@@ -42,12 +41,10 @@
       <el-table-column
         prop="controllerId"
         label="编号"
-        width="70px"
       />
       <el-table-column
         prop="icon"
         label="图标"
-        width="130"
       />
       <el-table-column
         prop="controllerName"
@@ -56,7 +53,6 @@
       <el-table-column
         prop="controllerValue"
         label="数值"
-        width="300"
       />
       <el-table-column
         prop="status"
@@ -70,6 +66,7 @@
       </el-table-column>
       <el-table-column
         label="操作"
+        width="270px"
       >
         <template slot-scope="scope">
           <el-button size="small" type="success" @click="shezhi(scope.row)">设置</el-button>
@@ -125,7 +122,7 @@
                 <el-table-column property="controllerOpencondition" label="打开设备条件" />
                 <el-table-column property="controllerValue" label="关闭设备条件" />
                 <el-table-column property="controllerOpentime" label="开启时间" />
-                <el-table-column property="controller_offcondition" label="关闭时间" />
+                <el-table-column property="controllerEndtime" label="关闭时间" />
                 <el-table-column property="controllerConditionvalue" label="打开条件数值" />
                 <el-table-column property="controllerOffvalue" label="关闭条件数值" />
                 <el-table-column property="controllerStatus" label="状态" />
@@ -546,6 +543,12 @@ import { hqkzqmc } from '@/api/kongzhishebei.js'
 import { xzdssz } from '@/api/kongzhishebei.js'
 import { xzxhsz } from '@/api/kongzhishebei.js'
 import { xzznsz } from '@/api/kongzhishebei.js'
+import { xgdssz } from '@/api/kongzhishebei.js'
+import { xgxhsz } from '@/api/kongzhishebei.js'
+import { xgznsz } from '@/api/kongzhishebei.js'
+import { scdssz } from '@/api/kongzhishebei.js'
+import { scxhsz } from '@/api/kongzhishebei.js'
+import { scznsz } from '@/api/kongzhishebei.js'
 export default {
   data() {
     const options = [{
@@ -904,23 +907,13 @@ export default {
       cmmmc: ''
     }
   },
-  async created() {
-    try {
-      const ref = await kzqsbhq()
-      console.log('原始', this.tableData)
-      console.log('数据', ref)
-      this.tableData = ref.data.data
-      console.log('修改后', this.tableData)
-    } catch (error) {
-      console.log('错误', error)
-    }
-    this.huqushuju()
-    this.chaxun()
+  created() {
+    this.chushihua()
   },
   methods: {
     async chongmmqr() {
       if (!this.dangqianhangshuju.controllerName) {
-        this.$message.error('请输入传感器名称')
+        this.$message.error('请输入控制器名称')
         this.dangqianhangshuju.controllerName = this.cmmmc
       } else {
         try {
@@ -937,6 +930,7 @@ export default {
           })
           console.log(json)
           console.log(ref)
+          this.chushihua()
         } catch (error) {
           console.log('错误', error)
         }
@@ -947,27 +941,81 @@ export default {
     chongmm(e) {
       this.cmmmc = e.controllerName
       this.chongmmxs = true
-      this.dangqianhangshuju = e
+      this.dangqianhangshuju = JSON.parse(JSON.stringify(e))
       console.log('当前行', this.dangqianhangshuju)
     },
     async shanchushezhi(e) {
-      try {
-        const json = {
-          id: e.id
-        }
-        const ref = await shanchu(json)
-        console.log(json)
-        console.log(ref)
-        this.$message({
-          message: '删除成功',
-          type: 'success'
-        })
-      } catch (error) {
-        console.log('错误', error)
+      console.log('删除行', e)
+      switch (e.kzqType) {
+        case 'type1':
+          try {
+            // const json = {
+            //   sensorId: e.sensorId
+            // }
+            const ref = await scdssz(e.sensorId)
+            console.log('返回数据', ref.data.code)
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+          } catch (error) {
+            console.log('错误', error)
+          }
+          this.shezhi(this.shezhidqhsj)
+          break
+
+        case 'type2':
+          try {
+            // const json = {
+            //   sensorId: e.sensorId
+            // }
+            const ref = await scxhsz(e.sensorId)
+            console.log('返回数据', ref.data.code)
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+          } catch (error) {
+            console.log('错误', error)
+          }
+          this.shezhi(this.shezhidqhsj)
+          break
+
+        case 'type3':
+          try {
+            console.log('删除行type3', e)
+            // const json = {
+            //   sensorId: e.sensorId
+            // }
+            const ref = await scznsz(e.sensorId)
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            console.log('返回数据', ref.data.code)
+          } catch (error) {
+            console.log('错误', error)
+          }
+          this.shezhi(this.shezhidqhsj)
+          break
       }
-      console.log('删除', e.id)
-      this.shezhi(this.shezhidqhsj)
-      this.shezhi(this.shezhidqhsj)
+      // try {
+      //   const json = {
+      //     id: e.id
+      //   }
+      //   const ref = await shanchu(json)
+      //   console.log(json)
+      //   console.log(ref)
+      //   this.$message({
+      //     message: '删除成功',
+      //     type: 'success'
+      //   })
+      // } catch (error) {
+      //   console.log('错误', error)
+      // }
+      // console.log('删除', e.id)
+      // this.shezhi(this.shezhidqhsj)
+      // this.shezhi(this.shezhidqhsj)
     },
     async xuigaiqr() {
       switch (this.form.kzqType) {
@@ -980,7 +1028,12 @@ export default {
             this.$message.error('请输入全部数据')
           } else {
             try {
-              const ref = await xzcgqsz(this.form)
+              const form1 =
+                {
+                  sensorId: this.dangqianhangshuju.sensorId,
+                  ...this.form
+                }
+              const ref = await xgdssz(form1)
               console.log('返回数据', ref.data.code)
               this.$message({
                 message: '修改成功',
@@ -1008,7 +1061,12 @@ export default {
             this.$message.error('请输入全部数据')
           } else {
             try {
-              const ref = await xzcgqsz(this.form)
+              const form1 =
+                {
+                  sensorId: this.dangqianhangshuju.sensorId,
+                  ...this.form
+                }
+              const ref = await xgxhsz(form1)
               console.log('返回数据', ref.data.code)
               this.$message({
                 message: '修改成功',
@@ -1034,10 +1092,16 @@ export default {
           !this.form.controllerConditionvalue ||
           !this.form.controllerOffvalue ||
           !this.form.controllerStatus) {
+            console.log('修改的数据', this.form)
             this.$message.error('请输入全部数据')
           } else {
             try {
-              const ref = await xzcgqsz(this.form)
+              const form1 =
+                {
+                  sensorId: this.dangqianhangshuju.sensorId,
+                  ...this.form
+                }
+              const ref = await xgznsz(form1)
               this.$message({
                 message: '修改成功',
                 type: 'success'
@@ -1058,6 +1122,7 @@ export default {
     xuigai(e) {
       this.xuigaixs = true
       console.log('修改', e)
+      this.form.sensorId = e.sensorId
       this.form.kzqType = e.kzqType
       this.form.controllerOpentime = e.controllerOpentime
       this.form.controllerEndtime = e.controllerEndtime
@@ -1073,6 +1138,8 @@ export default {
       this.form.controllerValue = e.controllerValue
       this.form.controllerConditionvalue = e.controllerConditionvalue
       this.form.controllerOffvalue = e.controllerOffvalue
+      console.log('初始化修改', this.form)
+      console.log('当前行数据', e)
     },
     async shezhi(e) {
       this.shezhidqhsj = e
@@ -1125,7 +1192,7 @@ export default {
               const ref = await xzdssz(form1)
               console.log('返回数据', ref.data.code)
               this.$message({
-                message: '修改成功',
+                message: '新增成功',
                 type: 'success'
               })
             } catch (error) {
@@ -1157,7 +1224,7 @@ export default {
               const ref = await xzxhsz(form1)
               console.log('返回数据', ref.data.code)
               this.$message({
-                message: '修改成功',
+                message: '新增成功',
                 type: 'success'
               })
             } catch (error) {
@@ -1191,7 +1258,7 @@ export default {
               const ref = await xzznsz(form1)
               console.log('返回数据', ref.data.code)
               this.$message({
-                message: '修改成功',
+                message: '新增成功',
                 type: 'success'
               })
             } catch (error) {
@@ -1222,6 +1289,19 @@ export default {
       }
       this.dialogFormVisible = true
       console.log('新增那条数据的设置', this.dangqianhangshuju)
+    },
+    async chushihua() {
+      try {
+        const ref = await kzqsbhq()
+        console.log('原始', this.tableData)
+        console.log('数据', ref)
+        this.tableData = ref.data.data
+        console.log('修改后', this.tableData)
+      } catch (error) {
+        console.log('错误', error)
+      }
+      this.huqushuju()
+      this.chaxun()
     },
     huqushuju() {
       this.newdata = this.tableData
