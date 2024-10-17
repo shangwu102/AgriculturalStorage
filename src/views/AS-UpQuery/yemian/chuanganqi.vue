@@ -72,7 +72,7 @@
                 <el-table-column property="lessValue" label="小于报警值" />
                 <el-table-column property="bigValue" label="大于报警值" />
                 <el-table-column property="sensorStatus" label="状态" />
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="150px">
                   <template slot-scope="szscope">
                     <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
                     <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
