@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-container>
-      <el-aside width="65vw" />
+      <!-- <el-aside width="65vw" /> -->
       <el-main>
         <div class="login-form-wrapper">
           <el-form
@@ -13,7 +13,7 @@
             label-position="left"
           >
             <div class="title-container">
-              <h3 class="title">藏粮于链平台</h3>
+              <h3 class="title">面向区块链管理系统</h3>
             </div>
 
             <!-- 用户名输入框 -->
@@ -476,16 +476,14 @@ export default {
   background-color: #2d3a4b;
 }
 
-.el-aside {
-  background-image: url(../../assets/login.jpg);
-  background-size: cover;
-}
-
 .el-main {
   background-color: #88bd86;
+  background-image: url(../../assets/login.jpg);
+  background-size: cover;
   display: flex;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
+  padding-right: 10%;
   // opacity: 0.8;
 }
 
