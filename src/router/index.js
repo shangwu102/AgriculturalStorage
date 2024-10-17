@@ -125,7 +125,7 @@ export const routes = [
         meta: {
           // 将 title 定义为一个函数，根据用户角色返回标题
           title: (role) => (role === 'admin' ? '操作授权' : '信息管理'),
-          icon: '安全预警',
+          icon: '管理员',
           roles: ['admin', 'operator']
         }
       }
@@ -215,7 +215,7 @@ export const routes = [
         component: adminorder,
         meta: {
           title: '订单审批',
-          icon: 'el-icon-s-data'
+          icon: '订单审批'
         }
       },
       {
@@ -223,7 +223,7 @@ export const routes = [
         component: Transaction,
         meta: {
           title: '交易监管',
-          icon: 'el-icon-s-data'
+          icon: '交易监管'
         }
       }
     ]
@@ -243,7 +243,7 @@ export const routes = [
         component: BlockReport,
         meta: {
           title: '区块报表',
-          icon: 'el-icon-s-data',
+          icon: 'tree',
           roles: ['admin', 'operator']
         }
       },
@@ -252,7 +252,7 @@ export const routes = [
         component: WarehouseReport,
         meta: {
           title: '仓库报表',
-          icon: 'el-icon-s-data',
+          icon: '仓库报表',
           roles: ['admin', 'operator']
         }
       }
