@@ -1287,6 +1287,8 @@ export default {
       } catch (error) {
         console.log('错误', error)
       }
+      console.log('重置数据', this.fromcz)
+      this.form = JSON.parse(JSON.stringify(this.fromcz))
       this.dialogFormVisible = true
       console.log('新增那条数据的设置', this.dangqianhangshuju)
     },
