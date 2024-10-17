@@ -25,6 +25,13 @@ const WarehouseReport = () => import('@/views/AS-report') // 仓库报表
 const WarningDashboard = () => import('@/views/AS-Waining/index') // 安全预警
 const LSHome = () => import('@/views/LS-Home/index') // 大屏展示
 
+// 从本地存储获取用户角色
+function getUserRole() {
+  const user = JSON.parse(localStorage.getItem('AS-user'))
+  return user ? user.role : null
+}
+
+// 定义路由配置
 export const routes = [
   { path: '/', redirect: '/login' }, // 重定向到登录页面
   { path: '/login', component: Login },
@@ -34,7 +41,15 @@ export const routes = [
     component: Layout,
     redirect: '/ashome',
     children: [
-      { path: '', component: ASHome, meta: { title: '首页', icon: 'editor-left-alignment', roles: ['admin', 'operator'] }}
+      {
+        path: '',
+        component: ASHome,
+        meta: {
+          title: '首页',
+          icon: 'editor-left-alignment',
+          roles: ['admin', 'operator']
+        }
+      }
     ]
   },
   {
@@ -42,24 +57,44 @@ export const routes = [
     component: Layout,
     redirect: '/company',
     children: [
-      { path: '', component: Company, meta: { title: '公司首页', icon: 'editor-left-alignment', roles: ['company'] }}
+      {
+        path: '',
+        component: Company,
+        meta: {
+          title: '公司首页',
+          icon: 'editor-left-alignment',
+          roles: ['company']
+        }
+      }
     ]
   },
   {
     path: '/order-management',
     component: Layout,
     redirect: '/order-management/publish', // 重定向到第一个子菜单路径
-    meta: { title: '订单管理', icon: 'editor-left-alignment', roles: ['company'] },
+    meta: {
+      title: '订单管理',
+      icon: 'editor-left-alignment',
+      roles: ['company']
+    },
     children: [
       {
         path: 'publish',
         component: Companyorder,
-        meta: { title: '发布订单', icon: 'editor-left-alignment', roles: ['company'] }
+        meta: {
+          title: '发布订单',
+          icon: 'editor-left-alignment',
+          roles: ['company']
+        }
       },
       {
         path: 'status',
         component: Companystatus,
-        meta: { title: '订单状态', icon: 'editor-left-alignment', roles: ['company'] }
+        meta: {
+          title: '订单状态',
+          icon: 'editor-left-alignment',
+          roles: ['company']
+        }
       }
     ]
   },
@@ -68,7 +103,15 @@ export const routes = [
     component: Layout,
     redirect: '/query',
     children: [
-      { path: '', component: CompanyQuery, meta: { title: '查看链上库存', icon: 'editor-left-alignment', roles: ['company'] }}
+      {
+        path: '',
+        component: CompanyQuery,
+        meta: {
+          title: '查看链上库存',
+          icon: 'editor-left-alignment',
+          roles: ['company']
+        }
+      }
     ]
   },
   {
@@ -76,48 +119,143 @@ export const routes = [
     component: Layout,
     redirect: '/asuser',
     children: [
-      { path: '', component: UserCenter, meta: { title: '操作授权', icon: '安全预警', roles: ['admin', 'operator'] }}
+      {
+        path: '',
+        component: UserCenter,
+        meta: {
+          // 将 title 定义为一个函数，根据用户角色返回标题
+          title: (role) => (role === 'admin' ? '操作授权' : '信息管理'),
+          icon: '安全预警',
+          roles: ['admin', 'operator']
+        }
+      }
     ]
   },
   {
     path: '/asinformation',
     component: Layout,
     redirect: '/asinformation/blockchainwarehouse', // 重定向到第一个子菜单路径
-    meta: { title: '仓库管理', icon: '粮食安全考核', roles: ['admin', 'operator'] },
+    meta: {
+      title: '仓库管理',
+      icon: '粮食安全考核',
+      roles: ['admin', 'operator']
+    },
     children: [
-      { path: 'blockchainwarehouse', component: BlockchainWarehouse, meta: { title: '链上仓库', icon: '链接', roles: ['admin', 'operator'] }},
-      { path: 'equipmentwarehouse', component: EquipmentWarehouse, meta: { title: '仓库设备', icon: '应用管理', roles: ['admin', 'operator'] }}
+      {
+        path: 'blockchainwarehouse',
+        component: BlockchainWarehouse,
+        meta: {
+          title: '链上仓库',
+          icon: '链接',
+          roles: ['admin', 'operator']
+        }
+      },
+      {
+        path: 'equipmentwarehouse',
+        component: EquipmentWarehouse,
+        meta: {
+          title: '仓库设备',
+          icon: '应用管理',
+          roles: ['admin', 'operator']
+        }
+      }
     ]
   },
   {
     path: '/asmanage',
     component: Layout,
     redirect: '/asmanage/controlwarehouse', // 重定向到第一个子菜单路径
-    meta: { title: '生产管理', icon: '生产管理', roles: ['admin', 'operator'] },
+    meta: {
+      title: '生产管理',
+      icon: '生产管理',
+      roles: ['admin', 'operator']
+    },
     children: [
-      { path: 'controlwarehouse', component: ControlWarehouse, meta: { title: '库存控制', icon: '仓库信息', roles: ['admin', 'operator'] }},
-      { path: 'warehousing', component: Warehousing, meta: { title: '入库信息', icon: '新风神_扫码入库', roles: ['admin', 'operator'] }},
-      { path: 'outbound', component: Outbound, meta: { title: '出库信息', icon: '已出库', roles: ['admin', 'operator'] }}
+      {
+        path: 'controlwarehouse',
+        component: ControlWarehouse,
+        meta: {
+          title: '库存控制',
+          icon: '仓库信息',
+          roles: ['admin', 'operator']
+        }
+      },
+      {
+        path: 'warehousing',
+        component: Warehousing,
+        meta: {
+          title: '入库信息',
+          icon: '新风神_扫码入库',
+          roles: ['admin', 'operator']
+        }
+      },
+      {
+        path: 'outbound',
+        component: Outbound,
+        meta: {
+          title: '出库信息',
+          icon: '已出库',
+          roles: ['admin', 'operator']
+        }
+      }
     ]
   },
   {
     path: '/astransaction',
     component: Layout,
     redirect: '/astransaction/order', // 重定向到第一个子菜单路径
-    meta: { title: '交易管理', icon: '数据报表', roles: ['admin'] },
+    meta: {
+      title: '交易管理',
+      icon: '数据报表',
+      roles: ['admin']
+    },
     children: [
-      { path: 'order', component: adminorder, meta: { title: '订单审批', icon: 'el-icon-s-data' }},
-      { path: 'transaction', component: Transaction, meta: { title: '交易监管', icon: 'el-icon-s-data' }}
+      {
+        path: 'order',
+        component: adminorder,
+        meta: {
+          title: '订单审批',
+          icon: 'el-icon-s-data'
+        }
+      },
+      {
+        path: 'transaction',
+        component: Transaction,
+        meta: {
+          title: '交易监管',
+          icon: 'el-icon-s-data'
+        }
+      }
     ]
   },
   {
     path: '/asreport',
     component: Layout,
     redirect: '/asreport/blockreport', // 重定向到第一个子菜单路径
-    meta: { title: '数据报表', icon: '数据报表', roles: ['admin', 'operator'] },
+    meta: {
+      title: '数据报表',
+      icon: '数据报表',
+      roles: ['admin', 'operator']
+    },
     children: [
-      { path: 'blockreport', component: BlockReport, meta: { title: '区块报表', icon: 'el-icon-s-data', roles: ['admin', 'operator'] }},
-      { path: 'warehousereport', component: WarehouseReport, meta: { title: '仓库报表', icon: 'el-icon-s-data', roles: ['admin', 'operator'] }}
+      {
+        path: 'blockreport',
+        component: BlockReport,
+        meta: {
+          title: '区块报表',
+          icon: 'el-icon-s-data',
+          roles: ['admin', 'operator']
+        }
+      },
+      {
+        path: 'warehousereport',
+        component: WarehouseReport,
+        meta: {
+          title: '仓库报表',
+          icon: 'el-icon-s-data',
+          roles: ['admin', 'operator']
+        }
+      }
     ]
   },
   {
@@ -125,18 +263,44 @@ export const routes = [
     component: Layout,
     redirect: '/aswarning',
     children: [
-      { path: '', component: WarningDashboard, meta: { title: '安全预警', icon: '安全预警', roles: ['admin', 'operator'] }}
+      {
+        path: '',
+        component: WarningDashboard,
+        meta: {
+          title: '安全预警',
+          icon: '安全预警',
+          roles: ['admin', 'operator']
+        }
+      }
     ]
   },
-  { path: '/lshome', component: LSHome, roles: ['admin', 'operator'] },
+  {
+    path: '/lshome',
+    component: LSHome,
+    meta: {
+      roles: ['admin', 'operator']
+    }
+  },
   { path: '*', redirect: '/404' } // 捕获所有未匹配的路由，重定向到404
 ]
 
-const createRouter = () => new Router({
-  routes
-})
+// 创建 router 实例
+const createRouter = () =>
+  new Router({
+    routes
+  })
 
 const router = createRouter()
+
+// 全局导航守卫
+router.beforeEach((to, from, next) => {
+  const role = getUserRole()
+  if (to.meta && to.meta.roles && !to.meta.roles.includes(role)) {
+    // 如果用户没有权限，跳转到登录页面或显示错误提示
+    return next('/login')
+  }
+  next()
+})
 
 export function resetRouter() {
   const newRouter = createRouter()

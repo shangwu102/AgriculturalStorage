@@ -2,7 +2,7 @@
   <el-breadcrumb class="app-breadcrumb" separator="/">
     <transition-group name="breadcrumb">
       <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
-        <span v-if="item.redirect==='noRedirect'||index==levelList.length-1" class="no-redirect">{{ item.meta.title }}</span>
+        <span v-if="index==levelList.length-1" class="no-redirect">{{ item.meta.title }}</span>
         <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
       </el-breadcrumb-item>
     </transition-group>
@@ -11,11 +11,17 @@
 
 <script>
 import pathToRegexp from 'path-to-regexp'
-
+import { getUser } from '@/utils/auth'
 export default {
   data() {
     return {
       levelList: null
+    }
+  },
+  computed: {
+    role() {
+      const user = JSON.parse(getUser()) // 从 localStorage 中获取用户信息
+      return user ? user.role : '' // 返回角色信息
     }
   },
   watch: {
@@ -27,8 +33,13 @@ export default {
     this.getBreadcrumb()
   },
   methods: {
+    getTitle(meta) {
+      if (typeof meta.title === 'function') {
+        return meta.title(this.role)
+      }
+      return meta.title
+    },
     getBreadcrumb() {
-      // only show routes with meta.title
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
       const first = matched[0]
 
@@ -36,8 +47,20 @@ export default {
         matched = [{ path: '/ashome', meta: { title: 'ashome' }}].concat(matched)
       }
 
+      // 使用getTitle方法动态获取标题
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
+        .map(item => {
+          return {
+            ...item,
+            meta: {
+              ...item.meta,
+              title: this.getTitle(item.meta)
+            }
+          }
+        })
+      console.log(this.levelList)
     },
+
     isDashboard(route) {
       const name = route && route.name
       if (!name) {
@@ -60,6 +83,7 @@ export default {
       this.$router.push(this.pathCompile(path))
     }
   }
+
 }
 </script>
 

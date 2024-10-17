@@ -6,14 +6,14 @@
     >
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'submenu-title-noDropdown': !isNest }">
-          <item :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" :title="onlyOneChild.meta.title" />
+          <item :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" :title="getTitle(onlyOneChild.meta)" />
         </el-menu-item>
       </app-link>
     </template>
     <!-- 二级菜单 -->
     <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
       <template slot="title">
-        <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
+        <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="getTitle(item.meta)" />
       </template>
       <sidebar-item
         v-for="child in item.children"
@@ -62,12 +62,17 @@ export default {
     // 从 localStorage 中获取用户角色信息
     role() {
       const user = JSON.parse(getUser()) // 从 localStorage 中获取用户信息
-      console.log(user)
-
       return user ? user.role : '' // 如果存在用户信息，则返回角色，否则返回空字符串
     }
   },
   methods: {
+    // 获取菜单标题，支持函数和字符串
+    getTitle(meta) {
+      if (typeof meta.title === 'function') {
+        return meta.title(this.role)
+      }
+      return meta.title
+    },
     // 判断是否只显示一个子菜单
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {
