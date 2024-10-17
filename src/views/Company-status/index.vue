@@ -2,16 +2,90 @@
   <div class="order-status-container">
     <el-card class="order-status-card" shadow="hover">
       <div v-if="orders && orders.length">
-        <!-- Flex container for two cards per row -->
         <div class="order-grid">
           <div v-for="(order, index) in orders" :key="index" class="order-col">
             <el-card class="order-item-card">
-              <el-steps :active="getActiveStep(order.status)" finish-status="success" align-center>
-                <el-step title="待接单" :status="getStepStatus(order.status, 0)" />
-                <el-step title="待发货" :status="getStepStatus(order.status, 1)" />
-                <el-step title="已发货" :status="getStepStatus(order.status, 2)" />
-                <el-step :title="order.status === '已关闭' ? '已关闭' : '已完成'" :status="getStepStatus(order.status, 3)" />
+
+              <el-steps :active="getActiveStep(order.status)" align-center>
+                <!-- 待审核 -->
+                <el-step title="待审核" :status="getStepStatus(order.status, 0)" class="step-with-description">
+                  <template #description>
+                    <span
+                      :class="{ 'step-description': true, 'visible-description': getActiveStep(order.status) >= 0 }"
+                    >
+                      <!-- 如果状态是 待审核 显示 审核中，如果是除已关闭以外的显示 审核通过 如果是已关闭 显示审核未通过 -->
+                      {{
+                        order.status === '待审核'
+                          ? '审核中'
+                          : order.status === '已关闭'
+                            ? '审核未通过'
+                            : '审核通过'
+                      }}
+                    </span>
+                  </template>
+                </el-step>
+
+                <!-- 如果订单状态为“已关闭”，则显示一个“已关闭”步骤 -->
+                <el-step
+                  v-if="order.status === '已关闭'"
+                  title="已关闭"
+                  :status="getStepStatus(order.status, 4)"
+                  class="step-with-description"
+                >
+                  <template #description>
+                    <span
+                      :class="{ 'step-description': true, 'visible-description': getActiveStep(order.status) >= 4 }"
+                    >
+                      订单已关闭
+                    </span>
+                  </template>
+                </el-step>
+
+                <!-- 否则显示其他正常步骤 -->
+                <template v-else>
+                  <!-- 待支付 -->
+                  <el-step title="待支付" :status="getStepStatus(order.status, 1)" class="step-with-description">
+                    <template #description>
+                      <span
+                        :class="{ 'step-description': true, 'visible-description': getActiveStep(order.status) >= 1 }"
+                      >
+                        付款成功
+                      </span>
+                    </template>
+                  </el-step>
+                  <!-- 待出库 -->
+                  <el-step title="待出库" :status="getStepStatus(order.status, 2)" class="step-with-description">
+                    <template #description>
+                      <span
+                        :class="{ 'step-description': true, 'visible-description': getActiveStep(order.status) >= 2 }"
+                      >
+                        订单准备出库
+                      </span>
+                    </template>
+                  </el-step>
+                  <!-- 待收货 -->
+                  <el-step title="待收货" :status="getStepStatus(order.status, 3)" class="step-with-description">
+                    <template #description>
+                      <span
+                        :class="{ 'step-description': true, 'visible-description': getActiveStep(order.status) >= 3 }"
+                      >
+                        请确认收货
+                      </span>
+                    </template>
+                  </el-step>
+                  <!-- 已完成 -->
+                  <el-step title="已完成" :status="getStepStatus(order.status, 4)" class="step-with-description">
+                    <template #description>
+                      <span
+                        :class="{ 'step-description': true, 'visible-description': getActiveStep(order.status) >= 4 }"
+                      >
+                        订单已完成
+                      </span>
+                    </template>
+                  </el-step>
+                </template>
               </el-steps>
+
               <div class="status-info">
                 <p><strong>订单名称：</strong>{{ order.orderName }}</p>
                 <p><strong>粮食品种：</strong>{{ order.grainType }}</p>
@@ -22,8 +96,24 @@
                 </p>
 
                 <!-- 确认收到按钮 -->
-                <el-button v-if="order.status === '已发货'" type="primary" size="small" style="float: right;" @click="confirmReceipt(order)">
+                <el-button
+                  v-if="order.status === '待收货'"
+                  type="primary"
+                  size="small"
+                  style="float: right;"
+                  @click="confirmReceipt(order)"
+                >
                   确认收到
+                </el-button>
+                <!-- 待支付按钮 -->
+                <el-button
+                  v-if="order.status === '待支付'"
+                  type="primary"
+                  size="small"
+                  style="float: right;"
+                  @click="payment(order)"
+                >
+                  请支付金额
                 </el-button>
               </div>
             </el-card>
@@ -50,7 +140,7 @@
 export default {
   data() {
     return {
-      steps: ['待接单', '待发货', '已发货', '已完成', '已关闭'],
+      steps: ['待审核', '待支付', '待出库', '待收货', '已完成'],
       orders: [],
       confirmDialogVisible: false, // 控制确认对话框的显示
       currentOrder: null // 当前要确认收货的订单
@@ -68,15 +158,17 @@ export default {
   methods: {
     getActiveStep(status) {
       switch (status) {
-        case '待接单':
+        case '待审核':
           return 0
-        case '待发货':
+        case '待支付':
           return 1
-        case '已发货':
+        case '待出库':
           return 2
+        case '待收货':
+          return 3
         case '已完成':
         case '已关闭':
-          return 3
+          return 4
         default:
           return 0
       }
@@ -86,21 +178,34 @@ export default {
       if (stepIndex < activeStep) {
         return 'finish' // 已完成的步骤
       } else if (stepIndex === activeStep) {
-        return 'process' // 当前进行的步骤
+        if (stepIndex === 4) {
+          // 处理最后一个步骤的特殊状态
+          if (orderStatus === '已完成') {
+            return 'success' // 显示绿色
+          } else if (orderStatus === '已关闭') {
+            return 'error' // 显示红色
+          } else {
+            return 'process' // 当前进行的步骤
+          }
+        } else {
+          return 'process' // 当前进行的步骤
+        }
       } else {
         return 'wait' // 等待中的步骤
       }
     },
     getStatusColor(status) {
       switch (status) {
-        case '待接单':
+        case '待审核':
           return 'orange'
-        case '待发货':
+        case '待支付':
           return 'blue'
-        case '已发货':
-          return 'green'
-        case '已完成':
+        case '待出库':
+          return 'blueviolet'
+        case '待收货':
           return 'gray'
+        case '已完成':
+          return 'green'
         case '已关闭':
           return 'red'
         default:
@@ -127,7 +232,7 @@ export default {
         // 更新 localStorage 中的订单状态
         this.updateOrderStatus(this.currentOrder)
         this.confirmDialogVisible = false
-        this.$message.success('订单状态已更新为已完成！')
+        this.$message.success('订单状态已更新！')
       }
     },
     // 更新订单状态并保存到 localStorage
@@ -136,6 +241,14 @@ export default {
       if (orderIndex !== -1) {
         this.orders[orderIndex] = updatedOrder
         localStorage.setItem('orderStatus', JSON.stringify(this.orders))
+      }
+    },
+    payment(order) {
+      const orderIndex = this.orders.findIndex(o => o.orderName === order.orderName)
+      if (orderIndex !== -1) {
+        this.orders[orderIndex].status = '待出库'
+        localStorage.setItem('orderStatus', JSON.stringify(this.orders))
+        this.$message.success('订单状态已更新')
       }
     }
   }
@@ -165,7 +278,6 @@ export default {
 
 .order-col {
   width: calc(50% - 10px);
-  /* Two cards per row */
 }
 
 .order-item-card {
@@ -189,5 +301,27 @@ export default {
 .order-status-container::-webkit-scrollbar-thumb {
   background-color: #bbb;
   border-radius: 4px;
+}
+
+.step-with-description {
+  position: relative;
+}
+
+.step-description {
+  position: absolute;
+  left: 60%;
+  /* 控制描述文字距离步骤的距离 */
+  top: 0;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  color: #333;
+  font-size: 11px;
+  display: none;
+  /* 初始隐藏 */
+}
+
+.visible-description {
+  display: inline-block;
+  /* 激活状态或已完成时显示 */
 }
 </style>

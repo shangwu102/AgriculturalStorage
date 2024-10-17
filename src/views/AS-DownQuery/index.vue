@@ -395,7 +395,7 @@ export default {
   computed: {
     // 计算待发货的订单
     pendingOrders() {
-      return this.orders.filter(order => order.status === '待发货')
+      return this.orders.filter(order => order.status === '待出库')
     },
     // 计算当前页显示的订单列表
     paginatedOrderList() {
@@ -526,14 +526,14 @@ export default {
         if (valid) {
           // 从订单列表中找到对应的订单并更新状态
           const orderIndex = this.orders.findIndex(
-            (order) => order.orderName === this.chukuForm.orderName && order.status === '待发货'
+            (order) => order.orderName === this.chukuForm.orderName && order.status === '待出库'
           )
           if (orderIndex !== -1) {
             // 更新订单状态为已发货
-            this.orders[orderIndex].status = '已发货'
+            this.orders[orderIndex].status = '待收货'
             // 保存更新后的订单列表到 localStorage
             localStorage.setItem('orderStatus', JSON.stringify(this.orders))
-            this.$message.success('出库完成，订单状态已更新为已发货！')
+            this.$message.success('订单状态已更新！')
           } else {
             this.$message.error('未找到对应的待发货订单！')
             return
