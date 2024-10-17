@@ -20,24 +20,15 @@
             <strong @click="openDrawer(item)">{{ item.name }}</strong>
             <el-row>
               <el-col :span="12" class="p-2">
-                <el-row>
+                <el-row class="data-row">
                   <el-col :span="8">编号:</el-col>
-                  <el-col :span="16">{{ item.code }}</el-col>
+                  <el-col :span="16">{{ item.depotId }}</el-col>
                 </el-row>
-                <el-row>
-                  <el-col :span="8">公司编号:</el-col>
-                  <el-col :span="16">{{ item.companyCode }}</el-col>
-                </el-row>
-                <el-row>
+                <el-row class="data-row">
                   <el-col :span="8">建立时间:</el-col>
                   <el-col :span="16">{{ item.creationTime }}</el-col>
                 </el-row>
-                <el-row>
-                  <el-col :span="8">录入时间:</el-col>
-                  <el-col :span="16">{{ item.intoTime }}</el-col>
-                </el-row>
-              </el-col>
-            </el-row>
+              </el-col></el-row>
           </el-col>
 
           <!-- 右边仓库图片 -->
@@ -51,30 +42,62 @@
     <!-- Drawer 抽屉 -->
     <el-drawer title="仓库详细信息" :visible.sync="drawerVisible" direction="rtl" size="40%">
       <div v-if="selectedItem" class="drawer-content">
+        <!-- 仓库名称 -->
         <el-row class="drawer-row">
           <el-col :span="8"><strong>仓库名称:</strong></el-col>
           <el-col :span="16">{{ selectedItem.name }}</el-col>
         </el-row>
         <el-divider />
+
+        <!-- 仓库编号 -->
         <el-row class="drawer-row">
           <el-col :span="8"><strong>编号:</strong></el-col>
-          <el-col :span="16">{{ selectedItem.code }}</el-col>
+          <el-col :span="16">{{ selectedItem.depotId }}</el-col>
         </el-row>
         <el-divider />
+
+        <!-- 仓库位置 -->
         <el-row class="drawer-row">
-          <el-col :span="8"><strong>公司编号:</strong></el-col>
-          <el-col :span="16">{{ selectedItem.companyCode }}</el-col>
+          <el-col :span="8"><strong>位置:</strong></el-col>
+          <el-col :span="16">{{ selectedItem.location }}</el-col>
         </el-row>
         <el-divider />
+
+        <!-- 仓库描述 -->
+        <el-row class="drawer-row">
+          <el-col :span="8"><strong>描述:</strong></el-col>
+          <el-col :span="16">{{ selectedItem.description }}</el-col>
+        </el-row>
+        <el-divider />
+
+        <!-- 粮食种类列表 -->
+        <el-row class="drawer-row">
+          <el-col :span="8"><strong>粮食种类列表:</strong></el-col>
+          <el-col :span="16">
+            <ul>
+              <li v-for="(kind, index) in selectedItem.goodkind" :key="index">{{ kind }}</li>
+            </ul>
+          </el-col>
+        </el-row>
+        <el-divider />
+
+        <!-- 批次号列表 -->
+        <el-row class="drawer-row">
+          <el-col :span="8"><strong>批次号:</strong></el-col>
+          <el-col :span="16">
+            <ul>
+              <li v-for="(batch, index) in selectedItem.batchIds" :key="index">{{ batch }}</li>
+            </ul>
+          </el-col>
+        </el-row>
+        <el-divider />
+
+        <!-- 建立时间 -->
         <el-row class="drawer-row">
           <el-col :span="8"><strong>建立时间:</strong></el-col>
           <el-col :span="16">{{ selectedItem.creationTime }}</el-col>
         </el-row>
         <el-divider />
-        <el-row class="drawer-row">
-          <el-col :span="8"><strong>录入时间:</strong></el-col>
-          <el-col :span="16">{{ selectedItem.intoTime }}</el-col>
-        </el-row>
       </div>
     </el-drawer>
   </div>
@@ -84,18 +107,78 @@
 export default {
   data() {
     return {
-
       searchQuery: '',
       drawerVisible: false, // 控制Drawer显示
       selectedItem: null, // 存储选中的仓库信息
       dataList: [
-        { id: 1, name: '1号仓库', code: '42', companyCode: '37', creationTime: '2022-02-25 17:36:41', intoTime: '2024-02-25 17:36:41', img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' },
-        { id: 2, name: '2号仓库', code: '43', companyCode: '38', creationTime: '2022-02-26 17:36:41', intoTime: '2024-02-26 17:36:41', img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' },
-        { id: 3, name: '3号仓库', code: '44', companyCode: '39', creationTime: '2022-02-27 17:36:41', intoTime: '2024-02-27 17:36:41', img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' },
-        { id: 4, name: '4号仓库', code: '45', companyCode: '40', creationTime: '2022-02-28 17:36:41', intoTime: '2024-02-28 17:36:41', img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' },
-        { id: 5, name: '4号仓库', code: '45', companyCode: '40', creationTime: '2022-02-28 17:36:41', intoTime: '2024-02-28 17:36:41', img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' },
-        { id: 6, name: '4号仓库', code: '45', companyCode: '40', creationTime: '2022-02-28 17:36:41', intoTime: '2024-02-28 17:36:41', img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' }
+        {
+          id: 1,
+          name: '1号仓库',
+          depotId: 'WH001',
+          location: '北京市朝阳区',
+          description: '主要储存小麦和玉米的大型仓库。',
+          goodkind: ['小麦', '玉米'],
+          batchIds: ['BATCH101', 'BATCH102'],
+          creationTime: '2022-02-25 17:36:41',
+          img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
+        },
+        {
+          id: 2,
+          name: '2号仓库',
+          depotId: 'WH002',
+          location: '上海市浦东新区',
+          description: '用于存放大米和大豆的中型仓库。',
+          goodkind: ['大米', '大豆'],
+          batchIds: ['BATCH201', 'BATCH202'],
+          creationTime: '2022-02-26 17:36:41',
+          img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
+        },
+        {
+          id: 3,
+          name: '3号仓库',
+          depotId: 'WH003',
+          location: '广州市天河区',
+          description: '一个小型仓库，专用于储存油菜籽。',
+          goodkind: ['油菜籽'],
+          batchIds: ['BATCH301'],
+          creationTime: '2022-02-27 17:36:41',
+          img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
+        },
+        {
+          id: 4,
+          name: '4号仓库',
+          depotId: 'WH004',
+          location: '深圳市福田区',
+          description: '储存小麦、大豆和玉米的多功能仓库。',
+          goodkind: ['小麦', '大豆', '玉米'],
+          batchIds: ['BATCH401', 'BATCH402', 'BATCH403'],
+          creationTime: '2022-02-28 17:36:41',
+          img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
+        },
+        {
+          id: 5,
+          name: '5号仓库',
+          depotId: 'WH005',
+          location: '成都市武侯区',
+          description: '用于存储谷物和其他粮食作物的大型仓库。',
+          goodkind: ['谷物', '小麦'],
+          batchIds: ['BATCH501', 'BATCH502'],
+          creationTime: '2022-03-01 10:00:00',
+          img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
+        },
+        {
+          id: 6,
+          name: '6号仓库',
+          depotId: 'WH006',
+          location: '重庆市渝北区',
+          description: '新建仓库，主要用于储存玉米。',
+          goodkind: ['玉米'],
+          batchIds: ['BATCH601'],
+          creationTime: '2022-03-02 12:00:00',
+          img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
+        }
       ]
+
     }
   },
   computed: {
@@ -106,7 +189,7 @@ export default {
       // 根据仓库名称或编号进行过滤
       return this.dataList.filter(item =>
         item.name.includes(this.searchQuery) ||
-        item.code.includes(this.searchQuery)
+        item.depotId.includes(this.searchQuery)
       )
     }
   },
@@ -187,11 +270,7 @@ export default {
 }
 
 .drawer-content {
-  padding: 10px;
-}
-
-.drawer-content .el-row {
-  margin-bottom: 15px;
+  padding: 20px;
 }
 
 .drawer-content .el-divider {
@@ -210,6 +289,7 @@ export default {
   height: 100px;
   /* 设定图片高度 */
 }
+
 /* Drawer 样式 */
 .custom-drawer {
   background-color: #f9f9f9;
@@ -222,7 +302,7 @@ export default {
 
 /* 每一行样式 */
 .drawer-row {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   display: flex;
   align-items: center;
 }
@@ -234,7 +314,7 @@ export default {
 }
 
 .el-divider {
-  margin: 15px 0;
+  margin: 35px 0;
 }
 
 /* 行内文本样式 */
@@ -254,5 +334,9 @@ export default {
 
 .custom-drawer .el-drawer__body {
   padding: 20px;
+}
+
+.data-row {
+  margin-top: 15px;
 }
 </style>
