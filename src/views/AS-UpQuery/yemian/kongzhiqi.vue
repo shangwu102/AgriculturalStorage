@@ -15,7 +15,7 @@
         <el-input v-model="sousuo" placeholder="请输入控制器名称">''</el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="chaxun">搜素</el-button>
+        <el-button type="primary" @click="chaxun">搜索</el-button>
       </el-form-item>
     </el-form>
     <el-table
