@@ -74,7 +74,7 @@ export default {
           const newOrder = {
             orderName: this.orderForm.orderName,
             grainType: this.orderForm.grainType,
-            status: '待接单', // 初始状态为 "待接单"
+            status: '待审核', // 初始状态为 "待审核"
             quantity: this.orderForm.quantity,
             deliveryDate: this.orderForm.deliveryDate,
             remarks: this.orderForm.remarks

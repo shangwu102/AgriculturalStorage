@@ -32,10 +32,10 @@
       <!-- 操作 -->
       <el-table-column label="操作" width="200">
         <template #default="scope">
-          <el-button v-if="scope.row.status === '待接单'" type="primary" size="small" @click="agreeOrder(scope.row)">
+          <el-button v-if="scope.row.status === '待审核'" type="primary" size="small" @click="agreeOrder(scope.row)">
             同意
           </el-button>
-          <el-button v-else-if="scope.row.status === '待发货'" type="success" size="small" disabled>
+          <el-button v-else-if="scope.row.status === '待支付' || '待出库'" type="success" size="small" disabled>
             已审批✅
           </el-button>
           <el-button v-else-if="scope.row.status === '已完成'" type="success" size="small" disabled>
@@ -44,7 +44,7 @@
           <el-button v-else-if="scope.row.status === '已关闭'" type="danger" size="small" disabled>
             已关闭❎
           </el-button>
-          <el-button v-if="scope.row.status === '待接单'" type="danger" size="small" @click="cancelOrder(scope.row)">
+          <el-button v-if="scope.row.status === '待审核'" type="danger" size="small" @click="cancelOrder(scope.row)">
             取消
           </el-button>
         </template>
@@ -103,9 +103,9 @@ export default {
     // 计算当前页显示的订单列表，并将 "待接单" 的订单排在前面
     paginatedOrderList() {
       const sortedOrders = [...this.filteredOrderList].sort((a, b) => {
-        if (a.status === '待接单' && b.status !== '待接单') {
+        if (a.status === '待审核' && b.status !== '待审核') {
           return -1
-        } else if (a.status !== '待接单' && b.status === '待接单') {
+        } else if (a.status !== '待审核' && b.status === '待审核') {
           return 1
         }
         return 0
@@ -154,8 +154,8 @@ export default {
 
     // 确认同意订单
     confirmAgreeOrder() {
-      if (this.currentOrder && this.currentOrder.status === '待接单') {
-        this.currentOrder.status = '待发货'
+      if (this.currentOrder && this.currentOrder.status === '待审核') {
+        this.currentOrder.status = '待支付'
         this.updateOrderStatus()
         this.agreeDialogVisible = false
         this.$message.success('订单已同意！')
@@ -172,7 +172,7 @@ export default {
 
     // 确认取消订单
     confirmCancelOrder() {
-      if (this.currentOrder && this.currentOrder.status === '待接单') {
+      if (this.currentOrder && this.currentOrder.status === '待审核') {
         this.currentOrder.status = '已关闭'
         this.updateOrderStatus()
         this.cancelDialogVisible = false
