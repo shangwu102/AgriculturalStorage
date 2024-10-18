@@ -8,6 +8,9 @@
       <el-col :span="4" class="search-button">
         <el-button type="primary" @click="handleSearch">搜索</el-button>
       </el-col>
+      <el-col :span="12" class="addwarehouse">
+        <el-button type="primary" @click="openDialog">添加仓库</el-button>
+      </el-col>
     </el-row>
 
     <!-- 下方列表框 -->
@@ -16,8 +19,8 @@
       <div v-for="(item) in filteredData" :key="item.id" class="warehouse-list">
         <el-row class="align-items-center warehouse-item">
           <!-- 左边仓库信息 -->
-          <el-col :span="18" class="warehouse-info cursor-pointer">
-            <strong @click="openDrawer(item)">{{ item.name }}</strong>
+          <el-col :span="18" class="warehouse-info">
+            <strong class="warehouse-name cursor-pointer" @click="openDrawer(item)">{{ item.name }}</strong>
             <el-row>
               <el-col :span="12" class="p-2">
                 <el-row class="data-row">
@@ -28,16 +31,39 @@
                   <el-col :span="8">建立时间:</el-col>
                   <el-col :span="16">{{ item.creationTime }}</el-col>
                 </el-row>
-              </el-col></el-row>
+              </el-col>
+            </el-row>
           </el-col>
 
           <!-- 右边仓库图片 -->
-          <el-col :span="6" class="cursor-pointer info-icon" @click="openDrawer(item)">
-            <el-image :src="item.img" alt="更多信息" class="aligned-image" />
+          <el-col :span="6" class="info-icon">
+            <el-image :src="item.img" alt="仓库图片" class="aligned-image" />
           </el-col>
         </el-row>
       </div>
     </div>
+
+    <!-- 添加仓库弹出框 -->
+    <el-dialog :visible.sync="dialogVisible" title="添加仓库">
+      <el-form ref="warehouseForm" :model="formData" :rules="formRules" label-width="80px">
+        <el-form-item label="仓库编号" prop="depotId">
+          <el-input v-model="formData.depotId" />
+        </el-form-item>
+        <el-form-item label="仓库名称" prop="name">
+          <el-input v-model="formData.name" />
+        </el-form-item>
+        <el-form-item label="建立时间" prop="creationTime">
+          <el-date-picker v-model="formData.creationTime" type="datetime" placeholder="选择日期时间" style="width: 100%;" />
+        </el-form-item>
+        <el-form-item label="仓库描述" prop="description">
+          <el-input v-model="formData.description" type="textarea" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitForm">完成</el-button>
+      </span>
+    </el-dialog>
 
     <!-- Drawer 抽屉 -->
     <el-drawer title="仓库详细信息" :visible.sync="drawerVisible" direction="rtl" size="40%">
@@ -56,13 +82,6 @@
         </el-row>
         <el-divider />
 
-        <!-- 仓库位置 -->
-        <el-row class="drawer-row">
-          <el-col :span="8"><strong>位置:</strong></el-col>
-          <el-col :span="16">{{ selectedItem.location }}</el-col>
-        </el-row>
-        <el-divider />
-
         <!-- 仓库描述 -->
         <el-row class="drawer-row">
           <el-col :span="8"><strong>描述:</strong></el-col>
@@ -72,7 +91,7 @@
 
         <!-- 粮食种类列表 -->
         <el-row class="drawer-row">
-          <el-col :span="8"><strong>粮食种类列表:</strong></el-col>
+          <el-col :span="8"><strong>粮食种类:</strong></el-col>
           <el-col :span="16">
             <ul>
               <li v-for="(kind, index) in selectedItem.goodkind" :key="index">{{ kind }}</li>
@@ -110,6 +129,7 @@ export default {
       searchQuery: '',
       drawerVisible: false, // 控制Drawer显示
       selectedItem: null, // 存储选中的仓库信息
+      dialogVisible: false, // 添加仓库
       dataList: [
         {
           id: 1,
@@ -177,30 +197,99 @@ export default {
           creationTime: '2022-03-02 12:00:00',
           img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
         }
-      ]
-
+      ],
+      formData: {
+        depotId: '',
+        name: '',
+        creationTime: '',
+        description: ''
+      },
+      formRules: {
+        depotId: [
+          { required: true, message: '请输入仓库编号', trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: '请输入仓库名称', trigger: 'blur' }
+        ],
+        creationTime: [
+          { type: 'date', required: true, message: '请选择建立时间', trigger: 'change' }
+        ],
+        description: [
+          { required: true, message: '请输入仓库描述', trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
     filteredData() {
-      if (!this.searchQuery) {
+      if (!this.searchQuery.trim()) {
         return this.dataList
       }
-      // 根据仓库名称或编号进行过滤
+      // 根据仓库名称或编号进行过滤（忽略大小写）
+      const query = this.searchQuery.trim().toLowerCase()
       return this.dataList.filter(item =>
-        item.name.includes(this.searchQuery) ||
-        item.depotId.includes(this.searchQuery)
+        item.name.toLowerCase().includes(query) ||
+        item.depotId.toLowerCase().includes(query)
       )
     }
   },
   methods: {
     handleSearch() {
-      console.log('Searching for:', this.searchQuery)
+      // 搜索功能已通过 computed 属性实现，此方法可以用于额外的搜索逻辑
+      // 例如，记录搜索日志或触发其他操作
+      console.log('搜索关键词:', this.searchQuery)
     },
     openDrawer(item) {
-      console.log('打开抽屉')
-      this.selectedItem = item // 确保选中仓库信息更新
+      this.selectedItem = item // 更新选中的仓库信息
       this.drawerVisible = true // 打开Drawer
+    },
+    openDialog() {
+      this.dialogVisible = true
+    },
+    submitForm() {
+      this.$refs.warehouseForm.validate((valid) => {
+        if (valid) {
+          // 生成新的唯一ID
+          const newId = this.dataList.length
+            ? Math.max(...this.dataList.map(item => item.id)) + 1
+            : 1
+          // 添加新仓库到 dataList
+          const newWarehouse = {
+            id: newId,
+            name: this.formData.name,
+            depotId: this.formData.depotId,
+            description: this.formData.description,
+            creationTime: this.formatDateTime(this.formData.creationTime),
+            img: this.formData.img || 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' // 默认图片
+          }
+          this.dataList.push(newWarehouse)
+          // 关闭对话框并清空表单
+          this.dialogVisible = false
+          this.resetForm()
+          // 提示用户
+          this.$message({
+            message: '仓库添加成功！',
+            type: 'success'
+          })
+        } else {
+          console.log('表单验证失败')
+          return false
+        }
+      })
+    },
+    resetForm() {
+      this.formData = {
+        depotId: '',
+        name: '',
+        creationTime: '',
+        description: ''
+      }
+      this.$refs.warehouseForm.resetFields()
+    },
+    formatDateTime(date) {
+      const pad = (n) => n < 10 ? '0' + n : n
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+        `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
     }
   }
 }
@@ -226,6 +315,10 @@ export default {
 .search-button {
   display: flex;
   justify-content: flex-start;
+}
+
+.addwarehouse {
+  text-align: right;
 }
 
 .house_data {
@@ -265,18 +358,6 @@ export default {
   cursor: pointer;
 }
 
-.custom-drawer {
-  background-color: #f5f7fa;
-}
-
-.drawer-content {
-  padding: 20px;
-}
-
-.drawer-content .el-divider {
-  margin: 10px 0;
-}
-
 .info-icon {
   text-align: right;
   font-size: 18px;
@@ -285,29 +366,22 @@ export default {
 .aligned-image {
   vertical-align: middle;
   width: 100px;
-  /* 设定图片宽度 */
   height: 100px;
-  /* 设定图片高度 */
+  object-fit: cover;
+  border-radius: 5px;
 }
 
 /* Drawer 样式 */
-.custom-drawer {
-  background-color: #f9f9f9;
-  padding: 20px;
-}
-
 .drawer-content {
   padding: 20px;
 }
 
-/* 每一行样式 */
 .drawer-row {
   margin-bottom: 25px;
   display: flex;
   align-items: center;
 }
 
-/* 设置文本样式 */
 .drawer-row strong {
   font-size: 14px;
   color: #666;
@@ -317,26 +391,8 @@ export default {
   margin: 35px 0;
 }
 
-/* 行内文本样式 */
-.drawer-row el-col:nth-child(2) {
-  font-size: 14px;
-  color: #333;
-}
-
-/* 设置整体样式 */
-.custom-drawer .el-drawer__header {
-  background-color: #409eff;
-  color: #fff;
-  text-align: center;
-  font-size: 16px;
-  padding: 10px;
-}
-
-.custom-drawer .el-drawer__body {
-  padding: 20px;
-}
-
-.data-row {
-  margin-top: 15px;
+/* 表单样式调整 */
+.el-form-item {
+  margin-bottom: 20px;
 }
 </style>
