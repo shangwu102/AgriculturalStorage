@@ -123,13 +123,13 @@
             <el-form-item label="出库时间" prop="createTime">
               <el-date-picker v-model="chukuForm.createTime" type="datetime" placeholder="选择日期时间" style="width: 100%" />
             </el-form-item>
-            <el-form-item label="订单名称" prop="orderName">
-              <el-select v-model="chukuForm.orderName" placeholder="请选择订单">
+            <el-form-item label="订单名称" prop="tracingCode">
+              <el-select v-model="chukuForm.tracingCode" placeholder="请选择订单">
                 <el-option
                   v-for="order in pendingOrders"
                   :key="order.orderId"
-                  :label="order.orderName"
-                  :value="order.orderName"
+                  :label="order.tracingCode"
+                  :value="order.tracingCode"
                 />
               </el-select>
             </el-form-item>
@@ -176,6 +176,8 @@
 </template>
 
 <script>
+import { getOrder } from '@/utils/order'
+
 export default {
   data() {
     const options = [
@@ -339,7 +341,7 @@ export default {
       account: [{ required: true, message: '请输入操作账号', trigger: 'blur' }]
     }
     const chukuShujujianyan = {
-      orderName: [{ required: true, message: '请选择订单名称', trigger: 'change' }],
+      tracingCode: [{ required: true, message: '请选择订单名称', trigger: 'change' }],
       repertoryName: [
         { required: true, message: '请输入仓库名称', trigger: 'blur' }
       ],
@@ -376,7 +378,7 @@ export default {
       hangshuju: '',
       // 新增出库相关
       chukuForm: {
-        orderName: '',
+        tracingCode: '',
         repertoryName: '',
         account: '',
         productType: '',
@@ -408,13 +410,12 @@ export default {
   methods: {
     // 加载订单数据从 localStorage
     loadOrders() {
-      const savedOrders = localStorage.getItem('orderStatus')
+      const savedOrders = getOrder()
       if (savedOrders) {
         this.orders = JSON.parse(savedOrders)
       } else {
         this.orders = []
       }
-      console.log('加载的订单数据:', this.orders)
     },
     // 查询功能
     chaxun() {
@@ -522,7 +523,7 @@ export default {
         if (valid) {
           // 从订单列表中找到对应的订单并更新状态
           const orderIndex = this.orders.findIndex(
-            (order) => order.orderName === this.chukuForm.orderName && order.status === '待出库'
+            (order) => order.tracingCode === this.chukuForm.tracingCode && order.status === '待出库'
           )
           if (orderIndex !== -1) {
             // 更新订单状态为已发货
@@ -564,7 +565,7 @@ export default {
 
             // 重置出库表单
             this.chukuForm = {
-              orderName: '',
+              tracingCode: '',
               repertoryName: '',
               account: '',
               productType: '',
