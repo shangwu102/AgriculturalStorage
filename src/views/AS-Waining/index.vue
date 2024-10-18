@@ -17,6 +17,11 @@
       <el-form-item>
         <el-button type="primary" @click="chaxun">搜索</el-button>
       </el-form-item>
+      <el-form-item>
+        <el-badge :value="12">
+          <el-button class="xiaoxi">消息</el-button>
+        </el-badge>
+      </el-form-item>
     </el-form>
     <el-table
       :data="newdata"
@@ -361,5 +366,8 @@ export default {
   height: calc(100vh - 50px);
   overflow-y: auto;
   /* border: 1px solid red; */
+}
+.xiaoxi{
+  margin-bottom: 10px;
 }
 </style>
