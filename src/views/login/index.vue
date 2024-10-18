@@ -209,10 +209,9 @@
 </template>
 <script>
 import { validUsername } from '@/utils/validate'
-import axios from '@/utils/request'
-// import { login } from '@/api/user'
+import { initCompany, loginCompany } from '@/api/login'
 // import { setToken } from '@/utils/auth'
-import { getUser, setUser, removeUser, setCompany } from '@/utils/auth' // 引入封装好的方法
+import { getUser, setUser, removeUser, setCompany, getCompany } from '@/utils/auth' // 引入封装好的方法
 
 export default {
   name: 'Login',
@@ -443,6 +442,12 @@ export default {
           password: this.loginForm.password
         }
         this.$store.dispatch('user/setUserInfo', userInfo)
+        // 构建登录请求的数据
+        const loginData = JSON.parse(getCompany())
+        console.log(loginData)
+
+        const result = await loginCompany(loginData)
+        console.log(result)
 
         // 本地存储选项，根据是否勾选 "记住信息" 来决定是否存储
         if (this.checked) {
@@ -482,24 +487,17 @@ export default {
         this.loading = true
         // 构建注册请求的数据
         const registrationData = {
-          companyName: this.registerForm.companyName,
+          userName: this.registerForm.companyName,
           password: this.registerForm.password,
-          address: this.registerForm.address
+          userAddr: this.registerForm.address
         }
 
         console.log('发送注册请求:', registrationData)
 
         // 发送注册请求
-        const result = await axios(registrationData)
+        const result = await initCompany(registrationData)
         console.log(result)
-
-        // 保存注册的公司信息到本地存储
-        const companyInfo = {
-          companyName: this.registerForm.companyName,
-          password: this.registerForm.password,
-          address: this.registerForm.address
-        }
-        setCompany(companyInfo)
+        setCompany(registrationData)
 
         // 模拟注册成功后，切换回登录表单
         this.$message.success('注册成功，请登录')
