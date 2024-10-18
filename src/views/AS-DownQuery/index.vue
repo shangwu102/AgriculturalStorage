@@ -75,94 +75,7 @@
         <template slot-scope="scope">
           <el-button type="primary" size="small" @click="chakan(scope.row)">查看</el-button>
           <el-button type="warning" size="small" @click="chukuxianshi(scope.row)">出库</el-button>
-          <el-drawer title="库存详情" :visible.sync="celan" direction="rtl" size="50%">
-            <div class="xiangqing">
-              <h3 class="el-icon-s-order">产品信息</h3>
-              <el-table :data="gridData">
-                <el-table-column property="date" label="企业名称" />
-                <el-table-column property="name" label="产品编号" />
-                <el-table-column property="address" label="产品名称" />
-                <el-table-column property="address" label="产品种类" />
-                <el-table-column property="address" label="仓库名称" />
-                <el-table-column property="address" label="库存" />
-              </el-table>
-              <h3 class="el-icon-s-order">入库记录</h3>
-              <el-table :data="gridData">
-                <el-table-column property="date" label="企业名称" />
-                <el-table-column property="name" label="产品编号" />
-                <el-table-column property="address" label="产品名称" />
-                <el-table-column property="address" label="产品种类" />
-                <el-table-column property="address" label="仓库名称" />
-                <el-table-column property="address" label="库存" />
-              </el-table>
-              <h3 class="el-icon-s-order">出库记录</h3>
-              <el-table :data="gridData">
-                <el-table-column property="date" label="企业名称" />
-                <el-table-column property="name" label="产品编号" />
-                <el-table-column property="address" label="产品名称" />
-                <el-table-column property="address" label="产品种类" />
-                <el-table-column property="address" label="仓库名称" />
-                <el-table-column property="address" label="库存" />
-              </el-table>
-            </div>
-          </el-drawer>
-          <!-- 出库弹窗 -->
-          <el-dialog title="新增出库" :visible.sync="chukudialogFormVisible">
-            <div class="biaodan">
-              <el-form ref="chukuForm" :model="chukuForm" :rules="chukuShujujianyan" class="xingzengshuju">
-                <div class="form-row">
-                  <el-form-item label="仓库名称" prop="repertoryName">
-                    <el-select v-model="chukuForm.repertoryName" placeholder="请选择仓库" disabled>
-                      <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="操作员" prop="account">
-                    <el-input v-model="chukuForm.account" disabled autocomplete="off" />
-                  </el-form-item>
-                </div>
-                <div class="form-row">
-                  <el-form-item label="产品种类" prop="productType">
-                    <el-input v-model="chukuForm.productType" disabled autocomplete="off" />
-                  </el-form-item>
-                  <el-form-item label="合格率" prop="pass">
-                    <el-input v-model="chukuForm.pass" autocomplete="off" />
-                  </el-form-item>
-                </div>
-                <div class="form-row">
-                  <el-form-item label="产品名称" prop="productName">
-                    <el-input v-model="chukuForm.productName" disabled autocomplete="off" />
-                  </el-form-item>
-                </div>
-                <div class="form-row">
-                  <el-form-item label="出库数量" prop="joinAmount">
-                    <el-input v-model="chukuForm.joinAmount" autocomplete="off" />
-                  </el-form-item>
-                  <el-form-item label="出库时间" prop="createTime">
-                    <el-date-picker
-                      v-model="chukuForm.createTime"
-                      type="datetime"
-                      placeholder="选择日期时间"
-                      style="width: 100%"
-                    />
-                  </el-form-item>
-                  <el-form-item label="订单名称" prop="orderName">
-                    <el-select v-model="chukuForm.orderName" placeholder="请选择订单">
-                      <el-option
-                        v-for="order in pendingOrders"
-                        :key="order.orderId"
-                        :label="order.orderName"
-                        :value="order.orderName"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </div>
-              </el-form>
-            </div>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="chukudialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="chuku">确 定</el-button>
-            </div>
-          </el-dialog>
+
         </template>
       </el-table-column>
     </el-table>
@@ -176,6 +89,89 @@
         @current-change="handlePageChange"
       />
     </div>
+    <!-- 出库弹窗 -->
+    <el-dialog title="新增出库" :visible.sync="chukudialogFormVisible">
+      <div class="biaodan">
+        <el-form ref="chukuForm" :model="chukuForm" :rules="chukuShujujianyan" class="xingzengshuju">
+          <div class="form-row">
+            <el-form-item label="仓库名称" prop="repertoryName">
+              <el-select v-model="chukuForm.repertoryName" placeholder="请选择仓库" disabled>
+                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="操作员" prop="account">
+              <el-input v-model="chukuForm.account" disabled autocomplete="off" />
+            </el-form-item>
+          </div>
+          <div class="form-row">
+            <el-form-item label="产品种类" prop="productType">
+              <el-input v-model="chukuForm.productType" disabled autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="合格率" prop="pass">
+              <el-input v-model="chukuForm.pass" autocomplete="off" />
+            </el-form-item>
+          </div>
+          <div class="form-row">
+            <el-form-item label="产品名称" prop="productName">
+              <el-input v-model="chukuForm.productName" disabled autocomplete="off" />
+            </el-form-item>
+          </div>
+          <div class="form-row">
+            <el-form-item label="出库数量" prop="joinAmount">
+              <el-input v-model="chukuForm.joinAmount" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="出库时间" prop="createTime">
+              <el-date-picker v-model="chukuForm.createTime" type="datetime" placeholder="选择日期时间" style="width: 100%" />
+            </el-form-item>
+            <el-form-item label="订单名称" prop="orderName">
+              <el-select v-model="chukuForm.orderName" placeholder="请选择订单">
+                <el-option
+                  v-for="order in pendingOrders"
+                  :key="order.orderId"
+                  :label="order.orderName"
+                  :value="order.orderName"
+                />
+              </el-select>
+            </el-form-item>
+          </div>
+        </el-form>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="chukudialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="chuku">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-drawer title="库存详情" :visible.sync="celan" direction="rtl" size="40%">
+      <div class="xiangqing">
+        <h3 class="el-icon-s-order">产品信息</h3>
+        <el-table :data="gridData">
+          <el-table-column property="date" label="企业名称" />
+          <el-table-column property="name" label="产品编号" />
+          <el-table-column property="address" label="产品名称" />
+          <el-table-column property="address" label="产品种类" />
+          <el-table-column property="address" label="仓库名称" />
+          <el-table-column property="address" label="库存" />
+        </el-table>
+        <h3 class="el-icon-s-order">入库记录</h3>
+        <el-table :data="gridData">
+          <el-table-column property="date" label="企业名称" />
+          <el-table-column property="name" label="产品编号" />
+          <el-table-column property="address" label="产品名称" />
+          <el-table-column property="address" label="产品种类" />
+          <el-table-column property="address" label="仓库名称" />
+          <el-table-column property="address" label="库存" />
+        </el-table>
+        <h3 class="el-icon-s-order">出库记录</h3>
+        <el-table :data="gridData">
+          <el-table-column property="date" label="企业名称" />
+          <el-table-column property="name" label="产品编号" />
+          <el-table-column property="address" label="产品名称" />
+          <el-table-column property="address" label="产品种类" />
+          <el-table-column property="address" label="仓库名称" />
+          <el-table-column property="address" label="库存" />
+        </el-table>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
