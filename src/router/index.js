@@ -74,7 +74,7 @@ export const routes = [
     redirect: '/order-management/publish', // 重定向到第一个子菜单路径
     meta: {
       title: '订单管理',
-      icon: 'editor-left-alignment',
+      icon: '订单管理',
       roles: ['company']
     },
     children: [
@@ -83,7 +83,7 @@ export const routes = [
         component: Companyorder,
         meta: {
           title: '发布订单',
-          icon: 'editor-left-alignment',
+          icon: '发布订单',
           roles: ['company']
         }
       },
@@ -92,7 +92,7 @@ export const routes = [
         component: Companystatus,
         meta: {
           title: '订单状态',
-          icon: 'editor-left-alignment',
+          icon: '订单状态',
           roles: ['company']
         }
       }
@@ -108,7 +108,7 @@ export const routes = [
         component: CompanyQuery,
         meta: {
           title: '查看链上库存',
-          icon: 'editor-left-alignment',
+          icon: '查看链上库存',
           roles: ['company']
         }
       }
