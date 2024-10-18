@@ -274,13 +274,10 @@ export const routes = [
       }
     ]
   },
-  // {
-  //   path: '/lshome',
-  //   component: LSHome,
-  //   meta: {
-  //     roles: ['admin', 'operator']
-  //   }
-  // },
+  {
+    path: '/lshome',
+    component: LSHome
+  },
   { path: '*', redirect: '/404' } // 捕获所有未匹配的路由，重定向到404
 ]
 
