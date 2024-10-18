@@ -477,14 +477,26 @@ export default {
 }
 
 .el-main {
+  position: relative;
   background-color: #88bd86;
-  background-image: url(../../assets/login.jpg);
-  background-size: cover;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   padding-right: 10%;
+  z-index: 1;
+}
 
+.el-main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../../assets/login.jpg);
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
 }
 
 .el-container {
@@ -499,7 +511,6 @@ export default {
   border-radius: 15px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   padding: 50px;
-opacity: 0.9;
 }
 
 .el-form-item {
