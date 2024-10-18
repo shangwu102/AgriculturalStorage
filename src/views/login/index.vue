@@ -1,223 +1,202 @@
 <template>
   <div class="login-container">
     <el-container>
-      <!-- <el-aside width="65vw" /> -->
       <el-main>
         <div class="login-form-wrapper">
-          <el-form
-            ref="loginForm"
-            :model="loginForm"
-            :rules="loginRules"
-            class="login-form"
-            auto-complete="on"
-            label-position="left"
-          >
-            <div class="title-container">
-              <h3 class="title">面向区块链粮仓管理系统</h3>
-            </div>
-
-            <!-- 用户名输入框 -->
-            <el-form-item :class="{ 'focused': isFocused1 }" prop="username">
-              <div class="input-group">
-                <span class="svg-container">
-                  <svg-icon icon-class="user" />
-                </span>
-                <el-input
-                  ref="username"
-                  v-model="loginForm.username"
-                  placeholder="请输入用户名"
-                  name="username"
-                  type="text"
-                  tabindex="1"
-                  auto-complete="on"
-                  class="custom-input"
-                  @focus="handleFocus1"
-                  @blur="handleBlur1"
-                />
+          <!-- 使用 <transition> 包裹表单以添加动画 -->
+          <transition name="fade-slide" mode="out-in">
+            <!-- 登录表单 -->
+            <el-form
+              v-if="!isRegisterFormVisible"
+              key="login"
+              ref="loginForm"
+              :model="loginForm"
+              :rules="loginRules"
+              class="login-form"
+              auto-complete="on"
+              label-position="left"
+            >
+              <div class="title-container">
+                <h3 class="title">面向区块链粮仓管理系统</h3>
               </div>
-            </el-form-item>
 
-            <!-- 密码输入框 -->
-            <el-form-item :class="{ 'focused': isFocused2 }" prop="password">
-              <div class="input-group">
-                <span class="svg-container">
-                  <svg-icon icon-class="password" />
-                </span>
-                <el-input
-                  :key="passwordType"
-                  ref="password"
-                  v-model="loginForm.password"
-                  :type="passwordType"
-                  placeholder="请输入密码"
-                  name="password"
-                  tabindex="2"
-                  auto-complete="on"
-                  class="custom-input"
-                  @keyup.enter.native="handleLogin"
-                  @focus="handleFocus2"
-                  @blur="handleBlur2"
-                />
-                <span class="show-pwd" @click="showPwd">
-                  <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-                </span>
-              </div>
-            </el-form-item>
+              <!-- 用户名输入框 -->
+              <el-form-item :class="{ 'focused': isFocused1 }" prop="username">
+                <div class="input-group">
+                  <span class="svg-container">
+                    <svg-icon icon-class="user" />
+                  </span>
+                  <el-input
+                    ref="username"
+                    v-model="loginForm.username"
+                    placeholder="请输入用户名"
+                    name="username"
+                    type="text"
+                    tabindex="1"
+                    auto-complete="on"
+                    class="custom-input"
+                    @focus="handleFocus1"
+                    @blur="handleBlur1"
+                  />
+                </div>
+              </el-form-item>
 
-            <!-- 地址输入框 -->
-            <el-form-item :class="{ 'focused': isFocused3 }" prop="address">
-              <div class="input-group">
-                <span class="svg-container">
-                  <svg-icon icon-class="block" style="font-size: 17px;" />
-                </span>
-                <el-input
-                  v-model="loginForm.address"
-                  placeholder="请输入区块链地址"
-                  name="address"
-                  tabindex="3"
-                  auto-complete="on"
-                  class="custom-input"
-                  @focus="handleFocus3"
-                  @blur="handleBlur3"
-                />
-              </div>
-            </el-form-item>
+              <!-- 密码输入框 -->
+              <el-form-item :class="{ 'focused': isFocused2 }" prop="password">
+                <div class="input-group">
+                  <span class="svg-container">
+                    <svg-icon icon-class="password" />
+                  </span>
+                  <el-input
+                    :key="passwordType"
+                    ref="password"
+                    v-model="loginForm.password"
+                    :type="passwordType"
+                    placeholder="请输入密码"
+                    name="password"
+                    tabindex="2"
+                    auto-complete="on"
+                    class="custom-input"
+                    @keyup.enter.native="handleLogin"
+                    @focus="handleFocus2"
+                    @blur="handleBlur2"
+                  />
+                  <span class="show-pwd" @click="showPwd">
+                    <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+                  </span>
+                </div>
+              </el-form-item>
 
-            <!-- 角色选择单选框 -->
-            <el-form-item :class="{ 'focused': isFocused4 }" prop="role">
-              <div class="role-and-remember">
-                <el-radio-group v-model="loginForm.role" class="role-selector">
-                  <el-radio label="admin">管理员</el-radio>
-                  <el-radio label="operator">操作员</el-radio>
-                  <el-radio label="company">公司</el-radio>
-                </el-radio-group>
-                <el-checkbox v-model="checked" class="remember-me">记住信息</el-checkbox>
-              </div>
-            </el-form-item>
+              <!-- 地址输入框 -->
+              <el-form-item :class="{ 'focused': isFocused3 }" prop="address">
+                <div class="input-group">
+                  <span class="svg-container">
+                    <svg-icon icon-class="block" style="font-size: 17px; color: aqua;" />
+                  </span>
+                  <el-input
+                    v-model="loginForm.address"
+                    placeholder="请输入区块链地址"
+                    name="address"
+                    tabindex="3"
+                    auto-complete="on"
+                    class="custom-input"
+                    @focus="handleFocus3"
+                    @blur="handleBlur3"
+                  />
+                </div>
+              </el-form-item>
 
-          </el-form>
-          <el-button
-            :loading="loading"
-            type="primary"
-            class="login-button"
-            style="position: relative;left: 25px;float: right;border-radius: 15px; width: 400px;"
-            @click="handleLogin"
-          >登录</el-button>
-          <div style="position: relative;left: 10%;">
-            <span
-              style="position: absolute;cursor:pointer;left: 77%;padding-top: 17%; color: #409EFF;display: inline-block;"
-              @click="showRegisterDialog"
-            >注册公司</span>
-          </div>
-          <!-- 注册对话框 -->
-          <el-dialog :visible.sync="registerDialogVisible" title="注册公司" width="80%" top="5vh">
-            <el-form ref="registerFormRef" :model="registerForm" :rules="rules" label-width="150px">
-              <!-- 第一行 -->
-              <el-row :gutter="20">
-                <el-col :span="12">
-                  <el-form-item label="企业或个体户名称" prop="companyName">
-                    <el-input v-model="registerForm.companyName" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="统一社会信用代码" prop="creditCode">
-                    <el-input v-model="registerForm.creditCode" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <!-- 第二行 -->
-              <el-row :gutter="20">
-                <el-col :span="12">
-                  <el-form-item label="企业类型" prop="companyTypes">
-                    <el-checkbox-group v-model="registerForm.companyTypes">
-                      <el-checkbox label="生产企业" />
-                      <el-checkbox label="粮油经营户" />
-                      <el-checkbox label="粮品电商" />
-                      <el-checkbox label="餐饮企业" />
-                      <el-checkbox label="粮食储备库" />
-                      <el-checkbox label="仓储物流企业" />
-                    </el-checkbox-group>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="法定代表人" prop="legalPerson">
-                    <el-input v-model="registerForm.legalPerson" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <!-- 第三行 -->
-              <el-row :gutter="20">
-                <el-col :span="12">
-                  <el-form-item label="经营场所" prop="businessPlace">
-                    <el-input v-model="registerForm.businessPlace" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="营业期限(年)" prop="businessTerm">
-                    <el-input v-model="registerForm.businessTerm" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <!-- 第四行：上传图片 -->
-              <el-row :gutter="20">
-                <el-col :span="12">
-                  <el-form-item label="营业执照" prop="businessLicense">
-                    <el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card">
-                      <i class="el-icon-plus" />
-                    </el-upload>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="身份证件" prop="idCard">
-                    <el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card" multiple>
-                      <i class="el-icon-plus" />
-                    </el-upload>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <!-- 第五行：手机号码、经营范围 -->
-              <el-row :gutter="20">
-                <el-col :span="12">
-                  <el-form-item label="手机号码" prop="phone">
-                    <el-input v-model="registerForm.phone" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="经营范围" prop="businessScope">
-                    <el-input v-model="registerForm.businessScope" type="textarea" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <!-- 第六行：密码和核验状态 -->
-              <el-row :gutter="20">
-                <el-col :span="12">
-                  <el-form-item label="密码" prop="password">
-                    <el-input v-model="registerForm.password" type="password" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="核验状态" prop="verificationStatus">
-                    <el-input v-model="registerForm.verificationStatus" disabled />
-                  </el-form-item>
-                </el-col>
-              </el-row>
+              <!-- 角色选择单选框 -->
+              <el-form-item :class="{ 'focused': isFocused4 }" prop="role">
+                <div class="role-and-remember">
+                  <el-radio-group v-model="loginForm.role" class="role-selector">
+                    <el-radio label="admin">管理员</el-radio>
+                    <el-radio label="operator">操作员</el-radio>
+                    <el-radio label="company">公司</el-radio>
+                  </el-radio-group>
+                  <el-checkbox v-model="checked" class="remember-me">记住信息</el-checkbox>
+                </div>
+              </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="registerDialogVisible = false">取消</el-button>
-              <el-button type="primary" @click="submitForm('registerFormRef')">提交</el-button>
-            </div>
-          </el-dialog>
 
+            <!-- 注册表单 -->
+            <el-form
+              v-if="isRegisterFormVisible"
+              key="register"
+              ref="registerForm"
+              :model="registerForm"
+              :rules="registerRules"
+              class="register-form"
+              auto-complete="on"
+              label-position="left"
+            >
+              <div class="title-container">
+                <h3 class="title">注册公司</h3>
+              </div>
+
+              <!-- 公司名称输入框 -->
+              <el-form-item :class="{ 'focused': isRegisterFocused1 }" prop="companyName">
+                <div class="input-group">
+                  <span class="svg-container">
+                    <svg-icon icon-class="company" style="font-size: 17px;" />
+                  </span>
+                  <el-input
+                    v-model="registerForm.companyName"
+                    placeholder="请输入公司名称"
+                    name="companyName"
+                    type="text"
+                    tabindex="1"
+                    auto-complete="on"
+                    class="custom-input"
+                    @focus="handleRegisterFocus1"
+                    @blur="handleRegisterBlur1"
+                  />
+                </div>
+              </el-form-item>
+
+              <!-- 密码输入框 -->
+              <el-form-item :class="{ 'focused': isRegisterFocused2 }" prop="password">
+                <div class="input-group">
+                  <span class="svg-container">
+                    <svg-icon icon-class="password" />
+                  </span>
+                  <el-input
+                    :key="registerPasswordType"
+                    ref="registerPassword"
+                    v-model="registerForm.password"
+                    :type="registerPasswordType"
+                    placeholder="请输入密码"
+                    name="password"
+                    tabindex="2"
+                    auto-complete="on"
+                    class="custom-input"
+                    @keyup.enter.native="handleRegister"
+                    @focus="handleRegisterFocus2"
+                    @blur="handleRegisterBlur2"
+                  />
+                  <span class="show-pwd" @click="showRegisterPwd">
+                    <svg-icon :icon-class="registerPasswordType === 'password' ? 'eye' : 'eye-open'" />
+                  </span>
+                </div>
+              </el-form-item>
+
+              <!-- 地址输入框 -->
+              <el-form-item :class="{ 'focused': isRegisterFocused3 }" prop="address">
+                <div class="input-group">
+                  <span class="svg-container">
+                    <svg-icon icon-class="block" style="font-size: 17px;" />
+                  </span>
+                  <el-input
+                    v-model="registerForm.address"
+                    placeholder="请输入区块链地址"
+                    name="address"
+                    tabindex="3"
+                    auto-complete="on"
+                    class="custom-input"
+                    @focus="handleRegisterFocus3"
+                    @blur="handleRegisterBlur3"
+                  />
+                </div>
+              </el-form-item>
+            </el-form>
+          </transition>
+
+          <!-- 登录按钮或注册按钮 -->
+          <el-button :loading="loading" type="primary" class="login-button" @click="handleSubmit">
+            {{ isRegisterFormVisible ? '注册' : '登录' }}
+          </el-button>
+
+          <!-- 切换表单的链接放在按钮下方右侧 -->
+          <div class="toggle-form">
+            <span @click="toggleForm">
+              {{ isRegisterFormVisible ? '返回登录' : '注册公司' }}
+            </span>
+          </div>
         </div>
       </el-main>
     </el-container>
   </div>
 </template>
-
 <script>
 import { validUsername } from '@/utils/validate'
 // import { login } from '@/api/user'
@@ -269,22 +248,47 @@ export default {
         callback()
       }
     }
+
+    // 验证注册表单的公司名称
+    const validateCompanyName = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入公司名称'))
+      } else {
+        callback()
+      }
+    }
+
+    // 验证注册表单的密码
+    const validateRegisterPassword = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('密码长度至少为6位'))
+      } else {
+        callback()
+      }
+    }
+
+    // 验证注册表单的地址
+    const validateRegisterAddress = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入区块链地址'))
+      } else {
+        callback()
+      }
+    }
+
     return {
-      registerDialogVisible: false,
+      isRegisterFormVisible: false, // 控制表单显示状态
       registerForm: {
         companyName: '',
-        creditCode: '',
-        companyTypes: [],
-        legalPerson: '',
-        businessPlace: '',
-        businessTerm: '',
-        businessLicense: '',
-        idCard: '',
-        phone: '',
-        businessScope: '',
         password: '',
-        verificationStatus: '未核验'
+        address: ''
       },
+      registerRules: {
+        companyName: [{ required: true, trigger: 'blur', validator: validateCompanyName }],
+        password: [{ required: true, trigger: 'blur', validator: validateRegisterPassword }],
+        address: [{ required: true, trigger: 'blur', validator: validateRegisterAddress }]
+      },
+      // 原始登录表单
       loginForm: {
         address: '',
         username: '',
@@ -312,12 +316,17 @@ export default {
       },
       loading: false,
       passwordType: 'password',
+      registerPasswordType: 'password', // 控制注册表单密码显示
       redirect: undefined,
       checked: false,
       isFocused1: false,
       isFocused2: false,
       isFocused3: false,
-      isFocused4: false
+      isFocused4: false,
+      // 注册表单焦点状态
+      isRegisterFocused1: false,
+      isRegisterFocused2: false,
+      isRegisterFocused3: false
     }
   },
 
@@ -336,14 +345,28 @@ export default {
   },
 
   methods: {
+    handleSubmit() {
+      if (this.isRegisterFormVisible) {
+        this.handleRegister()
+      } else {
+        this.handleLogin()
+      }
+    },
     showPwd() {
-      this.passwordType = this.passwordType === 'password' ? '' : 'password'
+      this.passwordType = this.passwordType === 'password' ? 'text' : 'password'
       this.$nextTick(() => {
         this.$refs.password.focus()
       })
     },
-    showRegisterDialog() {
-      this.registerDialogVisible = true
+    showRegisterPwd() {
+      this.registerPasswordType = this.registerPasswordType === 'password' ? 'text' : 'password'
+      this.$nextTick(() => {
+        this.$refs.registerPassword.focus()
+      })
+    },
+    toggleForm() {
+      this.isRegisterFormVisible = !this.isRegisterFormVisible
+      console.log('切换表单状态:', this.isRegisterFormVisible ? '注册' : '登录') // 添加日志
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -356,7 +379,7 @@ export default {
       })
     },
     async handleLogin() {
-      console.log(1111)
+      console.log('开始登录') // 添加日志
 
       try {
         const valid = await this.$refs.loginForm.validate()
@@ -436,7 +459,31 @@ export default {
         this.loading = false
       }
     },
+    async handleRegister() {
+      console.log('开始注册') // 添加日志
+      try {
+        const valid = await this.$refs.registerForm.validate()
+        if (!valid) {
+          this.$message.error('请检查输入项')
+          return false
+        }
 
+        this.loading = true
+        // 在这里添加注册逻辑，例如调用注册 API
+        console.log('注册成功')
+
+        // 模拟注册成功后，切换回登录表单
+        this.$message.success('注册成功，请登录')
+        this.isRegisterFormVisible = false
+      } catch (error) {
+        console.error('注册请求失败:', error)
+        this.$message.error('注册失败，请重试')
+      } finally {
+        this.loading = false
+      }
+    },
+
+    // 登录表单焦点事件
     handleFocus1() {
       this.isFocused1 = true
     },
@@ -460,29 +507,50 @@ export default {
     },
     handleBlur4() {
       this.isFocused4 = false
+    },
+
+    // 注册表单焦点事件
+    handleRegisterFocus1() {
+      this.isRegisterFocused1 = true
+    },
+    handleRegisterBlur1() {
+      this.isRegisterFocused1 = false
+    },
+    handleRegisterFocus2() {
+      this.isRegisterFocused2 = true
+    },
+    handleRegisterBlur2() {
+      this.isRegisterFocused2 = false
+    },
+    handleRegisterFocus3() {
+      this.isRegisterFocused3 = true
+    },
+    handleRegisterBlur3() {
+      this.isRegisterFocused3 = false
     }
   }
 
 }
-
 </script>
-
 <style lang="scss" scoped>
 .login-container {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #2d3a4b;
+  align-items: right;
+  justify-content: right;
+  // background-color: #2d3a4b;
 }
 
 .el-main {
   position: relative;
   background-color: #88bd86;
   display: flex;
-  justify-content: flex-end;
+  justify-content: right;
+
+  /* 调整为居中 */
   align-items: center;
-  padding-right: 10%;
+  padding-right: 0;
+  /* 移除右侧填充 */
   z-index: 1;
 }
 
@@ -493,7 +561,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url(../../assets/login.jpg);
+  background-image: url(../../assets/login-bg-5.c0daa08c.jpg);
   background-size: cover;
   background-position: center;
   z-index: -1;
@@ -505,12 +573,15 @@ export default {
 
 .login-form-wrapper {
   width: 450px;
-  height: 530px;
-  padding: 20px;
+  min-height: 530px; // 使用最小高度以保持一致
   background-color: #fff;
   border-radius: 15px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   padding: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; // 分配空间以保持高度一致
+    margin-right: 50px;
 }
 
 .el-form-item {
@@ -555,7 +626,9 @@ export default {
 }
 
 .title-container {
-  text-align: center;
+  display: flex;
+  justify-content: space-between; // 左右对齐
+  align-items: center;
   margin-bottom: 30px;
 }
 
@@ -566,6 +639,18 @@ export default {
   font-family: '仿宋';
 }
 
+.toggle-link {
+  cursor: pointer;
+  color: #409EFF;
+  text-decoration: underline;
+  font-size: 14px;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #3071d1;
+  }
+}
+
 .el-checkbox {
   margin-bottom: 12px;
 }
@@ -574,11 +659,67 @@ export default {
   height: 50px;
   width: 100%;
   font-size: 18px;
+  border-radius: 15px;
+  margin-bottom: 10px; // 为按钮和切换链接之间添加间距
 }
 
 .role-and-remember {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.toggle-form {
+  text-align: right; // 右对齐
+
+  span {
+    cursor: pointer;
+    color: #409EFF;
+    text-decoration: underline;
+    font-size: 14px;
+    transition: color 0.3s;
+
+    &:hover {
+      color: #3071d1;
+    }
+  }
+}
+
+/* 动画效果 */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.5s ease;
+}
+
+.fade-slide-enter,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* 保证注册表单与登录表单样式一致 */
+.register-form {
+  /* 如果注册表单需要特有样式，可以在这里添加 */
+}
+
+/* 响应式调整 */
+@media (max-width: 500px) {
+  .login-form-wrapper {
+    width: 90%;
+    padding: 30px;
+    min-height: auto; // 取消固定高度
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .login-button {
+    font-size: 16px;
+  }
+
+  .toggle-link {
+    font-size: 12px;
+  }
 }
 </style>
