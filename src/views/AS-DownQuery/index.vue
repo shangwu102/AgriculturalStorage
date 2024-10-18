@@ -7,7 +7,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="sousuo" placeholder="请输入产品姓名">''</el-input>
+        <el-input v-model="sousuo" placeholder="请输入产品姓名" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="chaxun">搜索</el-button>
@@ -20,38 +20,56 @@
           @click="xinzengdialogFormVisible = true"
         >新增入库</el-button>
         <!-- 弹框 -->
-        <el-dialog title="新增入库" :visible.sync="xinzengdialogFormVisible">
+        <el-dialog title="新增入库" :visible.sync="xinzengdialogFormVisible" width="60vw">
           <div class="biaodan">
-            <el-form :model="form" :rules="shujujianyan" class="xingzengshuju">
+            <el-form ref="xinzengForm" :model="form" :rules="shujujianyan" class="xingzengshuju">
               <div class="diyi">
                 <el-form-item label="仓库名称" prop="repertoryName">
                   <el-select v-model="form.repertoryName" placeholder="请选择仓库">
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="操作员" prop="account">
-                  <el-input v-model="form.account" autocomplete="off" />
+                <el-form-item label="粮食种类" prop="productType">
+                  <el-select v-model="form.productType" placeholder="请选择粮食种类">
+                    <el-option v-for="item in productTypes" :key="item.value" :label="item.label" :value="item.value" />
+                  </el-select>
                 </el-form-item>
               </div>
               <div class="dier">
-                <el-form-item label="产品种类" prop="productType">
-                  <el-input v-model="form.productType" autocomplete="off" />
+                <el-form-item label="粮食产地" prop="productOrigin">
+                  <el-input v-model="form.productOrigin" autocomplete="off" />
                 </el-form-item>
-                <el-form-item label="合格率" prop="pass">
+                <el-form-item label="上游企业链上地址" prop="pass">
                   <el-input v-model="form.pass" autocomplete="off" />
                 </el-form-item>
               </div>
-              <div class="disan">
-                <el-form-item label="产品名称" prop="productName">
-                  <el-input v-model="form.productName" autocomplete="off" />
+              <div class="dier">
+                <el-form-item label="检测人员" prop="inspector">
+                  <el-input v-model="form.inspector" autocomplete="off" />
+                </el-form-item>
+                <el-form-item label="保管人员" prop="storagePerson">
+                  <el-input v-model="form.storagePerson" autocomplete="off" />
+                </el-form-item>
+              </div>
+              <div class="disi">
+                <el-form-item label="入库日期" prop="storageDate">
+                  <el-date-picker v-model="form.storageDate" type="datetime" placeholder="选择日期时间" style="width: 17vw" />
+                </el-form-item>
+                <el-form-item label="上游企业收获日期" prop="harvestDate">
+                  <el-date-picker v-model="form.harvestDate" type="datetime" placeholder="选择日期时间" style="width: 17vw" />
                 </el-form-item>
               </div>
               <div class="disi">
                 <el-form-item label="入库数量" prop="joinAmount">
                   <el-input v-model="form.joinAmount" autocomplete="off" />
                 </el-form-item>
-                <el-form-item label="入库时间" prop="createTime">
-                  <el-date-picker v-model="form.createTime" type="datetime" placeholder="选择日期时间" style="width: 17vw" />
+                <el-form-item label="入库描述信息" prop="description">
+                  <el-input v-model="form.description" type="textarea" />
+                </el-form-item>
+              </div>
+              <div class="disi">
+                <el-form-item label="产品名称" prop="productName">
+                  <el-input v-model="form.productName" autocomplete="off" />
                 </el-form-item>
               </div>
             </el-form>
@@ -75,7 +93,6 @@
         <template slot-scope="scope">
           <el-button type="primary" size="small" @click="chakan(scope.row)">查看</el-button>
           <el-button type="warning" size="small" @click="chukuxianshi(scope.row)">出库</el-button>
-
         </template>
       </el-table-column>
     </el-table>
@@ -181,14 +198,15 @@ import { getOrder } from '@/utils/order'
 export default {
   data() {
     const options = [
-      {
-        value: '主仓库',
-        label: '主仓库'
-      },
-      {
-        value: '辅仓库',
-        label: '辅仓库'
-      }
+      { value: '主仓库', label: '主仓库' },
+      { value: '辅仓库', label: '辅仓库' }
+    ]
+    const productTypes = [
+      { value: '粮食', label: '粮食' },
+      { value: '电子产品', label: '电子产品' },
+      { value: '家电', label: '家电' },
+      { value: '日用产品', label: '日用产品' }
+      // 添加更多粮食种类
     ]
     const tableData = [
       {
@@ -221,86 +239,7 @@ export default {
         createTime: '2021-04-15 09:15:30',
         account: '灌溉系统1'
       },
-      {
-        id: '4',
-        repertoryName: '辅仓库',
-        productType: '家电',
-        productName: '洗衣机',
-        joinAmount: 300,
-        pass: '92%',
-        createTime: '2021-05-20 16:45:10',
-        account: '灌溉系统1'
-      },
-      {
-        id: '5',
-        repertoryName: '主仓库',
-        productType: '日用产品',
-        productName: '洗发水',
-        joinAmount: 180,
-        pass: '88%',
-        createTime: '2021-06-25 11:20:55',
-        account: '灌溉系统1'
-      },
-      {
-        id: '6',
-        repertoryName: '主仓库',
-        productType: '家电',
-        productName: '洗衣机',
-        joinAmount: 220,
-        pass: '91%',
-        createTime: '2021-07-30 08:50:25',
-        account: '灌溉系统1'
-      },
-      {
-        id: '7',
-        repertoryName: '辅仓库',
-        productType: '电子产品',
-        productName: '耳机',
-        joinAmount: 130,
-        pass: '80%',
-        createTime: '2021-08-05 13:05:40',
-        account: '灌溉系统1'
-      },
-      {
-        id: '8',
-        repertoryName: '辅仓库',
-        productType: '日用产品',
-        productName: '牙刷',
-        joinAmount: 175,
-        pass: '89%',
-        createTime: '2021-09-10 15:25:15',
-        account: '灌溉系统1'
-      },
-      {
-        id: '9',
-        repertoryName: '主仓库',
-        productType: '电子产品',
-        productName: '笔记本电脑',
-        joinAmount: 210,
-        pass: '93%',
-        createTime: '2021-10-15 10:10:05',
-        account: '灌溉系统1'
-      },
-      {
-        id: '10',
-        repertoryName: '主仓库',
-        productType: '家电',
-        productName: '电视',
-        joinAmount: 250,
-        pass: '96%',
-        createTime: '2021-11-20 17:40:50',
-        account: '灌溉系统1'
-      },
-      {
-        id: '11',
-        repertoryName: '主仓库',
-        productType: '家电',
-        productName: '电视',
-        joinAmount: 250,
-        pass: '96%',
-        createTime: '2021-11-20 17:40:50',
-        account: '灌溉系统1'
-      },
+      // 其他数据...
       {
         id: '12',
         repertoryName: '主仓库',
@@ -315,30 +254,50 @@ export default {
     const newrukuxx = {
       repertoryName: '',
       productType: '',
-      productName: '',
-      joinAmount: '',
+      productOrigin: '',
       pass: '',
-      createTime: '',
-      account: ''
+      inspector: '',
+      storagePerson: '',
+      storageDate: '',
+      harvestDate: '',
+      joinAmount: '',
+      description: '',
+      productName: '' // 添加 productName
     }
     const newrukuxxjianyan = {
       repertoryName: [
         { required: true, message: '请输入仓库名称', trigger: 'blur' }
       ],
       productType: [
-        { required: true, message: '请输入产品类型', trigger: 'blur' }
+        { required: true, message: '请输入粮食种类', trigger: 'blur' }
       ],
-      productName: [
-        { required: true, message: '请输入产品名称', trigger: 'blur' }
+      productOrigin: [
+        { required: true, message: '请输入粮食产地', trigger: 'blur' }
+      ],
+      pass: [
+        { required: true, message: '请输入合格率', trigger: 'blur' }
+      ],
+      inspector: [
+        { required: true, message: '请输入检测人员', trigger: 'blur' }
+      ],
+      storagePerson: [
+        { required: true, message: '请输入保管人员', trigger: 'blur' }
+      ],
+      storageDate: [
+        { required: true, message: '请输入入库日期', trigger: 'change' }
+      ],
+      harvestDate: [
+        { required: true, message: '请输入收获日期', trigger: 'change' }
       ],
       joinAmount: [
         { required: true, message: '请输入入库数量', trigger: 'blur' }
       ],
-      pass: [{ required: true, message: '请输入合格率', trigger: 'blur' }],
-      createTime: [
-        { required: true, message: '请输入入库时间', trigger: 'blur' }
+      description: [
+        { required: true, message: '请输入入库描述信息', trigger: 'blur' }
       ],
-      account: [{ required: true, message: '请输入操作账号', trigger: 'blur' }]
+      productName: [ // 添加 productName 的验证
+        { required: true, message: '请输入产品名称', trigger: 'blur' }
+      ]
     }
     const chukuShujujianyan = {
       tracingCode: [{ required: true, message: '请选择订单名称', trigger: 'change' }],
@@ -363,6 +322,7 @@ export default {
     const gridData = []
     return {
       options: options,
+      productTypes: productTypes,
       value: '',
       sousuo: '',
       tableData: tableData,
@@ -387,7 +347,8 @@ export default {
         joinAmount: '',
         createTime: ''
       },
-      chukuShujujianyan: chukuShujujianyan
+      chukuShujujianyan: chukuShujujianyan,
+      orders: [] // 添加 orders 数据
     }
   },
   computed: {
@@ -397,8 +358,8 @@ export default {
     },
     // 计算当前页显示的订单列表
     paginatedOrderList() {
-      const start = (this.currentPage - 1) * this.pageSize
-      const end = this.currentPage * this.pageSize
+      const start = (this.dangqianyema - 1) * 10
+      const end = this.dangqianyema * 10
       return this.tableData.slice(start, end)
     }
   },
@@ -422,88 +383,75 @@ export default {
       const newdata = []
       this.tableData.forEach((item) => {
         if (
-          item.repertoryName === this.value &&
-          item.productName.includes(this.sousuo)
+          (item.repertoryName === this.value || this.value === '') &&
+          ((item.productName && item.productName.includes(this.sousuo)) || this.sousuo === '')
         ) {
           newdata.push(item)
-          console.log('搜索成功')
-        } else if (item.repertoryName === this.value && this.sousuo === '') {
-          newdata.push(item)
-          console.log('搜索成功')
-        } else if (this.value === '' && item.productName.includes(this.sousuo)) {
-          newdata.push(item)
-          console.log('搜索成功')
-        } else if (this.value === '' && this.sousuo === '') {
-          newdata.push(item)
-          console.log('搜索成功')
         }
       })
-      console.log('搜索结果:', newdata)
       this.zhongjianshuju = newdata
-      console.log('中间数据', this.zhongjianshuju)
       this.dangqianyema = 1
       this.fenye(1)
     },
     // 分页处理
     handlePageChange(ym) {
-      console.log('当前页:', ym)
-      this.currentPage = ym
+      this.dangqianyema = ym
       this.fenye(ym)
     },
     fenye(e) {
-      this.newdata = []
-      for (let i = (e - 1) * 10; i < (e - 1) * 10 + 10; i++) {
-        console.log(this.zhongjianshuju[i])
-        if (this.zhongjianshuju[i] === undefined) {
-          console.warn(`字段未定义，值为 undefined`)
-          break
-        } else {
-          this.newdata.push(this.zhongjianshuju[i])
-        }
-      }
-      console.log('分页数据', this.newdata)
+      this.newdata = this.zhongjianshuju.slice((e - 1) * 10, e * 10)
     },
     // 新增入库
     xinzeng() {
-      if (
-        this.form.repertoryName === '' ||
-        this.form.productType === '' ||
-        this.form.productName === '' ||
-        this.form.joinAmount === '' ||
-        this.form.pass === '' ||
-        this.form.createTime === '' ||
-        this.form.account === ''
-      ) {
-        this.$message.error('请输入全部数据')
-      } else {
-        console.log(this.form)
-        this.tableData.push({
-          id: this.tableData.length + 1,
-          ...this.form
-        })
-        this.fenye(this.dangqianyema)
-        console.log(this.tableData)
-        this.chaxun()
-        this.form = {
-          repertoryName: '',
-          productType: '',
-          productName: '',
-          joinAmount: '',
-          pass: '',
-          createTime: '',
-          account: ''
+      this.$refs.xinzengForm.validate((valid) => {
+        if (valid) {
+          const newEntry = {
+            id: this.tableData.length + 1,
+            repertoryName: this.form.repertoryName,
+            productType: this.form.productType,
+            productOrigin: this.form.productOrigin,
+            pass: this.form.pass,
+            inspector: this.form.inspector,
+            storagePerson: this.form.storagePerson,
+            storageDate: this.form.storageDate,
+            harvestDate: this.form.harvestDate,
+            joinAmount: this.form.joinAmount,
+            description: this.form.description,
+            productName: this.form.productName, // 确保添加 productName
+            account: '灌溉系统1' // 或其他逻辑
+          }
+          this.tableData.push(newEntry)
+          this.fenye(this.dangqianyema)
+          this.chaxun()
+          // 重置表单
+          Object.assign(this.form, {
+            repertoryName: '',
+            productType: '',
+            productOrigin: '',
+            pass: '',
+            inspector: '',
+            storagePerson: '',
+            storageDate: '',
+            harvestDate: '',
+            joinAmount: '',
+            description: '',
+            productName: '' // 重置 productName
+          })
+          this.xinzengdialogFormVisible = false
+          this.$message({
+            message: '入库信息保存成功',
+            type: 'success'
+          })
+        } else {
+          this.$message.error('请输入全部数据')
         }
-        this.xinzengdialogFormVisible = false
-        this.$message({
-          message: '入库信息保存成功',
-          type: 'success'
-        })
-      }
+      })
     },
     // 查看详情
     chakan(e) {
       this.celan = true
       console.log(e)
+      // 这里可以加载详细信息到 gridData
     },
     // 出库显示
     chukuxianshi(e) {
@@ -517,18 +465,13 @@ export default {
     },
     // 出库操作
     chuku() {
-      console.log('出库行数据:', this.hangshuju)
-      // 验证出库表单
       this.$refs.chukuForm.validate((valid) => {
         if (valid) {
-          // 从订单列表中找到对应的订单并更新状态
           const orderIndex = this.orders.findIndex(
             (order) => order.tracingCode === this.chukuForm.tracingCode && order.status === '待出库'
           )
           if (orderIndex !== -1) {
-            // 更新订单状态为已发货
             this.orders[orderIndex].status = '待收货'
-            // 保存更新后的订单列表到 localStorage
             localStorage.setItem('orderStatus', JSON.stringify(this.orders))
             this.$message.success('订单状态已更新！')
           } else {
@@ -536,7 +479,6 @@ export default {
             return
           }
 
-          // 更新出库记录
           if (
             this.chukuForm.joinAmount === '' ||
             this.chukuForm.pass === '' ||
@@ -544,15 +486,10 @@ export default {
           ) {
             this.$message.error('请输入全部出库数据')
           } else {
-            console.log('当前行的数据', this.hangshuju)
-            // 使用 orderId 而不是 id 以确保唯一性
             const index = this.tableData.findIndex(item => item.id === this.hangshuju.id)
             if (index !== -1) {
-              // 移除出库后的入库记录
               this.tableData.splice(index, 1)
-              console.log(this.dangqianyema)
               this.fenye(this.dangqianyema)
-              console.log(this.tableData)
               this.chaxun()
               this.chukudialogFormVisible = false
               this.$message({
@@ -564,7 +501,7 @@ export default {
             }
 
             // 重置出库表单
-            this.chukuForm = {
+            Object.assign(this.chukuForm, {
               tracingCode: '',
               repertoryName: '',
               account: '',
@@ -573,11 +510,10 @@ export default {
               productName: '',
               joinAmount: '',
               createTime: ''
-            }
+            })
           }
         } else {
           this.$message.error('表单验证失败，请检查输入内容！')
-          return false
         }
       })
     },
@@ -599,10 +535,6 @@ export default {
 }
 
 .yema {
-  /* border: 1px solid red; */
-  /* position: absolute;
-  bottom: 0px ; */
-  /* left: 40vw; */
   height: 6vh;
   min-height: 6vh;
   display: flex;
@@ -615,28 +547,16 @@ export default {
   flex-direction: column;
   gap: 20px;
   margin: 20px;
-  /* width: 90%; */
 }
 
 .el-input {
   width: 17vw;
 }
 
-.diyi {
-  display: flex;
-  justify-content: space-between;
-}
-
-.dier {
-  display: flex;
-  justify-content: space-between;
-}
-
-.disan .el-input {
-  width: calc(50vw - 160px);
-}
-
-.disi {
+.diyi,
+.dier,
+.disi,
+.form-row {
   display: flex;
   justify-content: space-between;
 }
@@ -645,7 +565,6 @@ export default {
   position: relative;
   height: calc(100vh - 50px);
   overflow-y: auto;
-  /* border: 1px solid red; */
 }
 
 .el-form-item__content {
@@ -657,11 +576,4 @@ export default {
   flex-direction: row;
   margin: 0;
 }
-
-/* .el-dialog {
-  margin-bottom: 0;
-  border: 55px;
-  box-shadow: 9px 5px 8px red !important;
-  -webkit-box-shadow:0 !important;
-} */
 </style>
