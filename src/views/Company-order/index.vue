@@ -46,7 +46,6 @@ export default {
     return {
       orderForm: {
         tracingCode: '',
-        quantity: null,
         weight: '',
         tel: '',
         deliveryAddr: '',
@@ -69,7 +68,7 @@ export default {
         postalCode: [
           { required: true, message: '请输入邮政编码', trigger: 'blur' },
           {
-            pattern: /^[0-9]{6}$/,
+            // pattern: /^[0-9]{6}$/,
             message: '邮政编码格式不正确',
             trigger: 'blur'
           }
@@ -77,7 +76,7 @@ export default {
         tel: [
           { required: true, message: '请输入联系方式', trigger: 'blur' },
           {
-            pattern: /^1[3-9]\d{9}$/,
+            // pattern: /^1[3-9]\d{9}$/,
             message: '联系方式格式不正确',
             trigger: 'blur'
           }
@@ -102,13 +101,13 @@ export default {
 
           // 新订单对象
           const newOrder = {
-            tracingCode: this.orderForm.tracingCode,
-            status: '待审核', // 初始状态为 "待审核"
-            quantity: this.orderForm.quantity,
-            weight: this.orderForm.weight,
-            tel: this.orderForm.tel,
-            deliveryAddr: this.orderForm.deliveryAddr,
-            remarks: this.orderForm.remarks
+            tracingCode: this.orderForm.tracingCode, // 批次号
+            status: '待审核', // 初始状态为 "待审核" // 状态
+            weight: this.orderForm.weight, // 重量
+            tel: this.orderForm.tel, // 联系方式
+            postalCode: this.orderForm.postalCode, // 邮政编码
+            deliveryAddr: this.orderForm.deliveryAddr, // 配送地址
+            remarks: this.orderForm.remarks // 备注
           }
 
           // 将新订单添加到订单数组中

@@ -40,8 +40,6 @@
                     </span>
                   </template>
                 </el-step>
-
-                <!-- 否则显示其他正常步骤 -->
                 <template v-else>
                   <!-- 待支付 -->
                   <el-step title="待支付" :status="getStepStatus(order.status, 1)" class="step-with-description">
@@ -49,7 +47,8 @@
                       <span
                         :class="{ 'step-description': true, 'visible-description': getActiveStep(order.status) >= 1 }"
                       >
-                        付款成功
+                        {{ order.status === '待支付' ? '付款中' :'付款成功' }}
+
                       </span>
                     </template>
                   </el-step>
@@ -238,14 +237,14 @@ export default {
     },
     // 更新订单状态并保存到 localStorage
     updateOrderStatus(updatedOrder) {
-      const orderIndex = this.orders.findIndex(order => order.orderName === updatedOrder.orderName)
+      const orderIndex = this.orders.findIndex(order => order.tracingCode === updatedOrder.tracingCode)
       if (orderIndex !== -1) {
         this.orders[orderIndex] = updatedOrder
         setOrder(this.orders)
       }
     },
     payment(order) {
-      const orderIndex = this.orders.findIndex(o => o.orderName === order.orderName)
+      const orderIndex = this.orders.findIndex(o => o.tracingCode === order.tracingCode)
       if (orderIndex !== -1) {
         this.orders[orderIndex].status = '待出库'
         setOrder(this.orders)
