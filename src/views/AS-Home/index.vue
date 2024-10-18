@@ -106,113 +106,7 @@ export default {
     addWarehouseMarkers(AMap) {
       // 定义全国范围内仓库的位置信息
       const warehouses = [
-        // 华北地区
-        {
-          name: '北京仓库',
-          position: [116.407395, 39.904211], // 北京市
-          icon: beijingIcon // 自定义图标
-        },
-        {
-          name: '天津仓库',
-          position: [117.200983, 39.084158], // 天津市
-          icon: beijingIcon
-        },
-        {
-          name: '石家庄仓库',
-          position: [114.514863, 38.042307], // 石家庄市
-          icon: beijingIcon
-        },
-        {
-          name: '太原仓库',
-          position: [112.550864, 37.890277], // 太原市
-          icon: beijingIcon
-        },
-        {
-          name: '郑州仓库',
-          position: [113.665412, 34.757977], // 郑州市
-          icon: beijingIcon
-        },
-        // 东北地区
-        {
-          name: '沈阳仓库',
-          position: [123.429096, 41.796767], // 沈阳市
-          icon: beijingIcon // 使用相同的自定义图标
-        },
-        {
-          name: '大连仓库',
-          position: [121.614682, 38.914003], // 大连市
-          icon: beijingIcon
-        },
-        {
-          name: '哈尔滨仓库',
-          position: [126.642464, 45.756967], // 哈尔滨市
-          icon: beijingIcon
-        },
-        {
-          name: '长春仓库',
-          position: [125.3245, 43.886841], // 长春市
-          icon: beijingIcon
-        },
-        // 华东地区
-        {
-          name: '上海仓库',
-          position: [121.473701, 31.230416], // 上海市
-          icon: beijingIcon
-        },
-        {
-          name: '南京仓库',
-          position: [118.796877, 32.060255], // 南京市
-          icon: beijingIcon
-        },
-        {
-          name: '杭州仓库',
-          position: [120.15507, 30.274085], // 杭州市
-          icon: beijingIcon
-        },
-        // 华南地区
-        {
-          name: '广州仓库',
-          position: [113.264385, 23.129112], // 广州市
-          icon: beijingIcon
-        },
-        {
-          name: '深圳仓库',
-          position: [114.057868, 22.543099], // 深圳市
-          icon: beijingIcon
-        },
-        // 西南地区
-        {
-          name: '成都仓库',
-          position: [104.066541, 30.572269], // 成都市
-          icon: beijingIcon
-        },
-        {
-          name: '重庆仓库',
-          position: [106.551556, 29.56301], // 重庆市
-          icon: beijingIcon
-        },
-        // 西北地区
-        {
-          name: '西安仓库',
-          position: [108.948024, 34.263161], // 西安市
-          icon: beijingIcon
-        },
-        {
-          name: '兰州仓库',
-          position: [103.834304, 36.061089], // 兰州市
-          icon: beijingIcon
-        },
-        // 中南地区
-        {
-          name: '武汉仓库',
-          position: [114.305393, 30.593099], // 武汉市
-          icon: beijingIcon
-        },
-        {
-          name: '长沙仓库',
-          position: [112.982279, 28.19409], // 长沙市
-          icon: beijingIcon
-        },
+
         // 其他地区
         {
           name: '昆明仓库',
@@ -254,18 +148,7 @@ export default {
           name: '南充仓库',
           position: [106.082995, 30.784419], // 南充市
           icon: beijingIcon
-        },
-        {
-          name: '包头仓库',
-          position: [109.84624, 40.647122], // 包头市
-          icon: beijingIcon
-        },
-        {
-          name: '乌鲁木齐仓库',
-          position: [87.616848, 43.825592], // 乌鲁木齐市
-          icon: beijingIcon
         }
-        // 更多仓库可按需添加
       ]
 
       // 创建一个统一的自定义图标（如果所有仓库使用相同图标）
