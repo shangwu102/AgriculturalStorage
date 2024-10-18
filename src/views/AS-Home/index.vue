@@ -314,8 +314,7 @@ export default {
 <style scoped>
 #container {
   width: 100%;
-  height: 800px;
-  /* 可以根据需要调整高度 */
+  height: 100vh;
 }
 </style>
 
