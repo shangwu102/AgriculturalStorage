@@ -39,6 +39,10 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="sensorTag"
+        label="设备唯一标识"
+      />
+      <el-table-column
         prop="icon"
         label="图标"
       />
@@ -87,6 +91,9 @@
     <el-dialog title="新增传感器设置" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
         <div class="diyi">
+          <el-form-item label="设备唯一标识" prop="sensorTag">
+            <el-input v-model="form.sensorTag" disabled autocomplete="off" />
+          </el-form-item>
           <el-form-item label="开始时间" prop="sensorStart">
             <el-time-select
               v-model="form.sensorStart"
@@ -100,9 +107,6 @@
           </el-form-item>
           <el-form-item label="小于报警值" prop="lessValue">
             <el-input v-model="form.lessValue" autocomplete="off" />
-          </el-form-item>
-          <el-form-item label="状态" prop="sensorStatus">
-            <el-input v-model="form.sensorStatus" autocomplete="off" />
           </el-form-item>
         </div>
         <div class="dier">
@@ -119,6 +123,17 @@
           </el-form-item>
           <el-form-item label="大于报警值" prop="bigValue">
             <el-input v-model="form.bigValue" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="状态" prop="sensorStatus">
+            <!-- <el-input v-model="form.sensorStatus" autocomplete="off" /> -->
+            <el-select v-model="form.sensorStatus" placeholder="请选择">
+              <el-option
+                v-for="item in zt"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </el-form-item>
         </div>
       </el-form>
@@ -211,6 +226,15 @@ export default {
       label: '警告'
     }
     ]
+    const zt = [{
+      value: '开启',
+      label: '开启'
+    },
+    {
+      value: '关闭',
+      label: '关闭'
+    }
+    ]
     const tableData = [
       {
         'id': 1,
@@ -300,6 +324,7 @@ export default {
 
     const newrukuxx = {
       id: '',
+      sensorTag: '',
       sensorStart: '',
       sensorEnd: '',
       lessValue: '',
@@ -376,7 +401,8 @@ export default {
       shezhidqhsj: '',
       sensorId: '',
       cmmmc: '',
-      fromcz: newrukuxxcz
+      fromcz: newrukuxxcz,
+      zt: zt
     }
   },
   created() {
@@ -525,6 +551,8 @@ export default {
     xinzeng() {
       console.log('重置数据', this.fromcz)
       this.form = JSON.parse(JSON.stringify(this.fromcz))
+      console.log('设备唯一表示数据', this.dangqianhangshuju)
+      this.form.sensorTag = this.dangqianhangshuju.sensorTag
       this.dialogFormVisible = true
       console.log('新增那条数据的设置', this.dangqianhangshuju)
     },
