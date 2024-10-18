@@ -182,9 +182,11 @@
           </transition>
 
           <!-- 登录按钮或注册按钮 -->
-          <el-button :loading="loading" type="primary" class="login-button" @click="handleSubmit">
-            {{ isRegisterFormVisible ? '注册' : '登录' }}
-          </el-button>
+          <div style="position: absolute;top: 65%;width: 350px;">
+            <el-button :loading="loading" type="primary" class="login-button" @click="handleSubmit">
+              {{ isRegisterFormVisible ? '注册' : '登录' }}
+            </el-button>
+          </div>
 
           <!-- 切换表单的链接放在按钮下方右侧 -->
           <div class="toggle-form">
@@ -572,8 +574,8 @@ export default {
 }
 
 .login-form-wrapper {
-  width: 450px;
-  min-height: 530px; // 使用最小高度以保持一致
+  width: 480px;
+  min-height: 550px; // 使用最小高度以保持一致
   background-color: #fff;
   border-radius: 15px;
   padding: 50px;
@@ -627,7 +629,7 @@ export default {
 
 .title-container {
   display: flex;
-  justify-content: space-between; // 左右对齐
+  justify-content: center;
   align-items: center;
   margin-bottom: 30px;
 }
@@ -656,17 +658,20 @@ export default {
 }
 
 .login-button {
+  position: relative;
   height: 50px;
-  width: 100%;
+  width: 110%;
   font-size: 18px;
   border-radius: 15px;
   margin-bottom: 10px; // 为按钮和切换链接之间添加间距
 }
 
 .role-and-remember {
+  height: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  // background-color: #3071d1;
 }
 
 .toggle-form {
