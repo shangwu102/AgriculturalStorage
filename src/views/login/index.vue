@@ -182,18 +182,26 @@
           </transition>
 
           <!-- 登录按钮或注册按钮 -->
-          <div style="position: absolute;top: 65%;width: 350px;">
-            <el-button :loading="loading" type="primary" class="login-button" @click="handleSubmit">
-              {{ isRegisterFormVisible ? '注册' : '登录' }}
-            </el-button>
-          </div>
-
+          <el-row>
+            <el-col :span="24">
+              <el-button
+                :loading="loading"
+                type="primary"
+                style="width: 100%;border-radius: 15px;font-size: 18px;"
+                @click="handleSubmit"
+              >
+                {{ isRegisterFormVisible ? '注册' : '登录' }}
+              </el-button>
+            </el-col>
+          </el-row>
           <!-- 切换表单的链接放在按钮下方右侧 -->
-          <div class="toggle-form">
-            <span @click="toggleForm">
-              {{ isRegisterFormVisible ? '返回登录' : '注册公司' }}
-            </span>
-          </div>
+          <el-row>
+            <el-col class="toggle-form" :span="24">
+              <span @click="toggleForm">
+                {{ isRegisterFormVisible ? '返回登录' : '注册公司' }}
+              </span>
+            </el-col>
+          </el-row>
         </div>
       </el-main>
     </el-container>
@@ -201,9 +209,10 @@
 </template>
 <script>
 import { validUsername } from '@/utils/validate'
+import axios from '@/utils/request'
 // import { login } from '@/api/user'
 // import { setToken } from '@/utils/auth'
-import { getUser, setUser, removeUser } from '@/utils/auth' // 引入封装好的方法
+import { getUser, setUser, removeUser, setCompany } from '@/utils/auth' // 引入封装好的方法
 
 export default {
   name: 'Login',
@@ -437,7 +446,7 @@ export default {
 
         // 本地存储选项，根据是否勾选 "记住信息" 来决定是否存储
         if (this.checked) {
-          setUser(JSON.stringify(userInfo)) // 存储到本地
+          setUser(userInfo) // 存储到本地
         } else {
           removeUser() // 清除本地存储
         }
@@ -448,7 +457,7 @@ export default {
           address: this.loginForm.address,
           role: this.loginForm.role
         }
-        setUser(JSON.stringify(user))
+        setUser(user)
         if (this.loginForm.role === 'admin' || this.loginForm.role === 'operator') {
           this.$router.push('/ashome') // 管理员或操作员跳转 ashome
         } else if (this.loginForm.role === 'company') {
@@ -471,8 +480,26 @@ export default {
         }
 
         this.loading = true
-        // 在这里添加注册逻辑，例如调用注册 API
-        console.log('注册成功')
+        // 构建注册请求的数据
+        const registrationData = {
+          companyName: this.registerForm.companyName,
+          password: this.registerForm.password,
+          address: this.registerForm.address
+        }
+
+        console.log('发送注册请求:', registrationData)
+
+        // 发送注册请求
+        const result = await axios(registrationData)
+        console.log(result)
+
+        // 保存注册的公司信息到本地存储
+        const companyInfo = {
+          companyName: this.registerForm.companyName,
+          password: this.registerForm.password,
+          address: this.registerForm.address
+        }
+        setCompany(companyInfo)
 
         // 模拟注册成功后，切换回登录表单
         this.$message.success('注册成功，请登录')
@@ -663,7 +690,7 @@ export default {
   width: 110%;
   font-size: 18px;
   border-radius: 15px;
-  margin-bottom: 10px; // 为按钮和切换链接之间添加间距
+  margin-bottom: 10px;
 }
 
 .role-and-remember {
@@ -671,13 +698,12 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  // background-color: #3071d1;
 }
 
 .toggle-form {
   text-align: right; // 右对齐
-
   span {
+
     cursor: pointer;
     color: #409EFF;
     text-decoration: underline;
@@ -702,29 +728,4 @@ export default {
   transform: translateX(30px);
 }
 
-/* 保证注册表单与登录表单样式一致 */
-.register-form {
-  /* 如果注册表单需要特有样式，可以在这里添加 */
-}
-
-/* 响应式调整 */
-@media (max-width: 500px) {
-  .login-form-wrapper {
-    width: 90%;
-    padding: 30px;
-    min-height: auto; // 取消固定高度
-  }
-
-  .title {
-    font-size: 24px;
-  }
-
-  .login-button {
-    font-size: 16px;
-  }
-
-  .toggle-link {
-    font-size: 12px;
-  }
-}
 </style>
