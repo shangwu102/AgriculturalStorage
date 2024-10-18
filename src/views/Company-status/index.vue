@@ -87,10 +87,9 @@
               </el-steps>
 
               <div class="status-info">
-                <p><strong>订单名称：</strong>{{ order.orderName }}</p>
-                <p><strong>粮食品种：</strong>{{ order.grainType }}</p>
-                <p><strong>需求数量：</strong>{{ order.quantity }} 吨</p>
-                <p><strong>交货日期：</strong>{{ order.deliveryDate }}</p>
+                <p><strong>批次号&nbsp;&nbsp;&nbsp;：</strong>{{ order.tracingCode }}</p>
+                <p><strong>需求数量：</strong>{{ order.weight }} 吨</p>
+                <p><strong>配送地址：</strong>{{ order.deliveryAddr }}</p>
                 <p :style="{ color: getStatusColor(order.status) }">
                   <strong>当前状态：</strong>{{ currentStatus(order.status) }}
                 </p>
@@ -137,6 +136,8 @@
 </template>
 
 <script>
+import { getOrder, setOrder } from '@/utils/order'
+
 export default {
   data() {
     return {
@@ -148,7 +149,7 @@ export default {
   },
   mounted() {
     // 从 localStorage 获取存储的订单数组
-    const savedOrders = localStorage.getItem('orderStatus')
+    const savedOrders = getOrder()
     if (savedOrders) {
       this.orders = JSON.parse(savedOrders)
     } else {
@@ -240,14 +241,14 @@ export default {
       const orderIndex = this.orders.findIndex(order => order.orderName === updatedOrder.orderName)
       if (orderIndex !== -1) {
         this.orders[orderIndex] = updatedOrder
-        localStorage.setItem('orderStatus', JSON.stringify(this.orders))
+        setOrder(this.orders)
       }
     },
     payment(order) {
       const orderIndex = this.orders.findIndex(o => o.orderName === order.orderName)
       if (orderIndex !== -1) {
         this.orders[orderIndex].status = '待出库'
-        localStorage.setItem('orderStatus', JSON.stringify(this.orders))
+        setOrder(this.orders)
         this.$message.success('订单状态已更新')
       }
     }
