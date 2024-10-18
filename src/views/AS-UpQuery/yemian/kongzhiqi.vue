@@ -72,455 +72,455 @@
           <el-button size="small" type="success" @click="shezhi(scope.row)">设置</el-button>
           <el-button size="small" type="primary">查看报表</el-button>
           <el-button size="small" type="warning" @click="chongmm(scope.row)">重命名</el-button>
-          <el-drawer
-            title="控制器设置列表"
-            :visible.sync="table"
-            direction="rtl"
-            size="50%"
-          >
-            <div class="celan">
-              <el-button type="primary" @click="xinzeng()">新增设置</el-button>
-              <br>
-              <br>
-              <h3 class="el-icon-alarm-clock">定时</h3>
-              <el-table :data="gridData1">
-                <el-table-column property="controllerOpentime" label="开始时间" />
-                <el-table-column property="controllerEndtime" label="结束时间" />
-                <el-table-column property="controllerCount" label="循环次数" />
-                <el-table-column property="controllerStatus" label="状态" />
-                <el-table-column property="controllerCycle" label="循环周期" />
-                <el-table-column width="140px" label="操作">
-                  <template slot-scope="szscope">
-                    <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
-                    <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
-                  </template>
-                </el-table-column>
-              </el-table>
-              <br>
-              <h3 class="el-icon-refresh">循环</h3>
-              <el-table :data="gridData2">
-                <el-table-column property="controllerEndtype" label="循环结束类型" />
-                <el-table-column property="controllerOpentime" label="开启时间" />
-                <el-table-column property="controllerEndtime" label="关闭时间" />
-                <el-table-column property="controllerCount" label="循环次数" />
-                <el-table-column property="controllerTime" label="持续时间(分钟)" />
-                <el-table-column property="controllerInterval" label="间隔(分钟)" />
-                <el-table-column property="controllerStatus" label="状态" />
-                <el-table-column property="controllerCycle" label="循环周期" />
-                <el-table-column width="140px" label="操作">
-                  <template slot-scope="szscope">
-                    <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
-                    <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
-                  </template>
-                </el-table-column>
-              </el-table>
-              <br>
-              <h3 class="el-icon-help">智能</h3>
-              <el-table :data="gridData3">
-                <el-table-column property="controllerOpenname" label="智能控制打开设备名称" />
-                <el-table-column property="controllerControl" label="智能控制关闭设备名称" />
-                <el-table-column property="controllerOpencondition" label="打开设备条件" />
-                <el-table-column property="controllerValue" label="关闭设备条件" />
-                <el-table-column property="controllerOpentime" label="开启时间" />
-                <el-table-column property="controllerEndtime" label="关闭时间" />
-                <el-table-column property="controllerConditionvalue" label="打开条件数值" />
-                <el-table-column property="controllerOffvalue" label="关闭条件数值" />
-                <el-table-column property="controllerStatus" label="状态" />
-                <el-table-column width="140px" label="操作">
-                  <template slot-scope="szscope">
-                    <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
-                    <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-          </el-drawer>
-          <el-dialog width="30vw" title="新增控制器设置" :visible.sync="dialogFormVisible">
-            <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
-              <div class="if">
-                <el-form-item label-width="130px" label="控制类型">
-                  <el-select v-model="form.kzqType" placeholder="请选择">
-                    <el-option
-                      v-for="item in leixing"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type3'"
-                  label-width="130px"
-                  label="智能控制打开设备"
-                  prop="controllerOpenname"
-                >
-                  <el-select v-model="form.controllerOpenname" placeholder="请选择">
-                    <el-option
-                      v-for="item in cgqmc"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type3'"
-                  label-width="130px"
-                  label="智能控制关闭设备"
-                  prop="controllerControl"
-                >
-                  <el-select v-model="form.controllerControl" placeholder="请选择">
-                    <el-option
-                      v-for="item in cgqmc"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type3'"
-                  label-width="130px"
-                  label="打开设备条件"
-                  prop="controllerOpencondition"
-                >
-                  <el-select v-model="form.controllerOpencondition" placeholder="请选择">
-                    <el-option
-                      v-for="item in tj"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type3'"
-                  label-width="130px"
-                  label="关闭设备条件"
-                  prop="controllerValue"
-                >
-                  <el-select v-model="form.controllerValue" placeholder="请选择">
-                    <el-option
-                      v-for="item in tj"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type2'"
-                  label-width="130px"
-                  label="循环结束类型"
-                  prop="controllerEndtype"
-                >
-                  <el-select v-model="form.controllerEndtype" placeholder="请选择">
-                    <el-option
-                      v-for="item in xhjslx"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  label-width="130px"
-                  label="开始时间"
-                  prop="controllerOpentime"
-                >
-                  <el-date-picker
-                    v-model="form.controllerOpentime"
-                    type="datetime"
-                    placeholder="选择日期时间"
-                  />
-                </el-form-item>
-                <el-form-item
-                  label-width="130px"
-                  label="关闭时间"
-                  prop="controllerEndtime"
-                >
-                  <el-date-picker
-                    v-model="form.controllerEndtime"
-                    type="datetime"
-                    placeholder="选择日期时间"
-                  />
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type3'"
-                  label-width="130px"
-                  label="打开条件数值"
-                  prop="controllerConditionvalue"
-                >
-                  <el-input v-model="form.controllerConditionvalue" placeholder="请输入内容" />
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type3'"
-                  label-width="130px"
-                  label="关闭条件数值"
-                  prop="controllerOffvalue"
-                >
-                  <el-input v-model="form.controllerOffvalue" placeholder="请输入内容" />
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type2' || form.kzqType ==='type1'"
-                  label-width="130px"
-                  label="循环次数"
-                  prop="controllerCount"
-                >
-                  <el-input v-model="form.controllerCount" placeholder="请输入内容" />
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type2'"
-                  label-width="130px"
-                  label="持续时间分钟"
-                  prop="controllerTime"
-                >
-                  <el-input v-model="form.controllerTime" placeholder="请输入内容" />
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type2'"
-                  label-width="130px"
-                  label="间隔分钟"
-                  prop="controllerInterval"
-                >
-                  <el-input v-model="form.controllerInterval" placeholder="请输入内容" />
-                </el-form-item>
-                <el-form-item
-                  label-width="130px"
-                  label="状态"
-                  prop="controllerStatus"
-                >
-                  <el-select v-model="form.controllerStatus" placeholder="请选择">
-                    <el-option
-                      v-for="item in zt"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type2' || form.kzqType ==='type1'"
-                  label-width="130px"
-                  label="循环周期"
-                  prop="controllerCycle"
-                >
-                  <el-select v-model="form.controllerCycle" placeholder="请选择">
-                    <el-option
-                      v-for="item in xhzq"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <div slot="footer" class="dialog-footer">
-                  <el-button @click="dialogFormVisible = false">取 消</el-button>
-                  <el-button type="primary" @click="xinzengqr()">确 定</el-button>
-                </div>
-              </div>
-            </el-form>
-          </el-dialog>
-          <el-dialog width="30vw" title="修改设置" :visible.sync="xuigaixs">
-            <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
-              <div class="if">
-                <el-form-item label-width="130px" label="控制类型">
-                  <el-select v-model="form.kzqType" placeholder="请选择">
-                    <el-option
-                      v-for="item in leixing"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type3'"
-                  label-width="130px"
-                  label="智能控制打开设备"
-                  prop="controllerOpenname"
-                >
-                  <el-select v-model="form.controllerOpenname" placeholder="请选择">
-                    <el-option
-                      v-for="item in cgqmc"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type3'"
-                  label-width="130px"
-                  label="智能控制关闭设备"
-                  prop="controllerControl"
-                >
-                  <el-select v-model="form.controllerControl" placeholder="请选择">
-                    <el-option
-                      v-for="item in cgqmc"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type3'"
-                  label-width="130px"
-                  label="打开设备条件"
-                  prop="controllerOpencondition"
-                >
-                  <el-select v-model="form.controllerOpencondition" placeholder="请选择">
-                    <el-option
-                      v-for="item in tj"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type3'"
-                  label-width="130px"
-                  label="关闭设备条件"
-                  prop="controllerValue"
-                >
-                  <el-select v-model="form.controllerValue" placeholder="请选择">
-                    <el-option
-                      v-for="item in tj"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type2'"
-                  label-width="130px"
-                  label="循环结束类型"
-                  prop="controllerEndtype"
-                >
-                  <el-select v-model="form.controllerEndtype" placeholder="请选择">
-                    <el-option
-                      v-for="item in xhjslx"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  label-width="130px"
-                  label="开始时间"
-                  prop="controllerOpentime"
-                >
-                  <el-date-picker
-                    v-model="form.controllerOpentime"
-                    type="datetime"
-                    placeholder="选择日期时间"
-                  />
-                </el-form-item>
-                <el-form-item
-                  label-width="130px"
-                  label="关闭时间"
-                  prop="controllerEndtime"
-                >
-                  <el-date-picker
-                    v-model="form.controllerEndtime"
-                    type="datetime"
-                    placeholder="选择日期时间"
-                  />
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type3'"
-                  label-width="130px"
-                  label="打开条件数值"
-                  prop="controllerConditionvalue"
-                >
-                  <el-input v-model="form.controllerConditionvalue" placeholder="请输入内容" />
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type3'"
-                  label-width="130px"
-                  label="关闭条件数值"
-                  prop="controllerOffvalue"
-                >
-                  <el-input v-model="form.controllerOffvalue" placeholder="请输入内容" />
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type2' || form.kzqType ==='type1'"
-                  label-width="130px"
-                  label="循环次数"
-                  prop="controllerCount"
-                >
-                  <el-input v-model="form.controllerCount" placeholder="请输入内容" />
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type2'"
-                  label-width="130px"
-                  label="持续时间分钟"
-                  prop="controllerTime"
-                >
-                  <el-input v-model="form.controllerTime" placeholder="请输入内容" />
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type2'"
-                  label-width="130px"
-                  label="间隔分钟"
-                  prop="controllerInterval"
-                >
-                  <el-input v-model="form.controllerInterval" placeholder="请输入内容" />
-                </el-form-item>
-                <el-form-item
-                  label-width="130px"
-                  label="状态"
-                  prop="controllerStatus"
-                >
-                  <el-select v-model="form.controllerStatus" placeholder="请选择">
-                    <el-option
-                      v-for="item in zt"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item
-                  v-if="form.kzqType === 'type2' || form.kzqType ==='type1'"
-                  label-width="130px"
-                  label="循环周期"
-                  prop="controllerCycle"
-                >
-                  <el-select v-model="form.controllerCycle" placeholder="请选择">
-                    <el-option
-                      v-for="item in xhzq"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <div slot="footer" class="dialog-footer">
-                  <el-button @click="xuigaixs = false">取 消</el-button>
-                  <el-button type="primary" @click="xuigaiqr()">确 定</el-button>
-                </div>
-              </div>
-            </el-form>
-          </el-dialog>
-          <el-dialog title="重命名" :visible.sync="chongmmxs">
-            <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="chongmingming">
-              <el-form-item label="控制器名称" prop="controllerName">
-                <el-input v-model="dangqianhangshuju.controllerName" placeholder="请输入内容" />
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="chongmmxs = false">取 消</el-button>
-              <el-button type="primary" @click="chongmmqr()">确 定</el-button>
-            </div>
-          </el-dialog>
         </template>
       </el-table-column>
     </el-table>
+    <el-drawer
+      title="控制器设置列表"
+      :visible.sync="table"
+      direction="rtl"
+      size="50%"
+    >
+      <div class="celan">
+        <el-button type="primary" @click="xinzeng()">新增设置</el-button>
+        <br>
+        <br>
+        <h3 class="el-icon-alarm-clock">定时</h3>
+        <el-table :data="gridData1">
+          <el-table-column property="controllerOpentime" label="开始时间" />
+          <el-table-column property="controllerEndtime" label="结束时间" />
+          <el-table-column property="controllerCount" label="循环次数" />
+          <el-table-column property="controllerStatus" label="状态" />
+          <el-table-column property="controllerCycle" label="循环周期" />
+          <el-table-column width="140px" label="操作">
+            <template slot-scope="szscope">
+              <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
+              <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
+            </template>
+          </el-table-column>
+        </el-table>
+        <br>
+        <h3 class="el-icon-refresh">循环</h3>
+        <el-table :data="gridData2">
+          <el-table-column property="controllerEndtype" label="循环结束类型" />
+          <el-table-column property="controllerOpentime" label="开启时间" />
+          <el-table-column property="controllerEndtime" label="关闭时间" />
+          <el-table-column property="controllerCount" label="循环次数" />
+          <el-table-column property="controllerTime" label="持续时间(分钟)" />
+          <el-table-column property="controllerInterval" label="间隔(分钟)" />
+          <el-table-column property="controllerStatus" label="状态" />
+          <el-table-column property="controllerCycle" label="循环周期" />
+          <el-table-column width="140px" label="操作">
+            <template slot-scope="szscope">
+              <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
+              <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
+            </template>
+          </el-table-column>
+        </el-table>
+        <br>
+        <h3 class="el-icon-help">智能</h3>
+        <el-table :data="gridData3">
+          <el-table-column property="controllerOpenname" label="智能控制打开设备名称" />
+          <el-table-column property="controllerControl" label="智能控制关闭设备名称" />
+          <el-table-column property="controllerOpencondition" label="打开设备条件" />
+          <el-table-column property="controllerValue" label="关闭设备条件" />
+          <el-table-column property="controllerOpentime" label="开启时间" />
+          <el-table-column property="controllerEndtime" label="关闭时间" />
+          <el-table-column property="controllerConditionvalue" label="打开条件数值" />
+          <el-table-column property="controllerOffvalue" label="关闭条件数值" />
+          <el-table-column property="controllerStatus" label="状态" />
+          <el-table-column width="140px" label="操作">
+            <template slot-scope="szscope">
+              <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
+              <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-drawer>
+    <el-dialog width="30vw" title="新增控制器设置" :visible.sync="dialogFormVisible">
+      <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
+        <div class="if">
+          <el-form-item label-width="130px" label="控制类型">
+            <el-select v-model="form.kzqType" placeholder="请选择">
+              <el-option
+                v-for="item in leixing"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type3'"
+            label-width="130px"
+            label="智能控制打开设备"
+            prop="controllerOpenname"
+          >
+            <el-select v-model="form.controllerOpenname" placeholder="请选择">
+              <el-option
+                v-for="item in cgqmc"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type3'"
+            label-width="130px"
+            label="智能控制关闭设备"
+            prop="controllerControl"
+          >
+            <el-select v-model="form.controllerControl" placeholder="请选择">
+              <el-option
+                v-for="item in cgqmc"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type3'"
+            label-width="130px"
+            label="打开设备条件"
+            prop="controllerOpencondition"
+          >
+            <el-select v-model="form.controllerOpencondition" placeholder="请选择">
+              <el-option
+                v-for="item in tj"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type3'"
+            label-width="130px"
+            label="关闭设备条件"
+            prop="controllerValue"
+          >
+            <el-select v-model="form.controllerValue" placeholder="请选择">
+              <el-option
+                v-for="item in tj"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type2'"
+            label-width="130px"
+            label="循环结束类型"
+            prop="controllerEndtype"
+          >
+            <el-select v-model="form.controllerEndtype" placeholder="请选择">
+              <el-option
+                v-for="item in xhjslx"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label-width="130px"
+            label="开始时间"
+            prop="controllerOpentime"
+          >
+            <el-date-picker
+              v-model="form.controllerOpentime"
+              type="datetime"
+              placeholder="选择日期时间"
+            />
+          </el-form-item>
+          <el-form-item
+            label-width="130px"
+            label="关闭时间"
+            prop="controllerEndtime"
+          >
+            <el-date-picker
+              v-model="form.controllerEndtime"
+              type="datetime"
+              placeholder="选择日期时间"
+            />
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type3'"
+            label-width="130px"
+            label="打开条件数值"
+            prop="controllerConditionvalue"
+          >
+            <el-input v-model="form.controllerConditionvalue" placeholder="请输入内容" />
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type3'"
+            label-width="130px"
+            label="关闭条件数值"
+            prop="controllerOffvalue"
+          >
+            <el-input v-model="form.controllerOffvalue" placeholder="请输入内容" />
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type2' || form.kzqType ==='type1'"
+            label-width="130px"
+            label="循环次数"
+            prop="controllerCount"
+          >
+            <el-input v-model="form.controllerCount" placeholder="请输入内容" />
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type2'"
+            label-width="130px"
+            label="持续时间分钟"
+            prop="controllerTime"
+          >
+            <el-input v-model="form.controllerTime" placeholder="请输入内容" />
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type2'"
+            label-width="130px"
+            label="间隔分钟"
+            prop="controllerInterval"
+          >
+            <el-input v-model="form.controllerInterval" placeholder="请输入内容" />
+          </el-form-item>
+          <el-form-item
+            label-width="130px"
+            label="状态"
+            prop="controllerStatus"
+          >
+            <el-select v-model="form.controllerStatus" placeholder="请选择">
+              <el-option
+                v-for="item in zt"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type2' || form.kzqType ==='type1'"
+            label-width="130px"
+            label="循环周期"
+            prop="controllerCycle"
+          >
+            <el-select v-model="form.controllerCycle" placeholder="请选择">
+              <el-option
+                v-for="item in xhzq"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="xinzengqr()">确 定</el-button>
+          </div>
+        </div>
+      </el-form>
+    </el-dialog>
+    <el-dialog width="30vw" title="修改设置" :visible.sync="xuigaixs">
+      <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
+        <div class="if">
+          <el-form-item label-width="130px" label="控制类型">
+            <el-select v-model="form.kzqType" placeholder="请选择">
+              <el-option
+                v-for="item in leixing"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type3'"
+            label-width="130px"
+            label="智能控制打开设备"
+            prop="controllerOpenname"
+          >
+            <el-select v-model="form.controllerOpenname" placeholder="请选择">
+              <el-option
+                v-for="item in cgqmc"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type3'"
+            label-width="130px"
+            label="智能控制关闭设备"
+            prop="controllerControl"
+          >
+            <el-select v-model="form.controllerControl" placeholder="请选择">
+              <el-option
+                v-for="item in cgqmc"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type3'"
+            label-width="130px"
+            label="打开设备条件"
+            prop="controllerOpencondition"
+          >
+            <el-select v-model="form.controllerOpencondition" placeholder="请选择">
+              <el-option
+                v-for="item in tj"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type3'"
+            label-width="130px"
+            label="关闭设备条件"
+            prop="controllerValue"
+          >
+            <el-select v-model="form.controllerValue" placeholder="请选择">
+              <el-option
+                v-for="item in tj"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type2'"
+            label-width="130px"
+            label="循环结束类型"
+            prop="controllerEndtype"
+          >
+            <el-select v-model="form.controllerEndtype" placeholder="请选择">
+              <el-option
+                v-for="item in xhjslx"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label-width="130px"
+            label="开始时间"
+            prop="controllerOpentime"
+          >
+            <el-date-picker
+              v-model="form.controllerOpentime"
+              type="datetime"
+              placeholder="选择日期时间"
+            />
+          </el-form-item>
+          <el-form-item
+            label-width="130px"
+            label="关闭时间"
+            prop="controllerEndtime"
+          >
+            <el-date-picker
+              v-model="form.controllerEndtime"
+              type="datetime"
+              placeholder="选择日期时间"
+            />
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type3'"
+            label-width="130px"
+            label="打开条件数值"
+            prop="controllerConditionvalue"
+          >
+            <el-input v-model="form.controllerConditionvalue" placeholder="请输入内容" />
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type3'"
+            label-width="130px"
+            label="关闭条件数值"
+            prop="controllerOffvalue"
+          >
+            <el-input v-model="form.controllerOffvalue" placeholder="请输入内容" />
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type2' || form.kzqType ==='type1'"
+            label-width="130px"
+            label="循环次数"
+            prop="controllerCount"
+          >
+            <el-input v-model="form.controllerCount" placeholder="请输入内容" />
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type2'"
+            label-width="130px"
+            label="持续时间分钟"
+            prop="controllerTime"
+          >
+            <el-input v-model="form.controllerTime" placeholder="请输入内容" />
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type2'"
+            label-width="130px"
+            label="间隔分钟"
+            prop="controllerInterval"
+          >
+            <el-input v-model="form.controllerInterval" placeholder="请输入内容" />
+          </el-form-item>
+          <el-form-item
+            label-width="130px"
+            label="状态"
+            prop="controllerStatus"
+          >
+            <el-select v-model="form.controllerStatus" placeholder="请选择">
+              <el-option
+                v-for="item in zt"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="form.kzqType === 'type2' || form.kzqType ==='type1'"
+            label-width="130px"
+            label="循环周期"
+            prop="controllerCycle"
+          >
+            <el-select v-model="form.controllerCycle" placeholder="请选择">
+              <el-option
+                v-for="item in xhzq"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="xuigaixs = false">取 消</el-button>
+            <el-button type="primary" @click="xuigaiqr()">确 定</el-button>
+          </div>
+        </div>
+      </el-form>
+    </el-dialog>
+    <el-dialog title="重命名" :visible.sync="chongmmxs">
+      <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="chongmingming">
+        <el-form-item label="控制器名称" prop="controllerName">
+          <el-input v-model="dangqianhangshuju.controllerName" placeholder="请输入内容" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="chongmmxs = false">取 消</el-button>
+        <el-button type="primary" @click="chongmmqr()">确 定</el-button>
+      </div>
+    </el-dialog>
     <div class="yema">
       <el-pagination
         background
@@ -949,10 +949,10 @@ export default {
       switch (e.kzqType) {
         case 'type1':
           try {
-            // const json = {
-            //   sensorId: e.sensorId
-            // }
-            const ref = await scdssz(e.sensorId)
+            const json = {
+              sensorId: e.sensorId
+            }
+            const ref = await scdssz(json)
             console.log('返回数据', ref.data.code)
             this.$message({
               message: '删除成功',
@@ -966,10 +966,10 @@ export default {
 
         case 'type2':
           try {
-            // const json = {
-            //   sensorId: e.sensorId
-            // }
-            const ref = await scxhsz(e.sensorId)
+            const json = {
+              sensorId: e.sensorId
+            }
+            const ref = await scxhsz(json)
             console.log('返回数据', ref.data.code)
             this.$message({
               message: '删除成功',
@@ -984,10 +984,10 @@ export default {
         case 'type3':
           try {
             console.log('删除行type3', e)
-            // const json = {
-            //   sensorId: e.sensorId
-            // }
-            const ref = await scznsz(e.sensorId)
+            const json = {
+              sensorId: e.sensorId
+            }
+            const ref = await scznsz(json)
             this.$message({
               message: '删除成功',
               type: 'success'

@@ -60,20 +60,20 @@
         <template slot-scope="scope">
           <el-button size="small" type="warning" @click="chongmm(scope.row)">重命名</el-button>
           <el-button size="small" type="primary">视频查看</el-button>
-          <el-dialog title="重命名" :visible.sync="chongmmxs">
-            <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="chongmingming">
-              <el-form-item label="摄像头名称" prop="cameraName">
-                <el-input v-model="dangqianhangshuju.cameraName" placeholder="请输入内容" />
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="chongmmxs = false">取 消</el-button>
-              <el-button type="primary" @click="chongmmqr()">确 定</el-button>
-            </div>
-          </el-dialog>
         </template>
       </el-table-column>
     </el-table>
+    <el-dialog title="重命名" :visible.sync="chongmmxs">
+      <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="chongmingming">
+        <el-form-item label="摄像头名称" prop="cameraName">
+          <el-input v-model="dangqianhangshuju.cameraName" placeholder="请输入内容" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="chongmmxs = false">取 消</el-button>
+        <el-button type="primary" @click="chongmmqr()">确 定</el-button>
+      </div>
+    </el-dialog>
     <div class="yema">
       <el-pagination
         background

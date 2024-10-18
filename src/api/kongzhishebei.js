@@ -95,7 +95,7 @@ export function xgznsz(e) {
 
 export function scdssz(e) {
   return request({
-    url: `/delInsertController/${e.id}`,
+    url: '/delInsertController',
     method: 'post',
     data: e
   })
@@ -103,7 +103,7 @@ export function scdssz(e) {
 
 export function scxhsz(e) {
   return request({
-    url: `/delInsertSet/${e.id}`,
+    url: '/delInsertSet',
     method: 'post',
     data: e
   })
@@ -111,7 +111,7 @@ export function scxhsz(e) {
 
 export function scznsz(e) {
   return request({
-    url: `/delInsertSmartSet/${e.id}`,
+    url: '/delInsertSmartSet',
     method: 'post',
     data: e
   })

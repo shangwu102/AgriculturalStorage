@@ -58,129 +58,129 @@
           <el-button size="small" type="success" @click="shezhi(scope.row)">设置</el-button>
           <el-button size="small" type="primary">查看报表</el-button>
           <el-button size="small" type="warning" @click="chongmm(scope.row)">重命名</el-button>
-          <el-drawer
-            title="传感器设置列表"
-            :visible.sync="table"
-            direction="rtl"
-            size="50%"
-          >
-            <div class="celan">
-              <el-button type="primary" @click="xinzeng()">新增设置</el-button>
-              <el-table :data="gridData">
-                <el-table-column property="sensorStart" label="开始时间" width="150" />
-                <el-table-column property="sensorEnd" label="结束时间" width="200" />
-                <el-table-column property="lessValue" label="小于报警值" />
-                <el-table-column property="bigValue" label="大于报警值" />
-                <el-table-column property="sensorStatus" label="状态" />
-                <el-table-column label="操作" width="150px">
-                  <template slot-scope="szscope">
-                    <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
-                    <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-          </el-drawer>
-          <el-dialog title="新增传感器设置" :visible.sync="dialogFormVisible">
-            <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
-              <div class="diyi">
-                <el-form-item label="开始时间" prop="sensorStart">
-                  <el-time-select
-                    v-model="form.sensorStart"
-                    :picker-options="{
-                      start: '00:00',
-                      step: '00:05',
-                      end: '23:55'
-                    }"
-                    placeholder="选择时间"
-                  />
-                </el-form-item>
-                <el-form-item label="小于报警值" prop="lessValue">
-                  <el-input v-model="form.lessValue" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label="状态" prop="sensorStatus">
-                  <el-input v-model="form.sensorStatus" autocomplete="off" />
-                </el-form-item>
-              </div>
-              <div class="dier">
-                <el-form-item label="结束时间" prop="sensorEnd">
-                  <el-time-select
-                    v-model="form.sensorEnd"
-                    :picker-options="{
-                      start: '00:00',
-                      step: '00:05',
-                      end: '23:55'
-                    }"
-                    placeholder="选择时间"
-                  />
-                </el-form-item>
-                <el-form-item label="大于报警值" prop="bigValue">
-                  <el-input v-model="form.bigValue" autocomplete="off" />
-                </el-form-item>
-              </div>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="xinzengqr()">确 定</el-button>
-            </div>
-          </el-dialog>
-          <el-dialog title="修改设置" :visible.sync="xuigaixs">
-            <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
-              <div class="diyi">
-                <el-form-item label="开始时间" prop="sensorStart">
-                  <el-time-select
-                    v-model="form.sensorStart"
-                    :picker-options="{
-                      start: '00:00',
-                      step: '00:05',
-                      end: '23:55'
-                    }"
-                    placeholder="选择时间"
-                  />
-                </el-form-item>
-                <el-form-item label="小于报警值" prop="lessValue">
-                  <el-input v-model="form.lessValue" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label="状态" prop="sensorStatus">
-                  <el-input v-model="form.sensorStatus" autocomplete="off" />
-                </el-form-item>
-              </div>
-              <div class="dier">
-                <el-form-item label="结束时间" prop="sensorEnd">
-                  <el-time-select
-                    v-model="form.sensorEnd"
-                    :picker-options="{
-                      start: '00:00',
-                      step: '00:05',
-                      end: '23:55'
-                    }"
-                    placeholder="选择时间"
-                  />
-                </el-form-item>
-                <el-form-item label="大于报警值" prop="bigValue">
-                  <el-input v-model="form.bigValue" autocomplete="off" />
-                </el-form-item>
-              </div>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="xuigaixs = false">取 消</el-button>
-              <el-button type="primary" @click="xuigaiqr()">确 定</el-button>
-            </div>
-          </el-dialog>
-          <el-dialog title="重命名" :visible.sync="chongmmxs">
-            <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="xinzenshuju">
-              <el-form-item label="传感器名称" prop="sensorName">
-                <el-input v-model="dangqianhangshuju.sensorName" placeholder="请输入内容" />
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="chongmmxs = false">取 消</el-button>
-              <el-button type="primary" @click="chongmmqr()">确 定</el-button>
-            </div>
-          </el-dialog>
         </template>
       </el-table-column>
     </el-table>
+    <el-drawer
+      title="传感器设置列表"
+      :visible.sync="table"
+      direction="rtl"
+      size="50%"
+    >
+      <div class="celan">
+        <el-button type="primary" @click="xinzeng()">新增设置</el-button>
+        <el-table :data="gridData">
+          <el-table-column property="sensorStart" label="开始时间" width="150" />
+          <el-table-column property="sensorEnd" label="结束时间" width="200" />
+          <el-table-column property="lessValue" label="小于报警值" />
+          <el-table-column property="bigValue" label="大于报警值" />
+          <el-table-column property="sensorStatus" label="状态" />
+          <el-table-column label="操作" width="150px">
+            <template slot-scope="szscope">
+              <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
+              <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-drawer>
+    <el-dialog title="新增传感器设置" :visible.sync="dialogFormVisible">
+      <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
+        <div class="diyi">
+          <el-form-item label="开始时间" prop="sensorStart">
+            <el-time-select
+              v-model="form.sensorStart"
+              :picker-options="{
+                start: '00:00',
+                step: '00:05',
+                end: '23:55'
+              }"
+              placeholder="选择时间"
+            />
+          </el-form-item>
+          <el-form-item label="小于报警值" prop="lessValue">
+            <el-input v-model="form.lessValue" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="状态" prop="sensorStatus">
+            <el-input v-model="form.sensorStatus" autocomplete="off" />
+          </el-form-item>
+        </div>
+        <div class="dier">
+          <el-form-item label="结束时间" prop="sensorEnd">
+            <el-time-select
+              v-model="form.sensorEnd"
+              :picker-options="{
+                start: '00:00',
+                step: '00:05',
+                end: '23:55'
+              }"
+              placeholder="选择时间"
+            />
+          </el-form-item>
+          <el-form-item label="大于报警值" prop="bigValue">
+            <el-input v-model="form.bigValue" autocomplete="off" />
+          </el-form-item>
+        </div>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="xinzengqr()">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="修改设置" :visible.sync="xuigaixs">
+      <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
+        <div class="diyi">
+          <el-form-item label="开始时间" prop="sensorStart">
+            <el-time-select
+              v-model="form.sensorStart"
+              :picker-options="{
+                start: '00:00',
+                step: '00:05',
+                end: '23:55'
+              }"
+              placeholder="选择时间"
+            />
+          </el-form-item>
+          <el-form-item label="小于报警值" prop="lessValue">
+            <el-input v-model="form.lessValue" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="状态" prop="sensorStatus">
+            <el-input v-model="form.sensorStatus" autocomplete="off" />
+          </el-form-item>
+        </div>
+        <div class="dier">
+          <el-form-item label="结束时间" prop="sensorEnd">
+            <el-time-select
+              v-model="form.sensorEnd"
+              :picker-options="{
+                start: '00:00',
+                step: '00:05',
+                end: '23:55'
+              }"
+              placeholder="选择时间"
+            />
+          </el-form-item>
+          <el-form-item label="大于报警值" prop="bigValue">
+            <el-input v-model="form.bigValue" autocomplete="off" />
+          </el-form-item>
+        </div>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="xuigaixs = false">取 消</el-button>
+        <el-button type="primary" @click="xuigaiqr()">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="重命名" :visible.sync="chongmmxs">
+      <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="xinzenshuju">
+        <el-form-item label="传感器名称" prop="sensorName">
+          <el-input v-model="dangqianhangshuju.sensorName" placeholder="请输入内容" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="chongmmxs = false">取 消</el-button>
+        <el-button type="primary" @click="chongmmqr()">确 定</el-button>
+      </div>
+    </el-dialog>
     <div class="yema">
       <el-pagination
         background
