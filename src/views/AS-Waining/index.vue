@@ -18,8 +18,8 @@
         <el-button type="primary" @click="chaxun">搜索</el-button>
       </el-form-item> -->
       <el-form-item>
-        <el-badge :value="12">
-          <el-button type="primary" class="xiaoxi">消息</el-button>
+        <el-badge :value="weidu.length">
+          <el-button type="primary" class="xiaoxi" @click="xuigaijiluzhuangtai">消息</el-button>
         </el-badge>
       </el-form-item>
     </el-form>
@@ -268,7 +268,11 @@ export default {
       }
     },
     weidushuju() {
-
+      this.weidu = this.tableData.filter(e => {
+        return e.status === 0
+      })
+      console.log('数据', this.tableData)
+      console.log('未读数据', this.weidu)
     },
     async xuigaijiluzhuangtai() {
       try {
@@ -277,6 +281,8 @@ export default {
         }
         const ref = await querenyidu(json)
         console.log('返回值', ref)
+        this.chushihua()
+        this.weidushuju()
       } catch (error) {
         console.log('错误', error)
       }
@@ -288,6 +294,7 @@ export default {
         console.log('数据', ref)
         this.tableData = ref.data.data
         console.log('修改后', this.tableData)
+        this.weidushuju()
       } catch (error) {
         console.log('错误', error)
       }
