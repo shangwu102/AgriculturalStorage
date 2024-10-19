@@ -16,25 +16,40 @@ export function loginCompany(data) {
   })
 }
 
-export function login(data) {
+export function enterpriseVerify(data) {
   return request({
-    url: '/login',
+    url: '/enterpriseVerify',
     method: 'post',
     data
   })
 }
-
-export function getInfo(token) {
+export function getCompanyInfoByAddress(blockchainAddress) {
   return request({
-    url: '/users/info',
+    url: '/getCompanyInfoByAddress',
     method: 'get',
-    params: { token }
+    params: { address: blockchainAddress } // 将地址传递给后端
   })
 }
 
-export function logout() {
-  return request({
-    url: '/logout',
-    method: 'post'
-  })
-}
+// export function login(data) {
+//   return request({
+//     url: '/login',
+//     method: 'post',
+//     data
+//   })
+// }
+
+// export function getInfo(token) {
+//   return request({
+//     url: '/users/info',
+//     method: 'get',
+//     params: { token }
+//   })
+// }
+
+// export function logout() {
+//   return request({
+//     url: '/logout',
+//     method: 'post'
+//   })
+// }
