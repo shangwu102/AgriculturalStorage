@@ -11,15 +11,15 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item>
+      <!-- <el-form-item>
         <el-input v-model="sousuo" placeholder="请输入区域名称">''</el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="chaxun">搜索</el-button>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-badge :value="12">
-          <el-button class="xiaoxi">消息</el-button>
+          <el-button type="primary" class="xiaoxi">消息</el-button>
         </el-badge>
       </el-form-item>
     </el-form>
@@ -35,28 +35,24 @@
         width="130"
       />
       <el-table-column
-        prop="alert_type"
+        prop="warnType"
         label="预警类型"
       />
       <el-table-column
-        prop="alert_source"
+        prop="warnCome"
         label="预警来源"
       />
       <el-table-column
-        prop="alert_area"
-        label="预警区域"
-      />
-      <el-table-column
-        prop="device_name"
+        prop="warnStore"
         label="设备名称"
       />
       <el-table-column
-        prop="alert_message"
+        prop="warnInfo"
         label="预警信息"
         width="250"
       />
       <el-table-column
-        prop="alert_time"
+        prop="time"
         label="时间"
       />
       <!-- <el-table-column
@@ -97,6 +93,7 @@
 </template>
 
 <script>
+import { yujingxinxi } from '@/api/anquanyujing.js'
 export default {
   data() {
     const options = [{
@@ -268,10 +265,22 @@ export default {
     }
   },
   created() {
-    this.huqushuju()
-    this.chaxun()
+    this.chushihua()
   },
   methods: {
+    async chushihua() {
+      try {
+        const ref = await yujingxinxi()
+        console.log('原始', this.tableData)
+        console.log('数据', ref)
+        this.tableData = ref.data.data
+        console.log('修改后', this.tableData)
+      } catch (error) {
+        console.log('错误', error)
+      }
+      this.huqushuju()
+      this.chaxun()
+    },
     huqushuju() {
       this.newdata = this.tableData
     },
