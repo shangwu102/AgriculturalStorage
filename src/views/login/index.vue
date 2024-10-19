@@ -27,10 +27,10 @@
                     <svg-icon icon-class="user" />
                   </span>
                   <el-input
-                    ref="username"
-                    v-model="loginForm.username"
+                    ref="userName"
+                    v-model="loginForm.userName"
                     placeholder="请输入用户名"
-                    name="username"
+                    name="userName"
                     type="text"
                     tabindex="1"
                     auto-complete="on"
@@ -68,15 +68,15 @@
               </el-form-item>
 
               <!-- 地址输入框 -->
-              <el-form-item :class="{ 'focused': isFocused3 }" prop="address">
+              <el-form-item :class="{ 'focused': isFocused3 }" prop="userAddr">
                 <div class="input-group">
                   <span class="svg-container">
                     <svg-icon icon-class="block" style="font-size: 17px; color: aqua;" />
                   </span>
                   <el-input
-                    v-model="loginForm.address"
+                    v-model="loginForm.userAddr"
                     placeholder="请输入区块链地址"
-                    name="address"
+                    name="userAddr"
                     tabindex="3"
                     auto-complete="on"
                     class="custom-input"
@@ -300,15 +300,15 @@ export default {
       },
       // 原始登录表单
       loginForm: {
-        address: '',
-        username: '',
+        userAddr: '',
+        userName: '',
         password: '',
         role: '' // 新增字段
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        userName: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }],
-        address: [{ required: true, trigger: 'blur', validator: validateAddress }],
+        userAddr: [{ required: true, trigger: 'blur', validator: validateAddress }],
         role: [{ required: true, trigger: 'blur', validator: validateRole }] // 校验角色
       },
       rules: {
@@ -427,23 +427,26 @@ export default {
         // }
         // 根据用户角色跳转 临时测试代码-------------------------------------------------------------------
         // 使用 Vuex 调用 login action
-        await this.$store.dispatch('user/login', {
-          username: this.loginForm.username,
-          password: this.loginForm.password,
-          address: this.loginForm.address,
-          role: this.loginForm.role
-        })
+        // await this.$store.dispatch('user/login', {
+        //   username: this.loginForm.username,
+        //   password: this.loginForm.password,
+        //   address: this.loginForm.address,
+        //   role: this.loginForm.role
+        // })
 
-        // 获取用户信息并存入 Vuex
-        const userInfo = {
-          username: this.loginForm.username,
-          address: this.loginForm.address,
-          role: this.loginForm.role,
-          password: this.loginForm.password
-        }
-        this.$store.dispatch('user/setUserInfo', userInfo)
+        // // 获取用户信息并存入 Vuex
+        // const userInfo = {
+        //   username: this.loginForm.username,
+        //   address: this.loginForm.address,
+        //   role: this.loginForm.role,
+        //   password: this.loginForm.password
+        // }
+        // this.$store.dispatch('user/setUserInfo', userInfo)
         // 构建登录请求的数据
-        const loginData = JSON.parse(getCompany())
+        // const loginData = JSON.parse(getCompany())
+        const loginData = { ...this.loginForm } // 使用扩展运算符进行浅拷贝
+        console.log(this.loginForm)
+
         console.log(loginData)
 
         const result = await loginCompany(loginData)
@@ -451,7 +454,8 @@ export default {
 
         // 本地存储选项，根据是否勾选 "记住信息" 来决定是否存储
         if (this.checked) {
-          setUser(userInfo) // 存储到本地
+          // setUser(userInfo) // 存储到本地
+
         } else {
           removeUser() // 清除本地存储
         }
