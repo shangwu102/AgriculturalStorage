@@ -30,7 +30,7 @@
         label="状态"
       >
         <template slot-scope="scope">
-          <span v-if="scope.row.sensorStatus === 1" style="color: green;">
+          <span v-if="scope.row.sensorStatus === '1'" style="color: green;">
             <i class="el-icon-check" /> 正常
           </span>
           <span v-else style="color: red;">
