@@ -22,16 +22,3 @@ export function setUser(user) {
 export function removeUser() {
   return localStorage.removeItem(UserKey)
 }
-
-const CompanyKey = 'company' // 公司注册
-export function getCompany() {
-  return localStorage.getItem(CompanyKey)
-}
-
-export function setCompany(companyInfo) {
-  return localStorage.setItem(CompanyKey, JSON.stringify(companyInfo))
-}
-
-export function removeCompany() {
-  return localStorage.removeItem(CompanyKey)
-}

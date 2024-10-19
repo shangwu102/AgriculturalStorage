@@ -31,6 +31,14 @@ export function getCompanyInfoByAddress(blockchainAddress) {
   })
 }
 
+// 管理员登录
+export function loginAdmin(data) {
+  return request({
+    url: '/loginAdmin',
+    method: 'post',
+    data
+  })
+}
 // export function login(data) {
 //   return request({
 //     url: '/login',

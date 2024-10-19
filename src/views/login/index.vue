@@ -209,9 +209,9 @@
 </template>
 <script>
 import { validUsername } from '@/utils/validate'
-import { initCompany, loginCompany } from '@/api/login'
+import { initCompany, loginAdmin, loginCompany } from '@/api/login'
 // import { setToken } from '@/utils/auth'
-import { getUser, setUser, removeUser, setCompany, getCompany } from '@/utils/auth' // 引入封装好的方法
+import { getUser, setUser } from '@/utils/auth' // 引入封装好的方法
 
 export default {
   name: 'Login',
@@ -298,7 +298,7 @@ export default {
         password: [{ required: true, trigger: 'blur', validator: validateRegisterPassword }],
         address: [{ required: true, trigger: 'blur', validator: validateRegisterAddress }]
       },
-      // 原始登录表单
+      // 公司登录登录表单
       loginForm: {
         userAddr: '',
         userName: '',
@@ -389,88 +389,40 @@ export default {
       })
     },
     async handleLogin() {
-      console.log('开始登录') // 添加日志
-
       try {
         const valid = await this.$refs.loginForm.validate()
         if (!valid) {
           console.log('表单验证失败!')
           return false
         }
-
         this.loading = true
-        // const result = await login(this.loginForm)
-
-        // if (result.data.code === 1) {
-        //   setToken(result.data.data)
-
-        //   if (this.checked) {
-        //     const user = {
-        //       username: this.loginForm.username,
-        //       password: this.loginForm.password,
-        //       address: this.loginForm.address,
-        //       role: this.loginForm.role
-        //     }
-        //     setUser(JSON.stringify(user))
-        //   } else {
-        //     removeUser()
-        //   }
-
-        //   // 根据用户角色跳转
-        //   if (this.loginForm.role === 'admin' || this.loginForm.role === 'operator') {
-        //     this.$router.push('/ashome') // 管理员或操作员跳转 ashome
-        //   } else if (this.loginForm.role === 'company') {
-        //     this.$router.push('/ascompany') // 公司用户跳转 ascompany
-        //   }
-        // } else {
-        //   this.$message.error(result.data.msg)
-        // }
-        // 根据用户角色跳转 临时测试代码-------------------------------------------------------------------
-        // 使用 Vuex 调用 login action
-        // await this.$store.dispatch('user/login', {
-        //   username: this.loginForm.username,
-        //   password: this.loginForm.password,
-        //   address: this.loginForm.address,
-        //   role: this.loginForm.role
-        // })
-
-        // // 获取用户信息并存入 Vuex
-        // const userInfo = {
-        //   username: this.loginForm.username,
-        //   address: this.loginForm.address,
-        //   role: this.loginForm.role,
-        //   password: this.loginForm.password
-        // }
-        // this.$store.dispatch('user/setUserInfo', userInfo)
-        // 构建登录请求的数据
-        // const loginData = JSON.parse(getCompany())
         const loginData = { ...this.loginForm } // 使用扩展运算符进行浅拷贝
-        console.log(this.loginForm)
+        if (loginData.role === 'admin') {
+          console.log('管理员开始登录')
 
-        console.log(loginData)
+          const result = await loginAdmin(loginData)
+          if (result.data.code === 1) {
+            // 本地存储管理员信息
+            setUser(loginData)
+            this.$router.push('/ashome') // 管理员跳转 ashome
+            this.$message.success(result.data.data)
+          }
+        } else if (loginData.role === 'operator') {
+          console.log('操作员开始登录')
+          // 调用接口
+          this.$router.push('/ashome')
+          this.$message.success('操作员登录成功')
+        } else if (loginData.role === 'company') {
+          console.log('公司开始登录')
+          console.log(loginData)
 
-        const result = await loginCompany(loginData)
-        console.log(result)
-
-        // 本地存储选项，根据是否勾选 "记住信息" 来决定是否存储
-        if (this.checked) {
-          // setUser(userInfo) // 存储到本地
-
-        } else {
-          removeUser() // 清除本地存储
-        }
-
-        const user = {
-          username: this.loginForm.username,
-          password: this.loginForm.password,
-          address: this.loginForm.address,
-          role: this.loginForm.role
-        }
-        setUser(user)
-        if (this.loginForm.role === 'admin' || this.loginForm.role === 'operator') {
-          this.$router.push('/ashome') // 管理员或操作员跳转 ashome
-        } else if (this.loginForm.role === 'company') {
-          this.$router.push('/company') // 公司用户跳转 ascompany
+          const result = await loginCompany(loginData)
+          if (result.data.code === 1) {
+            // 本地存储公司信息
+            setUser(loginData)
+            this.$router.push('/company') // 公司用户跳转 ascompany
+            this.$message.success(result.data.data)
+          }
         }
       } catch (error) {
         console.error('登录请求失败:', error)
@@ -480,7 +432,7 @@ export default {
       }
     },
     async handleRegister() {
-      console.log('开始注册') // 添加日志
+      console.log('开始注册公司')
       try {
         const valid = await this.$refs.registerForm.validate()
         if (!valid) {
@@ -495,16 +447,16 @@ export default {
           password: this.registerForm.password,
           userAddr: this.registerForm.address
         }
-
-        console.log('发送注册请求:', registrationData)
-
         // 发送注册请求
         const result = await initCompany(registrationData)
-        console.log(result)
-        setCompany(registrationData)
+        if (result.data.code === 1) {
+          // setCompany(registrationData)
+          // 模拟注册成功后，切换回登录表单
+          this.$message.success(result.data.data)
+        } else {
+          this.$message.error(result.data.msg)
+        }
 
-        // 模拟注册成功后，切换回登录表单
-        this.$message.success('注册成功，请登录')
         this.isRegisterFormVisible = false
       } catch (error) {
         console.error('注册请求失败:', error)

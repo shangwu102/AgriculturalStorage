@@ -55,7 +55,6 @@ export const routes = [
   {
     path: '/company',
     component: Layout,
-    redirect: '/company',
     children: [
       {
         path: '',
