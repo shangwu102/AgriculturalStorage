@@ -101,6 +101,7 @@ export default {
     logout() {
       removeToken()
       removeUser()
+      localStorage.removeItem('companyInfo')
       this.$router.push('/login')
     }
   }

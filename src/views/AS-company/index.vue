@@ -5,17 +5,18 @@
         <span>公司信息</span>
       </div>
 
-      <!-- 根据认证状态显示认证按钮或公司信息 -->
-      <div v-if="!hasCompanyInfo" class="verification-container">
-        <el-button type="primary" @click="openRegisterDialog">请先认证公司</el-button>
+      <!-- 仅在没有公司信息时显示认证按钮 -->
+      <div v-if="get === 0" class="verification-container">
+        <el-button type="primary" @click="openRegisterDialog">{{ get }}请先认证公司</el-button>
       </div>
 
-      <div v-else-if="companyInfo.status === 0" class="company-details">
+      <!-- 有公司信息时显示公司详情 -->
+      <div v-else class="company-details">
         <el-row :gutter="20">
           <!-- 企业名称 -->
           <el-col :span="12">
             <div class="info-item">
-              <span class="info-label">公司名称：</span>
+              <span class="info-label">公司名称：{{ get }}</span>
               <span class="info-content">{{ companyInfo.companyName }}</span>
             </div>
           </el-col>
@@ -209,20 +210,17 @@
         <el-button type="primary" @click="submitForm('registerFormRef')">提交</el-button>
       </div>
     </el-dialog>
-    <pre style="background-color: aqua;">
-      {{ companyInfo.status }}
-    </pre>
   </div>
 </template>
 
 <script>
-import { enterpriseVerify } from '@/api/login'
-import { getCompany } from '@/utils/auth'
-import { getCompanyInfoByAddress } from '@/api/login'
+import { enterpriseVerify, getCompanyInfoByAddress } from '@/api/login'
+import { getUser } from '@/utils/auth'
 
 export default {
   data() {
     return {
+      get: '',
       format: 'yyyy-MM-dd HH:mm:ss', // 显示格式
       valueFormat: 'timestamp', // 返回时间戳
       registerDialogVisible: false, // 控制注册对话框的显示
@@ -237,8 +235,7 @@ export default {
         phoneNumber: '',
         scope: '',
         verificationStatus: false, // false 表示“未审核”，true 表示“已审核”
-        time: null, // 认证日期
-        status: 0 // 审核状态 表示已提交未审核
+        time: null // 认证日期
       },
       registerForm: {
         enterpriseName: '',
@@ -295,7 +292,7 @@ export default {
      * 判断是否存在公司信息
      */
     hasCompanyInfo() {
-      return !!this.companyInfo.companyName
+      return !this.companyInfo.companyName
     },
     /**
      * 计算显示的认证状态文本
@@ -303,27 +300,30 @@ export default {
     statusText() {
       if (this.companyInfo.verificationStatus) {
         return '已审核'
-      } else if (this.hasCompanyInfo) {
-        return '审核中'
       } else {
-        return '未认证'
+        return '未审核'
       }
     },
     /**
      * 获取当前公司的名称
      */
     getCompanyName() {
-      return JSON.parse(getCompany()).userName
+      return JSON.parse(getUser()).userName
     },
     /**
      * 获取当前公司的地址
      */
     getCompanyAddress() {
-      return JSON.parse(getCompany()).userAddr
+      return JSON.parse(getUser()).userAddr
     }
   },
   created() {
     this.getCompanyInfo()
+    const get = JSON.parse(localStorage.getItem('companyInfo')) || {}
+    this.get = (get && typeof get.time !== 'undefined') ? get.time : 0
+    // const get = JSON.parse(localStorage.getItem('companyInfo'))
+    // this.get = get.time
+    console.log(this.hasCompanyInfo)
   },
   methods: {
     /**
@@ -356,11 +356,24 @@ export default {
      */
     async getCompanyInfo() {
       try {
-        const result = await getCompanyInfoByAddress(this.getCompanyAddress)
-        if (result.data.code === 1) {
-          this.companyInfo = result.data.data
+        // 尝试从 localStorage 获取公司信息
+        const storedInfo = localStorage.getItem('companyInfo')
+        if (storedInfo) {
+          console.log('ssssssssssssssss')
+          console.log(storedInfo === true)
+
+          this.companyInfo = JSON.parse(storedInfo)
+          console.log('从 localStorage 获取公司信息:', this.companyInfo)
+        } else {
+          // 如果 localStorage 中没有，则从后端获取
+          const result = await getCompanyInfoByAddress(this.getCompanyAddress)
+          if (result.data.code === 1) {
+            this.companyInfo = result.data.data
+            console.log('从后端获取公司信息:', this.companyInfo)
+            // 将获取到的公司信息保存到 localStorage
+            localStorage.setItem('companyInfo', JSON.stringify(this.companyInfo))
+          }
         }
-        console.log(this.companyInfo)
       } catch (error) {
         console.error(error)
         this.$message.error(`获取公司信息失败: ${error.message || '未知错误'}`)
@@ -437,7 +450,7 @@ export default {
             premises: this.registerForm.premises,
             scope: this.registerForm.scope,
             businessYear: this.registerForm.businessYear,
-            verificationStatus: false,
+            verificationStatus: false, // 设置为 false 表示未审核
             phoneNumber: this.registerForm.phoneNumber,
             passWord: this.registerForm.passWord,
             time: this.registerForm.time,
@@ -456,9 +469,16 @@ export default {
               })
               // 更新公司信息状态为未审核
               this.companyInfo = {
-                ...payload,
-                enterpriseType: this.getCompanyType(this.registerForm.enterpriseType), // 转换企业类型为字符串
-                verificationStatus: false // 设置为 false 表示审核中
+                companyName: this.registerForm.enterpriseName, // 确保公司名称存在
+                creditCode: this.registerForm.creditCode,
+                legalRepresentative: this.registerForm.representative,
+                enterpriseType: this.registerForm.enterpriseType, // 可能需要保留为编号
+                premises: this.registerForm.premises,
+                businessPeriod: `${this.registerForm.businessYear}年`, // 示例格式
+                phoneNumber: this.registerForm.phoneNumber,
+                scope: this.registerForm.scope,
+                verificationStatus: false, // 设置为 false 表示未审核
+                time: this.registerForm.time
               }
 
               // 保存到 localStorage（如果需要）
