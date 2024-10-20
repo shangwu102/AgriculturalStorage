@@ -409,6 +409,7 @@ export default {
           }
         } else if (loginData.role === 'operator') {
           console.log('操作员开始登录')
+          setUser(loginData)
           // 调用接口
           this.$router.push('/ashome')
           this.$message.success('操作员登录成功')
