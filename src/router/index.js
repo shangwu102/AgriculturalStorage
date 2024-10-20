@@ -133,7 +133,7 @@ export const routes = [
         component: Authorization,
         meta: {
           title: '授权',
-          icon: '授权图标',
+          icon: '查看链上库存',
           roles: ['admin']
         }
       },
@@ -142,7 +142,7 @@ export const routes = [
         component: Authentication,
         meta: {
           title: '认证',
-          icon: '认证图标',
+          icon: '查看链上库存',
           roles: ['admin']
         }
       },
@@ -152,7 +152,7 @@ export const routes = [
         component: UserCenter,
         meta: {
           title: '信息管理',
-          icon: '信息管理图标',
+          icon: '查看链上库存',
           roles: ['operator']
         }
       }
