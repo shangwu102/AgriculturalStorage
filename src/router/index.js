@@ -24,6 +24,7 @@ const adminorder = () => import('@/views/AS-adminOrder') // 管理员订单管�
 const WarehouseReport = () => import('@/views/AS-report') // 仓库报表
 const WarningDashboard = () => import('@/views/AS-Waining/index') // 安全预警
 const LSHome = () => import('@/views/LS-Home/index') // 大屏展示
+const LSRequest = () => import('@/views/AS-request/index') // 单独请求
 
 // 从本地存储获取用户角色
 function getUserRole() {
@@ -36,6 +37,7 @@ export const routes = [
   { path: '/', redirect: '/login' }, // 重定向到登录页面
   { path: '/login', component: Login },
   { path: '/404', component: NotFund },
+  { path: '/request', component: LSRequest },
   {
     path: '/ashome',
     component: Layout,
