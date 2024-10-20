@@ -30,7 +30,7 @@
         label="状态"
       >
         <template slot-scope="scope">
-          <span v-if="scope.row.sensorStatus === 1" style="color: green;">
+          <span v-if="scope.row.sensorStatus === '1'" style="color: green;">
             <i class="el-icon-check" /> 正常
           </span>
           <span v-else style="color: red;">
@@ -218,11 +218,11 @@ import { xuigaishuju } from '@/api/chuanganqishebei.js'
 export default {
   data() {
     const options = [{
-      value: 1,
+      value: '1',
       label: '正常'
     },
     {
-      value: 0,
+      value: '0',
       label: '警告'
     }
     ]

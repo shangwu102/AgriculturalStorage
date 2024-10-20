@@ -13,7 +13,7 @@
         <div class="avatar-wrapper">
           <div style="font-size: 14px; font-weight: bold;">当前角色：{{ username }}</div>
         </div>
-        <div style="cursor: pointer;" @click="$router.push('/lshome')">
+        <div style="cursor: pointer;" @click="tiaozhuangdaping">
           <!-- <svg
             style="position: absolute; right: -30%; top: 20%; width: 24px; height: 24px;"
             t="1728870588733"
@@ -95,6 +95,9 @@ export default {
     }
   },
   methods: {
+    tiaozhuangdaping() {
+      window.open('http://192.168.47.13:8080/#/de-link/ZELfp0cH')
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },

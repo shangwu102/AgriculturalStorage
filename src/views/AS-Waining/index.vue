@@ -18,8 +18,8 @@
         <el-button type="primary" @click="chaxun">搜索</el-button>
       </el-form-item> -->
       <el-form-item>
-        <el-badge :value="12">
-          <el-button type="primary" class="xiaoxi">消息</el-button>
+        <el-badge :value="weidu.length">
+          <el-button type="primary" class="xiaoxi" @click="xuigaijiluzhuangtai">消息</el-button>
         </el-badge>
       </el-form-item>
     </el-form>
@@ -28,6 +28,7 @@
       style="width: 100%"
       border
       :row-style="{height: '64px'}"
+      :row-class-name="shifouyidu"
     >
       <el-table-column
         prop="id"
@@ -94,23 +95,12 @@
 
 <script>
 import { yujingxinxi } from '@/api/anquanyujing.js'
+import { querenyidu } from '@/api/anquanyujing.js'
 export default {
   data() {
     const options = [{
-      value: '地震预警',
-      label: '地震预警'
-    },
-    {
-      value: '空气质量预警',
-      label: '空气质量预警'
-    },
-    {
-      value: '滑坡预警',
-      label: '滑坡预警'
-    },
-    {
-      value: '库存预警',
-      label: '库存预警'
+      value: '仓库1',
+      label: '仓库1'
     }]
     const tableData = [
       {
@@ -261,13 +251,42 @@ export default {
       form: newrukuxx,
       shujujianyan: newrukuxxjianyan,
       table: true,
-      dangqianyema: 1
+      dangqianyema: 1,
+      weidu: []
     }
   },
   created() {
     this.chushihua()
   },
   methods: {
+    shifouyidu(row) {
+      console.log(row)
+      console.log(row.row.status)
+      if (row.row.status === 0) {
+        console.log('成功')
+        return 'warning-row'
+      }
+    },
+    weidushuju() {
+      this.weidu = this.tableData.filter(e => {
+        return e.status === 0
+      })
+      console.log('数据', this.tableData)
+      console.log('未读数据', this.weidu)
+    },
+    async xuigaijiluzhuangtai() {
+      try {
+        const json = {
+          status: 1
+        }
+        const ref = await querenyidu(json)
+        console.log('返回值', ref)
+        this.chushihua()
+        this.weidushuju()
+      } catch (error) {
+        console.log('错误', error)
+      }
+    },
     async chushihua() {
       try {
         const ref = await yujingxinxi()
@@ -275,6 +294,7 @@ export default {
         console.log('数据', ref)
         this.tableData = ref.data.data
         console.log('修改后', this.tableData)
+        this.weidushuju()
       } catch (error) {
         console.log('错误', error)
       }
@@ -287,13 +307,13 @@ export default {
     chaxun() {
       const newdata = []
       this.tableData.forEach(item => {
-        if (item.alert_type === this.value && item.alert_area.includes(this.sousuo)) {
+        if (item.warnCome === this.value && item.warnStore.includes(this.sousuo)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (item.alert_type === this.value && this.sousuo === '') {
+        } else if (item.warnCome === this.value && this.sousuo === '') {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (this.value === '' && item.alert_area.includes(this.sousuo)) {
+        } else if (this.value === '' && item.warnStore.includes(this.sousuo)) {
           newdata.push(item)
           console.log('搜索成功')
         } else if (this.value === '' && this.sousuo === '') {
@@ -379,5 +399,12 @@ export default {
 .xiaoxi{
   margin-bottom: 10px;
 }
+.el-table .warning-row {
+    background: oldlace;
+  }
+
+  .el-table .success-row {
+    background: #f0f9eb;
+  }
 </style>
 

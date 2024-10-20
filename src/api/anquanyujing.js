@@ -9,7 +9,7 @@ export function yujingxinxi() {
 
 export function querenyidu(e) {
   return request({
-    url: '/getAllSetSensor',
+    url: '/updateStatus',
     method: 'post',
     data: e
   })
