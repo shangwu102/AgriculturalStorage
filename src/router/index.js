@@ -1,18 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-Vue.use(Router)
-
 // 懒加载组件
 const Layout = () => import('@/layout') // 主布局
 const Login = () => import('@/views/login/index') // 登录页面
-const NotFund = () => import('@/views/404/index') // 404 页面
+const NotFound = () => import('@/views/404/index') // 404 页面
 const ASHome = () => import('@/views/AS-Home/index') // 首页
 const Company = () => import('@/views/AS-company/index') // 公司首页
 const Companyorder = () => import('@/views/Company-order') // 发布订单
 const Companystatus = () => import('@/views/Company-status') // 公司订单状态
 const CompanyQuery = () => import('@/views/Company-query') // 公司查看链上库存
-const UserCenter = () => import('@/views/AS-user/index') // 管理员授权页面
+const UserCenter = () => import('@/views/AS-user/index') // 信息管理组件
+const Authorization = () => import('@/views/AS-Authorization') // 授权组件
+const Authentication = () => import('@/views/AS-Authentication') // 认证组件
 const BlockchainWarehouse = () => import('@/views/AS-Tabulation') // 链上仓库
 const EquipmentWarehouse = () => import('@/views/AS-UpQuery') // 仓库设备
 const ControlWarehouse = () => import('@/views/AS-DownQuery') // 库存控制
@@ -20,7 +20,7 @@ const Warehousing = () => import('@/views/AS-Warehousing') // 入库信息
 const Outbound = () => import('@/views/AS-Outbound') // 出库信息
 const Transaction = () => import('@/views/AS-transaction/index') // 交易监管
 const BlockReport = () => import('@/views/AS-block') // 区块报表
-const adminorder = () => import('@/views/AS-adminOrder') // 管理员订单管理
+const AdminOrder = () => import('@/views/AS-adminOrder') // 管理员订单管理
 const WarehouseReport = () => import('@/views/AS-report') // 仓库报表
 const WarningDashboard = () => import('@/views/AS-Waining/index') // 安全预警
 const LSHome = () => import('@/views/LS-Home/index') // 大屏展示
@@ -32,11 +32,13 @@ function getUserRole() {
   return user ? user.role : null
 }
 
+Vue.use(Router)
+
 // 定义路由配置
 export const routes = [
   { path: '/', redirect: '/login' }, // 重定向到登录页面
   { path: '/login', component: Login },
-  { path: '/404', component: NotFund },
+  { path: '/404', component: NotFound },
   { path: '/request', component: LSRequest },
   {
     path: '/ashome',
@@ -118,16 +120,40 @@ export const routes = [
   {
     path: '/asuser',
     component: Layout,
-    redirect: '/asuser',
+    redirect: '/asuser/info', // 默认重定向
+    meta: {
+      // 不在这里设置 title，标题将在菜单组件中根据角色动态设置
+      roles: ['admin', 'operator'],
+      icon: '查看链上库存'
+    },
     children: [
+      // Admin 专用子路由
       {
-        path: '',
+        path: 'authorization',
+        component: Authorization,
+        meta: {
+          title: '授权',
+          icon: '授权图标',
+          roles: ['admin']
+        }
+      },
+      {
+        path: 'authentication',
+        component: Authentication,
+        meta: {
+          title: '认证',
+          icon: '认证图标',
+          roles: ['admin']
+        }
+      },
+      // Operator 专用子路由
+      {
+        path: 'info',
         component: UserCenter,
         meta: {
-          // 将 title 定义为一个函数，根据用户角色返回标题
-          title: (role) => (role === 'admin' ? '操作授权' : '信息管理'),
-          icon: '管理员',
-          roles: ['admin', 'operator']
+          title: '信息管理',
+          icon: '信息管理图标',
+          roles: ['operator']
         }
       }
     ]
@@ -213,10 +239,11 @@ export const routes = [
     children: [
       {
         path: 'order',
-        component: adminorder,
+        component: AdminOrder,
         meta: {
           title: '订单审批',
-          icon: '订单审批'
+          icon: '订单审批',
+          roles: ['admin']
         }
       },
       {
@@ -224,7 +251,8 @@ export const routes = [
         component: Transaction,
         meta: {
           title: '交易监管',
-          icon: '交易监管'
+          icon: '交易监管',
+          roles: ['admin']
         }
       }
     ]
@@ -285,6 +313,7 @@ export const routes = [
 // 创建 router 实例
 const createRouter = () =>
   new Router({
+    mode: 'history', // 根据需要选择 'hash' 或 'history' 模式
     routes
   })
 
@@ -293,16 +322,28 @@ const router = createRouter()
 // 全局导航守卫
 router.beforeEach((to, from, next) => {
   const role = getUserRole()
-  if (to.meta && to.meta.roles && !to.meta.roles.includes(role)) {
-    // 如果用户没有权限，跳转到登录页面或显示错误提示
+
+  if (to.path === '/login') {
+    // 如果是登录页面，直接访问
+    return next()
+  }
+
+  if (!role) {
+    // 如果没有获取到用户角色，重定向到登录页面
     return next('/login')
   }
+
+  if (to.meta && to.meta.roles && !to.meta.roles.includes(role)) {
+    // 如果用户没有权限，重定向到404页面或其他提示页面
+    return next('/404')
+  }
+
   next()
 })
 
 export function resetRouter() {
   const newRouter = createRouter()
-  router.matcher = newRouter.matcher
+  router.matcher = newRouter.matcher // 重置路由
 }
 
 export default router

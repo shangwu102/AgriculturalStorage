@@ -13,7 +13,7 @@
     <!-- 二级菜单 -->
     <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
       <template slot="title">
-        <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="getTitle(item.meta)" />
+        <item v-if="item.meta" :icon="item.meta.icon" :title="getTitle(item.meta)" />
       </template>
       <sidebar-item
         v-for="child in item.children"
@@ -55,8 +55,9 @@ export default {
     }
   },
   data() {
-    this.onlyOneChild = null
-    return {}
+    return {
+      onlyOneChild: null
+    }
   },
   computed: {
     // 从 localStorage 中获取用户角色信息
