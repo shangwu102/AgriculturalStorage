@@ -218,11 +218,11 @@ import { xuigaishuju } from '@/api/chuanganqishebei.js'
 export default {
   data() {
     const options = [{
-      value: 1,
+      value: '1',
       label: '正常'
     },
     {
-      value: 0,
+      value: '0',
       label: '警告'
     }
     ]
