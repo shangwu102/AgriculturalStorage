@@ -1,6 +1,6 @@
 <!-- 高德在线版本 -->
 
-<template>
+<!-- <template>
   <div id="container" />
 </template>
 
@@ -199,9 +199,9 @@ export default {
   width: 100%;
   height: 100vh;
 }
-</style>
+</style> -->
 
-<!-- <template>
+<template>
   <div class="home">
     <div style="width: 100%; height: 100%">
       <div id="map" class="map" />
@@ -383,5 +383,5 @@ export default {
   width: 100%;
   height: 100%;
 }
-</style> -->
+</style>
 
