@@ -7,7 +7,7 @@
 
       <!-- 仅在没有公司信息时显示认证按钮 -->
       <div v-if="get === 0" class="verification-container">
-        <el-button type="primary" @click="openRegisterDialog">{{ get }}请先认证公司</el-button>
+        <el-button type="primary" @click="openRegisterDialog">{{ }}请先认证公司</el-button>
       </div>
 
       <!-- 有公司信息时显示公司详情 -->

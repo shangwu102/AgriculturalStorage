@@ -17,7 +17,7 @@
               label-position="left"
             >
               <div class="title-container">
-                <h3 class="title">面向区块链粮仓管理系统</h3>
+                <h3 class="title">基于区块链粮仓管理系统</h3>
               </div>
 
               <!-- 用户名输入框 -->

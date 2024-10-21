@@ -60,7 +60,6 @@
       >
         <template slot-scope="scope">
           <el-button size="small" type="success" @click="shezhi(scope.row)">设置</el-button>
-          <el-button size="small" type="primary">查看报表</el-button>
           <el-button size="small" type="warning" @click="chongmm(scope.row)">重命名</el-button>
         </template>
       </el-table-column>

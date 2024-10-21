@@ -86,124 +86,125 @@ export default {
       {
         id: '1',
         repertoryName: '主仓库',
-        productType: '电子产品',
-        productName: '手机',
-        joinAmount: 150,
-        pass: '90%',
-        createTime: '2021-02-05 12:00:00',
-        account: '灌溉系统1'
+        productType: '粮食',
+        productName: '小麦',
+        joinAmount: 1400, // 数量小于等于上一次
+        pass: '95%', // 合格率
+        updateTime: '2024-10-20 10:00:00', // 更新时间
+        account: 'admin'
       },
       {
         id: '2',
         repertoryName: '主仓库',
-        productType: '电子产品',
-        productName: '手机',
-        joinAmount: 200,
-        pass: '95%',
-        createTime: '2021-03-10 14:30:45',
-        account: '灌溉系统1'
+        productType: '粮食',
+        productName: '大米',
+        joinAmount: 1700, // 数量小于等于上一次
+        pass: '97%',
+        updateTime: '2024-10-19 14:30:00',
+        account: 'admin'
       },
       {
         id: '3',
         repertoryName: '辅仓库',
-        productType: '家电',
-        productName: '洗衣机',
-        joinAmount: 250,
-        pass: '85%',
-        createTime: '2021-04-15 09:15:30',
-        account: '灌溉系统1'
+        productType: '粮食',
+        productName: '玉米',
+        joinAmount: 1600, // 数量小于等于上一次
+        pass: '94%',
+        updateTime: '2024-10-18 09:15:00',
+        account: 'admin'
       },
       {
         id: '4',
         repertoryName: '辅仓库',
-        productType: '家电',
-        productName: '洗衣机',
-        joinAmount: 300,
+        productType: '粮食',
+        productName: '大豆',
+        joinAmount: 1100, // 数量小于等于上一次
         pass: '92%',
-        createTime: '2021-05-20 16:45:10',
-        account: '灌溉系统1'
+        updateTime: '2024-10-17 16:45:00',
+        account: 'admin'
       },
       {
         id: '5',
         repertoryName: '主仓库',
-        productType: '日用产品',
-        productName: '洗发水',
-        joinAmount: 180,
-        pass: '88%',
-        createTime: '2021-06-25 11:20:55',
-        account: '灌溉系统1'
+        productType: '粮食',
+        productName: '燕麦',
+        joinAmount: 700, // 数量小于等于上一次
+        pass: '90%',
+        updateTime: '2024-10-16 11:20:00',
+        account: 'admin'
       },
       {
         id: '6',
         repertoryName: '主仓库',
-        productType: '家电',
-        productName: '洗衣机',
-        joinAmount: 220,
-        pass: '91%',
-        createTime: '2021-07-30 08:50:25',
-        account: '灌溉系统1'
+        productType: '粮食',
+        productName: '高粱',
+        joinAmount: 900, // 数量小于等于上一次
+        pass: '93%',
+        updateTime: '2024-10-15 08:50:00',
+        account: 'admin'
       },
       {
         id: '7',
         repertoryName: '辅仓库',
-        productType: '电子产品',
-        productName: '耳机',
-        joinAmount: 130,
-        pass: '80%',
-        createTime: '2021-08-05 13:05:40',
-        account: '灌溉系统1'
+        productType: '粮食',
+        productName: '荞麦',
+        joinAmount: 600, // 数量小于等于上一次
+        pass: '88%',
+        updateTime: '2024-10-14 13:05:00',
+        account: 'admin'
       },
       {
         id: '8',
         repertoryName: '辅仓库',
-        productType: '日用产品',
-        productName: '牙刷',
-        joinAmount: 175,
-        pass: '89%',
-        createTime: '2021-09-10 15:25:15',
-        account: '灌溉系统1'
+        productType: '粮食',
+        productName: '大麦',
+        joinAmount: 1000, // 数量小于等于上一次
+        pass: '91%',
+        updateTime: '2024-10-13 15:25:00',
+        account: 'admin'
       },
       {
         id: '9',
         repertoryName: '主仓库',
-        productType: '电子产品',
-        productName: '笔记本电脑',
-        joinAmount: 210,
-        pass: '93%',
-        createTime: '2021-10-15 10:10:05',
-        account: '灌溉系统1'
+        productType: '粮食',
+        productName: '米粉',
+        joinAmount: 650, // 数量小于等于上一次
+        pass: '89%',
+        updateTime: '2024-10-12 10:10:00',
+        account: 'admin'
       },
       {
         id: '10',
         repertoryName: '主仓库',
-        productType: '家电',
-        productName: '电视',
-        joinAmount: 250,
+        productType: '粮食',
+        productName: '面粉',
+        joinAmount: 800, // 数量小于等于上一次
         pass: '96%',
-        createTime: '2021-11-20 17:40:50',
-        account: '灌溉系统1'
+        updateTime: '2024-10-11 17:40:00',
+        account: 'admin'
       },
       {
         id: '11',
-        repertoryName: '主仓库',
-        productType: '家电',
-        productName: '电视',
-        joinAmount: 250,
-        pass: '96%',
-        createTime: '2021-11-20 17:40:50',
-        account: '灌溉系统1'
+        repertoryName: '辅仓库',
+        productType: '粮食',
+        productName: '红豆',
+        joinAmount: 500, // 新增产品，设置数量
+        pass: '90%',
+        updateTime: '2024-10-10 12:00:00',
+        account: 'admin'
       },
       {
         id: '12',
-        repertoryName: '主仓库',
-        productType: '家电',
-        productName: '电视',
-        joinAmount: 250,
-        pass: '96%',
-        createTime: '2021-11-20 17:40:50',
-        account: '灌溉系统1'
+        repertoryName: '辅仓库',
+        productType: '粮食',
+        productName: '绿豆',
+        joinAmount: 400, // 新增产品，设置数量
+        pass: '88%',
+        updateTime: '2024-10-09 11:00:00',
+        account: 'admin'
       }
     ]
+
     const newrukuxx = {
       repertoryName: '',
       productType: '',
