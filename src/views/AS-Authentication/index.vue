@@ -1,10 +1,16 @@
 <template>
-  <div>
+  <div class="authentication-container">
     <el-card>
       <div slot="header" class="clearfix">
         <span>公司认证管理</span>
       </div>
-      <el-table v-loading="loading" :data="companies" style="width: 100%" :row-key="getRowKey">
+      <el-table
+        v-loading="loading"
+        :data="companies"
+        style="width: 100%; min-width: 1200px;"
+        :row-key="getRowKey"
+        border
+      >
         <el-table-column prop="companyName" label="企业名称" width="180" />
         <el-table-column prop="creditCode" label="统一社会信用代码" width="200" />
         <el-table-column prop="enterpriseType" label="企业类型" width="100">
@@ -14,12 +20,12 @@
         </el-table-column>
         <el-table-column prop="legalRepresentative" label="法定代表人" width="120" />
         <el-table-column prop="premises" label="经营场所" width="200" />
-        <el-table-column prop="scope" label="经营范围" />
-        <el-table-column prop="businessYear" label="营业期限(年)" width="120" />
-        <el-table-column prop="verificationStatus" label="核验状态" width="100">
+        <el-table-column prop="scope" label="经营范围" min-width="200" />
+        <el-table-column prop="businessPeriod" label="营业期限(年)" width="120" />
+        <el-table-column prop="verificationStatus" label="核验状态" width="120">
           <template slot-scope="scope">
-            <el-tag :type="scope.row.verificationStatus ? 'success' : 'warning'">
-              {{ scope.row.verificationStatus ? '已通过' : '未通过' }}
+            <el-tag :type="getTagType(scope.row.verificationStatus)">
+              {{ getStatusText(scope.row.verificationStatus) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -29,20 +35,18 @@
             <span>{{ formatTime(scope.row.time) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="180">
+        <!-- 修改后的“操作”列 -->
+        <el-table-column :label="label" width="180" fixed="right">
           <template slot-scope="scope">
-            <el-button
-              v-if="!scope.row.verificationStatus"
-              type="primary"
-              size="mini"
-              @click="handleApprove(scope.row)"
-            >审核通过</el-button>
-            <el-button
-              v-if="!scope.row.verificationStatus"
-              type="danger"
-              size="mini"
-              @click="handleReject(scope.row)"
-            >审核拒绝</el-button>
+            <template v-if="scope.row.verificationStatus === 'pending'">
+              <el-button type="primary" size="mini" @click="handleApprove(scope.row)">审核通过</el-button>
+              <el-button type="danger" size="mini" @click="handleReject(scope.row)">审核拒绝</el-button>
+            </template>
+            <template v-else>
+              <el-tag :type="getTagType(scope.row.verificationStatus)">
+                {{ getStatusText(scope.row.verificationStatus) }}
+              </el-tag>
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -70,16 +74,18 @@
           <el-input v-model="currentCompany.scope" disabled />
         </el-form-item>
         <el-form-item label="营业期限(年)">
-          <el-input v-model="currentCompany.businessYear" disabled />
+          <el-input v-model="currentCompany.businessPeriod" disabled />
         </el-form-item>
         <el-form-item label="联系电话">
           <el-input v-model="currentCompany.phoneNumber" disabled />
         </el-form-item>
+        <el-form-item label="注册时间">
+          <el-input :value="formatTime(currentCompany.time)" disabled />
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmApprove">通过</el-button>
-        <el-button type="danger" @click="confirmReject">拒绝</el-button>
+        <el-button type="primary" @click="confirmAction">确认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -90,6 +96,7 @@ export default {
   name: 'Authentication',
   data() {
     return {
+      label: '66',
       companies: [],
       loading: false,
       dialogVisible: false,
@@ -102,6 +109,7 @@ export default {
     enterpriseTypeDescription() {
       return this.getEnterpriseType(this.currentCompany.enterpriseType)
     }
+
   },
   created() {
     this.fetchCompanies()
@@ -114,13 +122,25 @@ export default {
     // 获取企业类型描述
     getEnterpriseType(type) {
       const types = {
-        1: '有限责任公司',
-        2: '股份有限公司',
-        3: '合伙企业',
-        4: '个人独资企业'
+        0: '制造业',
+        1: '零售',
+        2: '物流',
+        3: '餐饮'
         // 根据实际情况添加更多类型
       }
       return types[type] || '其他'
+    },
+    // 获取审核状态对应的标签类型
+    getTagType(status) {
+      if (status === 'approved') return 'success'
+      if (status === 'rejected') return 'danger'
+      return 'warning'
+    },
+    // 获取审核状态文本
+    getStatusText(status) {
+      if (status === 'approved') return '已通过'
+      if (status === 'rejected') return '已拒绝'
+      return '审核中'
     },
     // 格式化时间戳
     formatTime(timestamp) {
@@ -128,19 +148,16 @@ export default {
       const date = new Date(timestamp)
       return date.toLocaleString()
     },
-    // 获取用户角色（可选，用于权限控制）
-    getUserRole() {
-      const user = JSON.parse(localStorage.getItem('AS-user'))
-      return user ? user.role : ''
-    },
     // 获取公司列表，从本地存储获取数据
     fetchCompanies() {
       this.loading = true
-      const companiesData = localStorage.getItem('companyInfo')
-      if (companiesData) {
+      const companyData = localStorage.getItem('companyInfo')
+      if (companyData) {
         try {
-          const parsedData = JSON.parse(companiesData)
-          this.companies = parsedData
+          const parsedData = JSON.parse(companyData)
+          // 如果存在多个公司，可以调整这里的逻辑
+          // 这里假设只有一个公司信息
+          this.companies = Array.isArray(parsedData) ? parsedData : [parsedData]
         } catch (error) {
           this.$message.error('解析本地公司数据失败')
         }
@@ -161,13 +178,13 @@ export default {
       this.dialogVisible = true
       this.actionType = 'reject'
     },
-    // 确认审核通过
-    confirmApprove() {
-      this.updateVerificationStatus(this.currentCompany.creditCode, true)
-    },
-    // 确认审核拒绝
-    confirmReject() {
-      this.updateVerificationStatus(this.currentCompany.creditCode, false)
+    // 确认审核操作
+    confirmAction() {
+      if (this.actionType === 'approve') {
+        this.updateVerificationStatus(this.currentCompany.creditCode, 'approved')
+      } else if (this.actionType === 'reject') {
+        this.updateVerificationStatus(this.currentCompany.creditCode, 'rejected')
+      }
     },
     // 更新公司核验状态
     updateVerificationStatus(creditCode, status) {
@@ -178,12 +195,12 @@ export default {
           verificationStatus: status
         })
         // 更新本地存储
-        localStorage.setItem('companies', JSON.stringify(this.companies))
-        if (status) {
-          this.$message.success('审核通过')
-        } else {
-          this.$message.success('审核拒绝')
-        }
+        // 如果有多个公司，存储整个数组
+        localStorage.setItem('companyInfo', JSON.stringify(this.companies))
+        this.$message({
+          type: 'success',
+          message: status === 'approved' ? '审核通过' : '审核拒绝'
+        })
         this.fetchCompanies()
         this.dialogVisible = false
       } else {
@@ -195,8 +212,13 @@ export default {
 </script>
 
 <style scoped>
-.has-logo {
-  display: flex;
-  flex-direction: column;
+.authentication-container {
+  width: 90%;
+  margin: 20px auto;
+}
+
+/* 确保弹窗内容在固定列时不被遮挡 */
+.el-dialog__body {
+  overflow: auto;
 }
 </style>

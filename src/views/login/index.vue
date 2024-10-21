@@ -454,6 +454,7 @@ export default {
           // setCompany(registrationData)
           // 模拟注册成功后，切换回登录表单
           this.$message.success(result.data.data)
+          localStorage.removeItem('companyInfo')
         } else {
           this.$message.error(result.data.msg)
         }

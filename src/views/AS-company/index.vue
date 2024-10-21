@@ -6,8 +6,8 @@
       </div>
 
       <!-- 仅在没有公司信息时显示认证按钮 -->
-      <div v-if="get === 0" class="verification-container">
-        <el-button type="primary" @click="openRegisterDialog">{{ }}请先认证公司</el-button>
+      <div v-if="!hasCompanyInfo" class="verification-container">
+        <el-button type="primary" @click="openRegisterDialog">请先认证公司</el-button>
       </div>
 
       <!-- 有公司信息时显示公司详情 -->
@@ -16,7 +16,7 @@
           <!-- 企业名称 -->
           <el-col :span="12">
             <div class="info-item">
-              <span class="info-label">公司名称：{{ get }}</span>
+              <span class="info-label">公司名称：</span>
               <span class="info-content">{{ companyInfo.companyName }}</span>
             </div>
           </el-col>
@@ -61,7 +61,7 @@
           <el-col :span="12">
             <div class="info-item">
               <span class="info-label">营业期限：</span>
-              <span class="info-content">{{ companyInfo.businessPeriod }}</span>
+              <span class="info-content">{{ companyInfo.businessPeriod }} 年</span>
             </div>
           </el-col>
         </el-row>
@@ -87,7 +87,11 @@
           <el-col :span="12">
             <div class="info-item">
               <span class="info-label">认证状态：</span>
-              <span class="info-content">{{ statusText }}</span>
+              <el-tag
+                :type="companyInfo.verificationStatus === 'approved' ? 'success' : (companyInfo.verificationStatus === 'rejected' ? 'danger' : 'warning')"
+              >
+                {{ statusText }}
+              </el-tag>
             </div>
           </el-col>
         </el-row>
@@ -109,7 +113,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="公司名称" prop="enterpriseName">
-              <el-input v-model="registerForm.enterpriseName" :disabled="true" autocomplete="off" />
+              <el-input v-model="registerForm.enterpriseName" autocomplete="off" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -157,12 +161,14 @@
           <el-col :span="12">
             <el-form-item label="营业执照" prop="businessLicense">
               <el-upload
-                action="https://your-backend.com/api/upload"
+                class="upload-demo"
+                action=""
                 list-type="picture-card"
-                :on-success="(response, file, fileList) => handleUploadSuccess(response, file, fileList, 'businessLicense')"
-                :before-upload="beforeUpload"
                 :file-list="registerForm.businessLicenseFiles"
-                :auto-upload="true"
+                :auto-upload="false"
+                :on-remove="handleRemove"
+                :before-upload="handleBeforeUpload"
+                :on-change="handleFileChange"
               >
                 <i class="el-icon-plus" />
               </el-upload>
@@ -214,29 +220,13 @@
 </template>
 
 <script>
-import { enterpriseVerify, getCompanyInfoByAddress } from '@/api/login'
-import { getUser } from '@/utils/auth'
-
 export default {
   data() {
     return {
-      get: '',
       format: 'yyyy-MM-dd HH:mm:ss', // 显示格式
       valueFormat: 'timestamp', // 返回时间戳
       registerDialogVisible: false, // 控制注册对话框的显示
-      companyInfo: {
-        companyName: '',
-        blockchainAddress: '',
-        creditCode: '',
-        legalRepresentative: '',
-        enterpriseType: null, // Integer
-        premises: '',
-        businessPeriod: '',
-        phoneNumber: '',
-        scope: '',
-        verificationStatus: false, // false 表示“未审核”，true 表示“已审核”
-        time: null // 认证日期
-      },
+      companyInfo: {},
       registerForm: {
         enterpriseName: '',
         creditCode: '',
@@ -250,7 +240,6 @@ export default {
         scope: '',
         passWord: '',
         time: null // 时间戳
-        // 不再需要 verificationStatus，因为认证状态由公司信息决定
       },
       rules: {
         enterpriseName: [
@@ -292,38 +281,38 @@ export default {
      * 判断是否存在公司信息
      */
     hasCompanyInfo() {
-      return !this.companyInfo.companyName
+      return Object.keys(this.companyInfo).length > 0
     },
     /**
      * 计算显示的认证状态文本
      */
     statusText() {
-      if (this.companyInfo.verificationStatus) {
+      if (this.companyInfo.verificationStatus === 'approved') {
         return '已审核'
+      } else if (this.companyInfo.verificationStatus === 'rejected') {
+        return '审核拒绝'
       } else {
-        return '未审核'
+        return '审核中'
       }
     },
     /**
-     * 获取当前公司的名称
+     * 获取当前用户的名称（模拟获取）
      */
     getCompanyName() {
-      return JSON.parse(getUser()).userName
+      // 假设用户名称存储在 localStorage 中
+      const user = JSON.parse(localStorage.getItem('user')) || {}
+      return user.userName || '未命名公司'
     },
     /**
-     * 获取当前公司的地址
+     * 获取当前用户的地址（模拟获取）
      */
     getCompanyAddress() {
-      return JSON.parse(getUser()).userAddr
+      const user = JSON.parse(localStorage.getItem('user')) || {}
+      return user.userAddr || ''
     }
   },
   created() {
     this.getCompanyInfo()
-    const get = JSON.parse(localStorage.getItem('companyInfo')) || {}
-    this.get = (get && typeof get.time !== 'undefined') ? get.time : 0
-    // const get = JSON.parse(localStorage.getItem('companyInfo'))
-    // this.get = get.time
-    console.log(this.hasCompanyInfo)
   },
   methods: {
     /**
@@ -354,29 +343,10 @@ export default {
     /**
      * 获取公司信息
      */
-    async getCompanyInfo() {
-      try {
-        // 尝试从 localStorage 获取公司信息
-        const storedInfo = localStorage.getItem('companyInfo')
-        if (storedInfo) {
-          console.log('ssssssssssssssss')
-          console.log(storedInfo === true)
-
-          this.companyInfo = JSON.parse(storedInfo)
-          console.log('从 localStorage 获取公司信息:', this.companyInfo)
-        } else {
-          // 如果 localStorage 中没有，则从后端获取
-          const result = await getCompanyInfoByAddress(this.getCompanyAddress)
-          if (result.data.code === 1) {
-            this.companyInfo = result.data.data
-            console.log('从后端获取公司信息:', this.companyInfo)
-            // 将获取到的公司信息保存到 localStorage
-            localStorage.setItem('companyInfo', JSON.stringify(this.companyInfo))
-          }
-        }
-      } catch (error) {
-        console.error(error)
-        this.$message.error(`获取公司信息失败: ${error.message || '未知错误'}`)
+    getCompanyInfo() {
+      const storedInfo = localStorage.getItem('companyInfo')
+      if (storedInfo) {
+        this.companyInfo = JSON.parse(storedInfo)
       }
     },
     /**
@@ -386,8 +356,7 @@ export default {
       this.registerDialogVisible = true
       // 初始化表单数据
       this.registerForm.enterpriseName = this.getCompanyName
-      // 如果公司地址需要预填充，可以在这里设置
-      // this.registerForm.someAddressField = this.getCompanyAddress
+      // 其他字段可以根据需要预填充
     },
     /**
      * 关闭注册对话框并重置表单
@@ -400,32 +369,24 @@ export default {
       this.registerForm.businessLicense = []
     },
     /**
-     * 处理上传成功事件
-     * @param {Object} response - 后端响应
-     * @param {Object} file - 上传的文件对象
-     * @param {Array} fileList - 文件列表
-     * @param {String} field - 字段名称
+     * 处理上传文件变化
+     * @param {File} file
+     * @param {Array} fileList
      */
-    handleUploadSuccess(response, file, fileList, field) {
-      // 假设后端返回文件的 URL 或其他标识
-      const fileUrl = response.url || (file.response && file.response.url) || file.url
-
-      if (fileUrl) {
-        if (field === 'businessLicense') {
-          this.registerForm.businessLicense = fileList.map(f => f.url || (f.response && f.response.url) || f.raw.url)
-          this.registerForm.businessLicenseFiles = fileList
-        }
-        this.$message.success('上传成功')
-      } else {
-        this.$message.error('上传失败，请重试')
-      }
+    handleFileChange(file, fileList) {
+      // 模拟文件上传，直接存储文件名
+      this.registerForm.businessLicenseFiles = fileList.map(file => ({
+        name: file.name,
+        url: URL.createObjectURL(file.raw)
+      }))
+      this.registerForm.businessLicense = this.registerForm.businessLicenseFiles.map(file => file.url)
     },
     /**
-     * 上传前的校验
-     * @param {File} file - 上传的文件
-     * @returns {Boolean} - 是否允许上传
+     * 处理上传前的校验
+     * @param {File} file
+     * @returns {Boolean}
      */
-    beforeUpload(file) {
+    handleBeforeUpload(file) {
       const isImage = file.type.startsWith('image/')
       if (!isImage) {
         this.$message.error('只能上传图片文件')
@@ -433,66 +394,48 @@ export default {
       return isImage
     },
     /**
+     * 移除上传的文件
+     * @param {File} file
+      */
+    handleRemove(file) {
+      this.registerForm.businessLicense = this.registerForm.businessLicense.filter(url => url !== file.url)
+    },
+    /**
      * 提交表单
      * @param {String} formName - 表单引用名称
      */
     submitForm(formName) {
-      this.$refs[formName].validate(async(valid) => {
+      this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log('提交的表单数据:', this.registerForm)
-
-          // 准备提交的数据，确保字段名称与后端一致
+          // 准备提交的数据
           const payload = {
-            enterpriseName: this.registerForm.enterpriseName,
+            companyName: this.registerForm.enterpriseName,
             creditCode: this.registerForm.creditCode,
             enterpriseType: this.registerForm.enterpriseType, // Integer
-            representative: this.registerForm.representative,
+            legalRepresentative: this.registerForm.representative,
             premises: this.registerForm.premises,
-            scope: this.registerForm.scope,
-            businessYear: this.registerForm.businessYear,
-            verificationStatus: false, // 设置为 false 表示未审核
+            businessPeriod: this.registerForm.businessYear,
             phoneNumber: this.registerForm.phoneNumber,
+            scope: this.registerForm.scope,
             passWord: this.registerForm.passWord,
             time: this.registerForm.time,
-            businessLicense: this.registerForm.businessLicense
+            businessLicense: this.registerForm.businessLicense,
+            verificationStatus: 'pending' // 审核中
           }
 
-          try {
-            // 调用后端 API 提交表单数据
-            const result = await enterpriseVerify(payload)
-            console.log(result)
+          // 保存到 localStorage
+          localStorage.setItem('companyInfo', JSON.stringify(payload))
 
-            if (result.data.code === 1) {
-              this.$message({
-                type: 'success',
-                message: '注册申请已提交，等待管理员审核。'
-              })
-              // 更新公司信息状态为未审核
-              this.companyInfo = {
-                companyName: this.registerForm.enterpriseName, // 确保公司名称存在
-                creditCode: this.registerForm.creditCode,
-                legalRepresentative: this.registerForm.representative,
-                enterpriseType: this.registerForm.enterpriseType, // 可能需要保留为编号
-                premises: this.registerForm.premises,
-                businessPeriod: `${this.registerForm.businessYear}年`, // 示例格式
-                phoneNumber: this.registerForm.phoneNumber,
-                scope: this.registerForm.scope,
-                verificationStatus: false, // 设置为 false 表示未审核
-                time: this.registerForm.time
-              }
+          // 更新本地数据
+          this.companyInfo = payload
 
-              // 保存到 localStorage（如果需要）
-              localStorage.setItem('companyInfo', JSON.stringify(this.companyInfo))
-              this.getCompanyInfo()
-              // 关闭对话框并重置表单
-              this.closeRegisterDialog()
-            } else {
-              this.$message.error(result.data.msg)
-            }
-          } catch (error) {
-            console.error(error)
-            this.$message.error(`提交失败，请稍后再试。错误: ${error.message || '未知错误'}`)
-          }
+          this.$message({
+            type: 'success',
+            message: '注册申请已提交，等待管理员审核。'
+          })
+
+          // 关闭对话框并重置表单
+          this.closeRegisterDialog()
         } else {
           this.$message.error('请完善表单信息')
           return false
