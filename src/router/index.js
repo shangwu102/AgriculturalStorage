@@ -40,10 +40,12 @@ export const routes = [
   { path: '/login', component: Login },
   { path: '/404', component: NotFound },
   { path: '/request', component: LSRequest },
+
+  // 首页路由
   {
     path: '/ashome',
     component: Layout,
-    redirect: '/ashome',
+    // 移除了 self-redirect
     children: [
       {
         path: '',
@@ -56,6 +58,8 @@ export const routes = [
       }
     ]
   },
+
+  // 公司首页路由
   {
     path: '/company',
     component: Layout,
@@ -71,6 +75,8 @@ export const routes = [
       }
     ]
   },
+
+  // 订单管理路由
   {
     path: '/order-management',
     component: Layout,
@@ -101,10 +107,12 @@ export const routes = [
       }
     ]
   },
+
+  // 查看链上库存路由
   {
     path: '/query',
     component: Layout,
-    redirect: '/query',
+    // 移除了 self-redirect
     children: [
       {
         path: '',
@@ -117,10 +125,12 @@ export const routes = [
       }
     ]
   },
+
+  // 信息管理路由
   {
     path: '/asuser',
     component: Layout,
-    redirect: '/asuser/info', // 默认重定向
+    redirect: '/asuser/info', // 默认重定向到信息管理
     meta: {
       // 不在这里设置 title，标题将在菜单组件中根据角色动态设置
       roles: ['admin', 'operator'],
@@ -158,6 +168,8 @@ export const routes = [
       }
     ]
   },
+
+  // 仓库管理路由
   {
     path: '/asinformation',
     component: Layout,
@@ -188,6 +200,8 @@ export const routes = [
       }
     ]
   },
+
+  // 生产管理路由
   {
     path: '/asmanage',
     component: Layout,
@@ -227,6 +241,8 @@ export const routes = [
       }
     ]
   },
+
+  // 交易管理路由
   {
     path: '/astransaction',
     component: Layout,
@@ -257,6 +273,8 @@ export const routes = [
       }
     ]
   },
+
+  // 数据报表路由
   {
     path: '/asreport',
     component: Layout,
@@ -287,10 +305,12 @@ export const routes = [
       }
     ]
   },
+
+  // 安全预警路由
   {
     path: '/aswarning',
     component: Layout,
-    redirect: '/aswarning',
+    // 移除了 self-redirect
     children: [
       {
         path: '',
@@ -303,17 +323,22 @@ export const routes = [
       }
     ]
   },
+
+  // 大屏展示路由
   {
     path: '/lshome',
     component: LSHome
   },
-  { path: '*', redirect: '/404' } // 捕获所有未匹配的路由，重定向到404
+
+  // 捕获所有未匹配的路由，重定向到404
+  { path: '*', redirect: '/404' }
 ]
 
 // 创建 router 实例
 const createRouter = () =>
   new Router({
-    mode: 'history', // 根据需要选择 'hash' 或 'history' 模式
+
+    mode: 'hash',
     routes
   })
 
