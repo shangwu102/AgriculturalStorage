@@ -17,8 +17,7 @@
             <el-form-item label="角色">
               <el-row>
                 <el-col :span="24">
-                  <el-input v-model="userInfo.role" disabled />
-                </el-col>
+                  <el-input v-model="userInfo.role" :disabled="true" /></el-col>
               </el-row>
             </el-form-item>
 
@@ -407,5 +406,18 @@ export default {
 
 .drawer-content .el-divider {
   margin: 10px 0;
+}
+/* 使用 >>> 穿透 Scoped CSS */
+.el-input.is-disabled>>>.el-input__inner {
+  background-color: #9e9e9e61;
+  border-color: #E4E7ED;
+  color: #7c21f3;
+  cursor: not-allowed;
+}
+.el-input.is-disabled>>>.el-input__inner {
+  background-color: #85858561;
+  border-color: #E4E7ED;
+  color: #281e35;
+  cursor: not-allowed;
 }
 </style>
