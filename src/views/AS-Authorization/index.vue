@@ -26,7 +26,7 @@
             <el-form-item label="用户名">
               <el-row>
                 <el-col :span="24">
-                  <el-input v-model="userInfo.username" disabled />
+                  <el-input v-model="userInfo.userName" disabled />
                 </el-col>
               </el-row>
             </el-form-item>
@@ -35,7 +35,7 @@
             <el-form-item label="区块链地址">
               <el-row>
                 <el-col :span="24">
-                  <el-input v-model="userInfo.address" disabled />
+                  <el-input v-model="userInfo.userAddr" disabled />
                 </el-col>
               </el-row>
             </el-form-item>
@@ -205,8 +205,8 @@ export default {
   data() {
     return {
       userInfo: {
-        username: '',
-        address: '',
+        userName: '',
+        userAddr: '',
         role: ''
       },
       passwordDialogVisible: false,
