@@ -405,14 +405,14 @@ export default {
             // 本地存储管理员信息
             setUser(loginData)
             this.$router.push('/ashome') // 管理员跳转 ashome
-            this.$message.success(result.data.data)
+            this.$message.success('登录成功')
           }
         } else if (loginData.role === 'operator') {
           console.log('操作员开始登录')
           setUser(loginData)
           // 调用接口
           this.$router.push('/ashome')
-          this.$message.success('操作员登录成功')
+          this.$message.success('登录成功')
         } else if (loginData.role === 'company') {
           console.log('公司开始登录')
           console.log(loginData)
@@ -422,7 +422,7 @@ export default {
             // 本地存储公司信息
             setUser(loginData)
             this.$router.push('/company') // 公司用户跳转 ascompany
-            this.$message.success(result.data.data)
+            this.$message.success('登录成功')
           }
         }
       } catch (error) {

@@ -17,8 +17,7 @@
             <el-form-item label="角色">
               <el-row>
                 <el-col :span="24">
-                  <el-input v-model="userInfo.role" disabled />
-                </el-col>
+                  <el-input v-model="userInfo.role" :disabled="true" /></el-col>
               </el-row>
             </el-form-item>
 
@@ -26,7 +25,7 @@
             <el-form-item label="用户名">
               <el-row>
                 <el-col :span="24">
-                  <el-input v-model="userInfo.username" disabled />
+                  <el-input v-model="userInfo.userName" disabled />
                 </el-col>
               </el-row>
             </el-form-item>
@@ -35,7 +34,7 @@
             <el-form-item label="区块链地址">
               <el-row>
                 <el-col :span="24">
-                  <el-input v-model="userInfo.address" disabled />
+                  <el-input v-model="userInfo.userAddr" disabled />
                 </el-col>
               </el-row>
             </el-form-item>
@@ -205,8 +204,8 @@ export default {
   data() {
     return {
       userInfo: {
-        username: '',
-        address: '',
+        userName: '',
+        userAddr: '',
         role: ''
       },
       passwordDialogVisible: false,
@@ -407,5 +406,18 @@ export default {
 
 .drawer-content .el-divider {
   margin: 10px 0;
+}
+/* 使用 >>> 穿透 Scoped CSS */
+.el-input.is-disabled>>>.el-input__inner {
+  background-color: #9e9e9e61;
+  border-color: #E4E7ED;
+  color: #7c21f3;
+  cursor: not-allowed;
+}
+.el-input.is-disabled>>>.el-input__inner {
+  background-color: #85858561;
+  border-color: #E4E7ED;
+  color: #281e35;
+  cursor: not-allowed;
 }
 </style>
