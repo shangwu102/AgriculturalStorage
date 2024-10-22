@@ -34,8 +34,8 @@
           <!-- 法定代表人 -->
           <el-col :span="12">
             <div class="info-item">
-              <span class="info-label">法定代表人：</span>
-              <span class="info-content">{{ companyInfo.legalRepresentative }}</span>
+              <span class="info-label">链上地址：</span>
+              <span class="info-content">{{ getCompanyAddress }}</span>
             </div>
           </el-col>
 
@@ -93,15 +93,22 @@
                 {{ statusText }}
               </el-tag>
             </div>
+
+          </el-col>
+          <el-col :span="12">
+            <div class="info-item">
+              <span class="info-label">法定代表人：</span>
+              <span class="info-content">{{ companyInfo.legalRepresentative }}</span>
+            </div>
           </el-col>
         </el-row>
       </div>
     </el-card>
 
-    <!-- 注册公司弹窗 -->
+    <!-- 认证公司弹窗 -->
     <el-dialog
       :visible.sync="registerDialogVisible"
-      title="注册公司"
+      title="认证公司"
       width="80%"
       top="5vh"
       :modal="false"
@@ -113,12 +120,12 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="公司名称" prop="enterpriseName">
-              <el-input v-model="registerForm.enterpriseName" autocomplete="off" />
+              <el-input v-model="registerForm.enterpriseName" autocomplete="off" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="统一社会信用代码" prop="creditCode">
-              <el-input v-model="registerForm.creditCode" autocomplete="off" />
+            <el-form-item label="链上地址" prop="address">
+              <el-input v-model="registerForm.address" disabled />
             </el-form-item>
           </el-col>
         </el-row>
@@ -209,6 +216,12 @@
               <el-input v-model="registerForm.passWord" type="password" autocomplete="new-password" />
             </el-form-item>
           </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="统一社会信用代码" prop="creditCode">
+              <el-input v-model="registerForm.creditCode" autocomplete="off" />
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -239,7 +252,8 @@ export default {
         phoneNumber: '',
         scope: '',
         passWord: '',
-        time: null // 时间戳
+        time: null, // 时间戳
+        address: ''
       },
       rules: {
         enterpriseName: [
@@ -283,6 +297,10 @@ export default {
     hasCompanyInfo() {
       return Object.keys(this.companyInfo).length > 0
     },
+    // getCompanyName() {
+    //   const name = JSON.parse(localStorage.getItem('company'))
+    //   return name.userName
+    // },
     /**
      * 计算显示的认证状态文本
      */
@@ -300,14 +318,14 @@ export default {
      */
     getCompanyName() {
       // 假设用户名称存储在 localStorage 中
-      const user = JSON.parse(localStorage.getItem('user')) || {}
+      const user = JSON.parse(localStorage.getItem('company')) || {}
       return user.userName || '未命名公司'
     },
     /**
      * 获取当前用户的地址（模拟获取）
      */
     getCompanyAddress() {
-      const user = JSON.parse(localStorage.getItem('user')) || {}
+      const user = JSON.parse(localStorage.getItem('company')) || {}
       return user.userAddr || ''
     }
   },
@@ -357,6 +375,7 @@ export default {
       // 初始化表单数据
       this.registerForm.enterpriseName = this.getCompanyName
       // 其他字段可以根据需要预填充
+      this.registerForm.address = this.getCompanyAddress
     },
     /**
      * 关闭注册对话框并重置表单
@@ -488,5 +507,11 @@ export default {
 .dialog-footer {
   text-align: right;
   padding: 10px;
+}
+.el-input.is-disabled>>>.el-input__inner {
+  background-color: #cbc6c6;
+  border-color: #E4E7ED;
+  color: #281e35;
+  cursor: not-allowed;
 }
 </style>
