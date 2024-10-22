@@ -21,7 +21,7 @@
               </div>
 
               <!-- 用户名输入框 -->
-              <el-form-item :class="{ 'focused': isFocused1 }" prop="username">
+              <el-form-item :class="{ 'focused': isFocused1 }" prop="userName">
                 <div class="input-group">
                   <span class="svg-container">
                     <svg-icon icon-class="user" />
@@ -426,8 +426,7 @@ export default {
           }
         }
       } catch (error) {
-        console.error('登录请求失败:', error)
-        this.$message.error('请检查输入项')
+        this.$message.error('登录失败，请检查相关信息')
       } finally {
         this.loading = false
       }
