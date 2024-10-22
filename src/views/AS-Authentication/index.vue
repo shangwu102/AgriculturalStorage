@@ -11,9 +11,9 @@
         :row-key="getRowKey"
         border
       >
-        <el-table-column prop="companyName" label="企业名称" width="180" />
+        <el-table-column prop="companyName" label="公司名称" width="180" />
         <el-table-column prop="creditCode" label="统一社会信用代码" width="200" />
-        <el-table-column prop="enterpriseType" label="企业类型" width="100">
+        <el-table-column prop="enterpriseType" label="公司类型" width="100">
           <template slot-scope="scope">
             <span>{{ getEnterpriseType(scope.row.enterpriseType) }}</span>
           </template>
@@ -55,7 +55,7 @@
     <!-- 审核操作对话框 -->
     <el-dialog title="审核公司" :visible.sync="dialogVisible" width="50%">
       <el-form :model="currentCompany" label-width="120px">
-        <el-form-item label="企业名称">
+        <el-form-item label="公司名称">
           <el-input v-model="currentCompany.companyName" disabled />
         </el-form-item>
         <el-form-item label="统一社会信用代码">
@@ -101,7 +101,7 @@ export default {
       loading: false,
       dialogVisible: false,
       currentCompany: {},
-      actionType: '' // 'approve' 或 'reject'
+      actionType: '' // 'approve' 或 'reject' 同意、拒绝
     }
   },
   computed: {
