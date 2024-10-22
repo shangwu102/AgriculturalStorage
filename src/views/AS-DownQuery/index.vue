@@ -47,7 +47,7 @@
                 <el-form-item label="检测人员" prop="inspector">
                   <el-input v-model="form.inspector" autocomplete="off" />
                 </el-form-item>
-                <el-form-item label="保管人员" prop="storagePerson">
+                <el-form-item label="仓库负责人" prop="storagePerson">
                   <el-input v-model="form.storagePerson" autocomplete="off" />
                 </el-form-item>
               </div>
@@ -68,7 +68,7 @@
                 </el-form-item>
               </div>
               <div class="disi">
-                <el-form-item label="产品名称" prop="productName">
+                <el-form-item label="粮食名称" prop="productName">
                   <el-input v-model="form.productName" autocomplete="off" />
                 </el-form-item>
               </div>
@@ -84,10 +84,10 @@
     <el-table :data="newdata" style="width: 100%" border :row-style="{ height: '64px' }">
       <el-table-column prop="id" label="编号" width="130" />
       <el-table-column prop="repertoryName" label="仓库名称" width="140" />
-      <el-table-column prop="productType" label="产品种类" />
-      <el-table-column prop="productName" label="产品名称" />
-      <el-table-column prop="joinAmount" label="入库量" />
-      <el-table-column prop="pass" label="合格率" />
+      <el-table-column prop="productType" label="粮食种类" />
+      <el-table-column prop="productName" label="粮食名称" />
+      <el-table-column prop="joinAmount" label="入库数量" />
+      <el-table-column prop="pass" label="仓库负责人" />
       <el-table-column prop="createTime" label="入库时间" />
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -162,12 +162,11 @@
       <div class="xiangqing">
         <h3 class="el-icon-s-order">产品信息</h3>
         <el-table :data="gridData">
-          <el-table-column property="date" label="企业名称" />
-          <el-table-column property="name" label="产品编号" />
-          <el-table-column property="address" label="产品名称" />
-          <el-table-column property="address" label="产品种类" />
-          <el-table-column property="address" label="仓库名称" />
-          <el-table-column property="address" label="库存" />
+          <el-table-column property="date" label="粮食产地" />
+          <el-table-column property="name" label="检测人员" />
+          <el-table-column property="address" label="上游企业链上地址" />
+          <el-table-column property="address" label="上游企业收获日期" />
+          <el-table-column property="address" label="入库描述信息" />
         </el-table>
         <h3 class="el-icon-s-order">入库记录</h3>
         <el-table :data="gridData">
@@ -212,43 +211,22 @@ export default {
       {
         id: '1',
         repertoryName: '主仓库',
-        productType: '电子产品',
-        productName: '手机',
-        joinAmount: 150,
-        pass: '90%',
-        createTime: '2021-02-05 12:00:00',
-        account: '灌溉系统1'
+        productType: '粮食',
+        productName: '小麦',
+        joinAmount: 1500, // 数量以千克为单位
+        pass: 'xxx', // 合格率
+        createTime: '2024-10-20 10:00:00', // 更新时间
+        account: 'admin'
       },
       {
         id: '2',
         repertoryName: '主仓库',
-        productType: '电子产品',
-        productName: '手机',
-        joinAmount: 200,
-        pass: '95%',
-        createTime: '2021-03-10 14:30:45',
-        account: '灌溉系统1'
-      },
-      {
-        id: '3',
-        repertoryName: '辅仓库',
-        productType: '家电',
-        productName: '洗衣机',
-        joinAmount: 250,
-        pass: '85%',
-        createTime: '2021-04-15 09:15:30',
-        account: '灌溉系统1'
-      },
-      // 其他数据...
-      {
-        id: '12',
-        repertoryName: '主仓库',
-        productType: '家电',
-        productName: '电视',
-        joinAmount: 250,
-        pass: '96%',
-        createTime: '2021-11-20 17:40:50',
-        account: '灌溉系统1'
+        productType: '粮食',
+        productName: '大米',
+        joinAmount: 2000,
+        pass: 'xxx',
+        createTime: '2024-10-19 14:30:00',
+        account: 'admin'
       }
     ]
     const newrukuxx = {

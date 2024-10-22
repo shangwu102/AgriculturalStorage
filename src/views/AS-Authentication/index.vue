@@ -213,7 +213,7 @@ export default {
 
 <style scoped>
 .authentication-container {
-  width: 90%;
+  padding: 20px;
   margin: 20px auto;
 }
 
