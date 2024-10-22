@@ -155,8 +155,7 @@ export default {
       if (companyData) {
         try {
           const parsedData = JSON.parse(companyData)
-          // 如果存在多个公司，可以调整这里的逻辑
-          // 这里假设只有一个公司信息
+          // 确保 `companies` 始终是数组
           this.companies = Array.isArray(parsedData) ? parsedData : [parsedData]
         } catch (error) {
           this.$message.error('解析本地公司数据失败')
@@ -201,7 +200,7 @@ export default {
           type: 'success',
           message: status === 'approved' ? '审核通过' : '审核拒绝'
         })
-        this.fetchCompanies()
+        // this.fetchCompanies()
         this.dialogVisible = false
       } else {
         this.$message.error('未找到对应的公司')

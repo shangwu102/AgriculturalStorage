@@ -13,11 +13,11 @@
       <!-- 有公司信息时显示公司详情 -->
       <div v-else class="company-details">
         <el-row :gutter="20">
-          <!-- 企业名称 -->
+          <!-- 公司名称 -->
           <el-col :span="12">
             <div class="info-item">
               <span class="info-label">公司名称：</span>
-              <span class="info-content">{{ companyInfo.companyName }}</span>
+              <span class="info-content">{{ currentCompany.companyName }}</span>
             </div>
           </el-col>
 
@@ -25,13 +25,13 @@
           <el-col :span="12">
             <div class="info-item">
               <span class="info-label">社会信用代码：</span>
-              <span class="info-content">{{ companyInfo.creditCode }}</span>
+              <span class="info-content">{{ currentCompany.creditCode }}</span>
             </div>
           </el-col>
         </el-row>
 
         <el-row :gutter="20" class="info-row">
-          <!-- 法定代表人 -->
+          <!-- 链上地址 -->
           <el-col :span="12">
             <div class="info-item">
               <span class="info-label">链上地址：</span>
@@ -43,7 +43,7 @@
           <el-col :span="12">
             <div class="info-item">
               <span class="info-label">公司类型：</span>
-              <span class="info-content">{{ getCompanyType(companyInfo.enterpriseType) }}</span>
+              <span class="info-content">{{ getCompanyType(currentCompany.enterpriseType) }}</span>
             </div>
           </el-col>
         </el-row>
@@ -53,7 +53,7 @@
           <el-col :span="12">
             <div class="info-item">
               <span class="info-label">经营场所：</span>
-              <span class="info-content">{{ companyInfo.premises }}</span>
+              <span class="info-content">{{ currentCompany.premises }}</span>
             </div>
           </el-col>
 
@@ -61,7 +61,7 @@
           <el-col :span="12">
             <div class="info-item">
               <span class="info-label">营业期限：</span>
-              <span class="info-content">{{ companyInfo.businessPeriod }} 年</span>
+              <span class="info-content">{{ currentCompany.businessPeriod }} 年</span>
             </div>
           </el-col>
         </el-row>
@@ -71,7 +71,7 @@
           <el-col :span="12">
             <div class="info-item">
               <span class="info-label">联系电话：</span>
-              <span class="info-content">{{ companyInfo.phoneNumber }}</span>
+              <span class="info-content">{{ currentCompany.phoneNumber }}</span>
             </div>
           </el-col>
 
@@ -79,7 +79,7 @@
           <el-col :span="12">
             <div class="info-item">
               <span class="info-label">经营范围：</span>
-              <span class="info-content">{{ companyInfo.scope }}</span>
+              <span class="info-content">{{ currentCompany.scope }}</span>
             </div>
           </el-col>
 
@@ -88,17 +88,16 @@
             <div class="info-item">
               <span class="info-label">认证状态：</span>
               <el-tag
-                :type="companyInfo.verificationStatus === 'approved' ? 'success' : (companyInfo.verificationStatus === 'rejected' ? 'danger' : 'warning')"
+                :type="currentCompany.verificationStatus === 'approved' ? 'success' : (currentCompany.verificationStatus === 'rejected' ? 'danger' : 'warning')"
               >
                 {{ statusText }}
               </el-tag>
             </div>
-
           </el-col>
           <el-col :span="12">
             <div class="info-item">
               <span class="info-label">法定代表人：</span>
-              <span class="info-content">{{ companyInfo.legalRepresentative }}</span>
+              <span class="info-content">{{ currentCompany.legalRepresentative }}</span>
             </div>
           </el-col>
         </el-row>
@@ -239,7 +238,7 @@ export default {
       format: 'yyyy-MM-dd HH:mm:ss', // 显示格式
       valueFormat: 'timestamp', // 返回时间戳
       registerDialogVisible: false, // 控制注册对话框的显示
-      companyInfo: {},
+      companyInfo: [], // 修改为数组
       registerForm: {
         enterpriseName: '',
         creditCode: '',
@@ -295,19 +294,22 @@ export default {
      * 判断是否存在公司信息
      */
     hasCompanyInfo() {
-      return Object.keys(this.companyInfo).length > 0
+      return this.companyInfo.length > 0
     },
-    // getCompanyName() {
-    //   const name = JSON.parse(localStorage.getItem('company'))
-    //   return name.userName
-    // },
+    /**
+     * 当前显示的公司信息（假设显示第一个）
+     */
+    currentCompany() {
+      return this.companyInfo[0] || {}
+    },
     /**
      * 计算显示的认证状态文本
      */
     statusText() {
-      if (this.companyInfo.verificationStatus === 'approved') {
+      console.log('Verification Status:', this.currentCompany.verificationStatus) // 保持原有日志
+      if (this.currentCompany.verificationStatus === 'approved') {
         return '已审核'
-      } else if (this.companyInfo.verificationStatus === 'rejected') {
+      } else if (this.currentCompany.verificationStatus === 'rejected') {
         return '审核拒绝'
       } else {
         return '审核中'
@@ -318,14 +320,14 @@ export default {
      */
     getCompanyName() {
       // 假设用户名称存储在 localStorage 中
-      const user = JSON.parse(localStorage.getItem('company')) || {}
+      const user = JSON.parse(localStorage.getItem('AS-user')) || {}
       return user.userName || '未命名公司'
     },
     /**
      * 获取当前用户的地址（模拟获取）
      */
     getCompanyAddress() {
-      const user = JSON.parse(localStorage.getItem('company')) || {}
+      const user = JSON.parse(localStorage.getItem('AS-user')) || {}
       return user.userAddr || ''
     }
   },
@@ -364,8 +366,16 @@ export default {
     getCompanyInfo() {
       const storedInfo = localStorage.getItem('companyInfo')
       if (storedInfo) {
-        this.companyInfo = JSON.parse(storedInfo)
+        try {
+          const parsedInfo = JSON.parse(storedInfo)
+          // 确保 companyInfo 是数组
+          this.companyInfo = Array.isArray(parsedInfo) ? parsedInfo : [parsedInfo]
+        } catch (e) {
+          console.error('解析 companyInfo 失败:', e)
+          this.companyInfo = []
+        }
       }
+      console.log(this.companyInfo)
     },
     /**
      * 打开注册对话框
@@ -415,9 +425,10 @@ export default {
     /**
      * 移除上传的文件
      * @param {File} file
-      */
+     */
     handleRemove(file) {
       this.registerForm.businessLicense = this.registerForm.businessLicense.filter(url => url !== file.url)
+      this.registerForm.businessLicenseFiles = this.registerForm.businessLicenseFiles.filter(f => f.url !== file.url)
     },
     /**
      * 提交表单
@@ -442,11 +453,19 @@ export default {
             verificationStatus: 'pending' // 审核中
           }
 
+          if (this.hasCompanyInfo) {
+            // 如果已经存在公司信息，更新第一个
+            this.companyInfo[0] = payload
+          } else {
+            // 否则，添加新公司信息
+            this.companyInfo.push(payload)
+          }
+
           // 保存到 localStorage
-          localStorage.setItem('companyInfo', JSON.stringify(payload))
+          localStorage.setItem('companyInfo', JSON.stringify(this.companyInfo))
 
           // 更新本地数据
-          this.companyInfo = payload
+          // this.companyInfo = payload // 不需要这行，因为已经更新了 companyInfo 数组
 
           this.$message({
             type: 'success',
@@ -508,6 +527,7 @@ export default {
   text-align: right;
   padding: 10px;
 }
+
 .el-input.is-disabled>>>.el-input__inner {
   background-color: #cbc6c6;
   border-color: #E4E7ED;
