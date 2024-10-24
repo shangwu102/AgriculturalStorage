@@ -197,20 +197,31 @@ import { getOrder } from '@/utils/order'
 export default {
   data() {
     const options = [
-      { value: '主仓库', label: '主仓库' },
-      { value: '辅仓库', label: '辅仓库' }
+      { value: '一号仓库', label: '一号仓库' },
+      { value: '二号仓库', label: '二号仓库' },
+      { value: '三号仓库', label: '三号仓库' },
+      { value: '四号仓库', label: '四号仓库' },
+      { value: '五号仓库', label: '五号仓库' }
     ]
     const productTypes = [
-      { value: '粮食', label: '粮食' },
-      { value: '电子产品', label: '电子产品' },
-      { value: '家电', label: '家电' },
-      { value: '日用产品', label: '日用产品' }
-      // 添加更多粮食种类
+      { value: '小麦', label: '小麦' },
+      { value: '大米', label: '大米' },
+      { value: '玉米', label: '玉米' },
+      { value: '大豆', label: '大豆' },
+      { value: '燕麦', label: '燕麦' },
+      { value: '高粱', label: '高粱' },
+      { value: '荞麦', label: '荞麦' },
+      { value: '大麦', label: '大麦' },
+      { value: '米粉', label: '米粉' },
+      { value: '面粉', label: '面粉' },
+      { value: '红米', label: '红米' },
+      { value: '荞麦面', label: '荞麦面' }
     ]
+
     const tableData = [
       {
         id: '1',
-        repertoryName: '主仓库',
+        repertoryName: '一号仓库',
         productType: '粮食',
         productName: '小麦',
         joinAmount: 1500, // 数量以千克为单位
@@ -220,7 +231,7 @@ export default {
       },
       {
         id: '2',
-        repertoryName: '主仓库',
+        repertoryName: '一号仓库',
         productType: '粮食',
         productName: '大米',
         joinAmount: 2000,

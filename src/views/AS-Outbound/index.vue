@@ -36,11 +36,11 @@
       />
       <el-table-column
         prop="productType"
-        label="产品种类"
+        label="粮食种类"
       />
       <el-table-column
         prop="productName"
-        label="产品名称"
+        label="粮食名称"
       />
       <el-table-column
         prop="joinAmount"
@@ -48,15 +48,11 @@
       />
       <el-table-column
         prop="pass"
-        label="合格率"
+        label="仓库负责人"
       />
       <el-table-column
         prop="updateTime"
         label="出库时间"
-      />
-      <el-table-column
-        prop="account"
-        label="操作员"
       />
       <!-- <el-table-column
         label="操作"
@@ -98,132 +94,32 @@
 <script>
 export default {
   data() {
-    const options = [{
-      value: '主仓库',
-      label: '主仓库'
-    }, {
-      value: '辅仓库',
-      label: '辅仓库'
-    }]
+    const options = [
+      { value: '一号仓库', label: '一号仓库' },
+      { value: '二号仓库', label: '二号仓库' },
+      { value: '三号仓库', label: '三号仓库' },
+      { value: '四号仓库', label: '四号仓库' },
+      { value: '五号仓库', label: '五号仓库' }
+    ]
     const tableData = [
       {
         id: '1',
-        repertoryName: '主仓库',
+        repertoryName: '一号仓库',
         productType: '粮食',
         productName: '小麦',
         joinAmount: 1500, // 数量以千克为单位
-        pass: '95%', // 合格率
-        updateTime: '2024-10-20 10:00:00', // 更新时间
+        pass: 'xxx', // 合格率
+        createTime: '2024-10-20 10:00:00', // 更新时间
         account: 'admin'
       },
       {
         id: '2',
-        repertoryName: '主仓库',
+        repertoryName: '一号仓库',
         productType: '粮食',
         productName: '大米',
         joinAmount: 2000,
-        pass: '97%',
-        updateTime: '2024-10-19 14:30:00',
-        account: 'admin'
-      },
-      {
-        id: '3',
-        repertoryName: '辅仓库',
-        productType: '粮食',
-        productName: '玉米',
-        joinAmount: 1800,
-        pass: '94%',
-        updateTime: '2024-10-18 09:15:00',
-        account: 'admin'
-      },
-      {
-        id: '4',
-        repertoryName: '辅仓库',
-        productType: '粮食',
-        productName: '大豆',
-        joinAmount: 1200,
-        pass: '92%',
-        updateTime: '2024-10-17 16:45:00',
-        account: 'admin'
-      },
-      {
-        id: '5',
-        repertoryName: '主仓库',
-        productType: '粮食',
-        productName: '燕麦',
-        joinAmount: 900,
-        pass: '90%',
-        updateTime: '2024-10-16 11:20:00',
-        account: 'admin'
-      },
-      {
-        id: '6',
-        repertoryName: '主仓库',
-        productType: '粮食',
-        productName: '高粱',
-        joinAmount: 1100,
-        pass: '93%',
-        updateTime: '2024-10-15 08:50:00',
-        account: 'admin'
-      },
-      {
-        id: '7',
-        repertoryName: '辅仓库',
-        productType: '粮食',
-        productName: '荞麦',
-        joinAmount: 700,
-        pass: '88%',
-        updateTime: '2024-10-14 13:05:00',
-        account: 'admin'
-      },
-      {
-        id: '8',
-        repertoryName: '辅仓库',
-        productType: '粮食',
-        productName: '大麦',
-        joinAmount: 1300,
-        pass: '91%',
-        updateTime: '2024-10-13 15:25:00',
-        account: 'admin'
-      },
-      {
-        id: '9',
-        repertoryName: '主仓库',
-        productType: '粮食',
-        productName: '米粉',
-        joinAmount: 850,
-        pass: '89%',
-        updateTime: '2024-10-12 10:10:00',
-        account: 'admin'
-      },
-      {
-        id: '10',
-        repertoryName: '主仓库',
-        productType: '粮食',
-        productName: '面粉',
-        joinAmount: 1000,
-        pass: '96%',
-        updateTime: '2024-10-11 17:40:00',
-        account: 'admin'
-      },
-      {
-        id: '11',
-        repertoryName: '主仓库',
-        productType: '粮食',
-        productName: '红米',
-        joinAmount: 1600,
-        pass: '95%',
-        updateTime: '2024-10-09 11:30:00',
-        account: 'admin'
-      },
-      {
-        id: '12',
-        repertoryName: '辅仓库',
-        productType: '粮食',
-        productName: '荞麦面',
-        joinAmount: 400,
-        pass: '85%',
-        updateTime: '2024-10-08 09:00:00',
+        pass: 'xxx',
+        createTime: '2024-10-19 14:30:00',
         account: 'admin'
       }
     ]

@@ -98,10 +98,13 @@ import { yujingxinxi } from '@/api/anquanyujing.js'
 import { querenyidu } from '@/api/anquanyujing.js'
 export default {
   data() {
-    const options = [{
-      value: '仓库1',
-      label: '仓库1'
-    }]
+    const options = [
+      { value: '一号仓库', label: '一号仓库' },
+      { value: '二号仓库', label: '二号仓库' },
+      { value: '三号仓库', label: '三号仓库' },
+      { value: '四号仓库', label: '四号仓库' },
+      { value: '五号仓库', label: '五号仓库' }
+    ]
     const tableData = [
       {
         id: 1,
