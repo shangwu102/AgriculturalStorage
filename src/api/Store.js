@@ -7,6 +7,13 @@ export function addGrain(addGrain) {
     data: addGrain
   })
 }
+// 获取仓库所有信息
+export function getDepotInfoByName() {
+  return request({
+    url: '/getAllDepotInfo',
+    method: 'get'
+  })
+}
 
 // export function findAll() {
 //   return request({

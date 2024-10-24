@@ -15,31 +15,36 @@
 
     <!-- 下方列表框 -->
     <div class="house_data">
-      <!-- 为每个仓库创建一个单独的列表 -->
-      <div v-for="(item) in filteredData" :key="item.id" class="warehouse-list">
-        <el-row class="align-items-center warehouse-item">
-          <!-- 左边仓库信息 -->
-          <el-col :span="18" class="warehouse-info">
-            <strong class="warehouse-name cursor-pointer" @click="openDrawer(item)">{{ item.name }}</strong>
-            <el-row>
-              <el-col :span="12" class="p-2">
-                <el-row class="data-row">
-                  <el-col :span="8">编号:</el-col>
-                  <el-col :span="16">{{ item.depotId }}</el-col>
-                </el-row>
-                <el-row class="data-row">
-                  <el-col :span="8">建立时间:</el-col>
-                  <el-col :span="16">{{ item.creationTime }}</el-col>
-                </el-row>
-              </el-col>
-            </el-row>
-          </el-col>
+      <div v-if="dataList.length === 0" class="no-data-message">
+        暂无仓库信息，请添加仓库信息
+      </div>
+      <div v-else>
+        <!-- 为每个仓库创建一个单独的列表 -->
+        <div v-for="(item) in filteredData" :key="item.id" class="warehouse-list">
+          <el-row class="align-items-center warehouse-item">
+            <!-- 左边仓库信息 -->
+            <el-col :span="18" class="warehouse-info">
+              <strong class="warehouse-name cursor-pointer" @click="openDrawer(item)">{{ item.name }}</strong>
+              <el-row>
+                <el-col :span="12" class="p-2">
+                  <el-row class="data-row">
+                    <el-col :span="8">编号:</el-col>
+                    <el-col :span="16">{{ item.depotId }}</el-col>
+                  </el-row>
+                  <el-row class="data-row">
+                    <el-col :span="8">建立时间:</el-col>
+                    <el-col :span="16">{{ item.creationTime }}</el-col>
+                  </el-row>
+                </el-col>
+              </el-row>
+            </el-col>
 
-          <!-- 右边仓库图片 -->
-          <el-col :span="6" class="info-icon">
-            <el-image :src="item.img" alt="仓库图片" class="aligned-image" />
-          </el-col>
-        </el-row>
+            <!-- 右边仓库图片 -->
+            <el-col :span="6" class="info-icon">
+              <el-image :src="item.img" alt="仓库图片" class="aligned-image" />
+            </el-col>
+          </el-row>
+        </div>
       </div>
     </div>
 
@@ -51,6 +56,9 @@
         </el-form-item>
         <el-form-item label="仓库名称" prop="name">
           <el-input v-model="formData.name" />
+        </el-form-item>
+        <el-form-item label="仓库位置" prop="location">
+          <el-input v-model="formData.location" />
         </el-form-item>
         <el-form-item label="建立时间" prop="creationTime">
           <el-date-picker v-model="formData.creationTime" type="datetime" placeholder="选择日期时间" style="width: 100%;" />
@@ -82,32 +90,17 @@
         </el-row>
         <el-divider />
 
+        <!-- 仓库位置 -->
+        <el-row class="drawer-row">
+          <el-col :span="8"><strong>位置:</strong></el-col>
+          <el-col :span="16">{{ selectedItem.location }}</el-col>
+        </el-row>
+        <el-divider />
+
         <!-- 仓库描述 -->
         <el-row class="drawer-row">
           <el-col :span="8"><strong>描述:</strong></el-col>
           <el-col :span="16">{{ selectedItem.description }}</el-col>
-        </el-row>
-        <el-divider />
-
-        <!-- 粮食种类列表 -->
-        <el-row class="drawer-row">
-          <el-col :span="8"><strong>粮食种类:</strong></el-col>
-          <el-col :span="16">
-            <ul>
-              <li v-for="(kind, index) in selectedItem.goodkind" :key="index">{{ kind }}</li>
-            </ul>
-          </el-col>
-        </el-row>
-        <el-divider />
-
-        <!-- 批次号列表 -->
-        <el-row class="drawer-row">
-          <el-col :span="8"><strong>批次号:</strong></el-col>
-          <el-col :span="16">
-            <ul>
-              <li v-for="(batch, index) in selectedItem.batchIds" :key="index">{{ batch }}</li>
-            </ul>
-          </el-col>
         </el-row>
         <el-divider />
 
@@ -123,6 +116,9 @@
 </template>
 
 <script>
+import axios from 'axios' // 导入 axios
+import { getDepotInfoByName } from '@/api/Store'
+
 export default {
   data() {
     return {
@@ -130,77 +126,11 @@ export default {
       drawerVisible: false, // 控制Drawer显示
       selectedItem: null, // 存储选中的仓库信息
       dialogVisible: false, // 添加仓库
-      dataList: [
-        {
-          id: 1,
-          name: '1号仓库',
-          depotId: 'WH001',
-          location: '北京市朝阳区',
-          description: '主要储存小麦和玉米的大型仓库。',
-          goodkind: ['小麦', '玉米'],
-          batchIds: ['BATCH101', 'BATCH102'],
-          creationTime: '2022-02-25 17:36:41',
-          img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
-        },
-        {
-          id: 2,
-          name: '2号仓库',
-          depotId: 'WH002',
-          location: '上海市浦东新区',
-          description: '用于存放大米和大豆的中型仓库。',
-          goodkind: ['大米', '大豆'],
-          batchIds: ['BATCH201', 'BATCH202'],
-          creationTime: '2022-02-26 17:36:41',
-          img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
-        },
-        {
-          id: 3,
-          name: '3号仓库',
-          depotId: 'WH003',
-          location: '广州市天河区',
-          description: '一个小型仓库，专用于储存油菜籽。',
-          goodkind: ['油菜籽'],
-          batchIds: ['BATCH301'],
-          creationTime: '2022-02-27 17:36:41',
-          img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
-        },
-        {
-          id: 4,
-          name: '4号仓库',
-          depotId: 'WH004',
-          location: '深圳市福田区',
-          description: '储存小麦、大豆和玉米的多功能仓库。',
-          goodkind: ['小麦', '大豆', '玉米'],
-          batchIds: ['BATCH401', 'BATCH402', 'BATCH403'],
-          creationTime: '2022-02-28 17:36:41',
-          img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
-        },
-        {
-          id: 5,
-          name: '5号仓库',
-          depotId: 'WH005',
-          location: '成都市武侯区',
-          description: '用于存储谷物和其他粮食作物的大型仓库。',
-          goodkind: ['谷物', '小麦'],
-          batchIds: ['BATCH501', 'BATCH502'],
-          creationTime: '2022-03-01 10:00:00',
-          img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
-        },
-        {
-          id: 6,
-          name: '6号仓库',
-          depotId: 'WH006',
-          location: '重庆市渝北区',
-          description: '新建仓库，主要用于储存玉米。',
-          goodkind: ['玉米'],
-          batchIds: ['BATCH601'],
-          creationTime: '2022-03-02 12:00:00',
-          img: 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png'
-        }
-      ],
+      dataList: [], // 初始化为空数组
       formData: {
         depotId: '',
         name: '',
+        location: '',
         creationTime: '',
         description: ''
       },
@@ -210,6 +140,9 @@ export default {
         ],
         name: [
           { required: true, message: '请输入仓库名称', trigger: 'blur' }
+        ],
+        location: [
+          { required: true, message: '请输入仓库位置', trigger: 'blur' }
         ],
         creationTime: [
           { type: 'date', required: true, message: '请选择建立时间', trigger: 'change' }
@@ -233,7 +166,34 @@ export default {
       )
     }
   },
+  created() {
+    // 在组件加载时，从后端 API 加载仓库数据
+    this.loadWarehouseData()
+  },
   methods: {
+    async loadWarehouseData() {
+      try {
+        const response = await getDepotInfoByName()
+        console.log(response)
+        if (response.data.code === 1) {
+          const apiData = response.data.data
+          console.log(apiData)
+
+          if (apiData && apiData.length > 0) {
+            this.dataList = apiData
+          } else {
+            // API 没有返回数据
+            this.dataList = []
+          }
+        } else {
+          console.error('获取仓库数据失败:', response.statusText)
+          this.dataList = []
+        }
+      } catch (error) {
+        console.error('获取仓库数据失败:', error)
+        this.dataList = []
+      }
+    },
     handleSearch() {
       // 搜索功能已通过 computed 属性实现，此方法可以用于额外的搜索逻辑
       // 例如，记录搜索日志或触发其他操作
@@ -246,31 +206,41 @@ export default {
     openDialog() {
       this.dialogVisible = true
     },
-    submitForm() {
-      this.$refs.warehouseForm.validate((valid) => {
+    async submitForm() {
+      this.$refs.warehouseForm.validate(async(valid) => {
         if (valid) {
-          // 生成新的唯一ID
-          const newId = this.dataList.length
-            ? Math.max(...this.dataList.map(item => item.id)) + 1
-            : 1
-          // 添加新仓库到 dataList
+          // 添加新仓库的数据
           const newWarehouse = {
-            id: newId,
-            name: this.formData.name,
             depotId: this.formData.depotId,
+            name: this.formData.name,
+            location: this.formData.location,
             description: this.formData.description,
             creationTime: this.formatDateTime(this.formData.creationTime),
-            img: this.formData.img || 'https://hiwcq.oss-cn-beijing.aliyuncs.com/logo.png' // 默认图片
+            img: this.formData.img || 'https://hiwcq.oss-cn-beijing.aliyuncs.com/10%E4%BB%93%E5%BA%93%E3%80%81%E4%BB%93%E5%82%A8.png' // 默认图片
           }
-          this.dataList.push(newWarehouse)
-          // 关闭对话框并清空表单
-          this.dialogVisible = false
-          this.resetForm()
-          // 提示用户
-          this.$message({
-            message: '仓库添加成功！',
-            type: 'success'
-          })
+          // 调用API存储仓库信息
+          try {
+            const response = await axios.post('/api/warehouses', newWarehouse) // 根据实际 API 端点修改
+            if (response.status === 201 || response.status === 200) { // 根据后端实际返回的状态码调整
+              const result = response.data
+              // 假设后端返回新增的仓库信息，包括生成的 id
+              this.dataList.push(result)
+              // 关闭对话框并清空表单
+              this.dialogVisible = false
+              this.resetForm()
+              // 提示用户
+              this.$message({
+                message: '仓库添加成功！',
+                type: 'success'
+              })
+            } else {
+              console.error('仓库添加失败:', response.statusText)
+              this.$message.error('仓库添加失败，请稍后重试')
+            }
+          } catch (error) {
+            console.error('API error:', error)
+            this.$message.error('仓库添加失败，请稍后重试')
+          }
         } else {
           console.log('表单验证失败')
           return false
@@ -281,6 +251,7 @@ export default {
       this.formData = {
         depotId: '',
         name: '',
+        location: '',
         creationTime: '',
         description: ''
       }
@@ -394,5 +365,13 @@ export default {
 /* 表单样式调整 */
 .el-form-item {
   margin-bottom: 20px;
+}
+
+/* 无数据时的提示样式 */
+.no-data-message {
+  text-align: center;
+  color: #999;
+  font-size: 16px;
+  padding: 50px 0;
 }
 </style>
