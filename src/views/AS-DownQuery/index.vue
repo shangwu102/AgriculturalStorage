@@ -203,18 +203,12 @@
 </template>
 
 <script>
-import { addGrain } from '@/api/Store'
+import { createInDepotInfo, getAllInDepotInfo, getDepotNames } from '@/api/Store'
 import { getOrder } from '@/utils/order'
 
 export default {
   data() {
-    const options = [
-      { value: '一号仓库', label: '一号仓库' },
-      { value: '二号仓库', label: '二号仓库' },
-      { value: '三号仓库', label: '三号仓库' },
-      { value: '四号仓库', label: '四号仓库' },
-      { value: '五号仓库', label: '五号仓库' }
-    ]
+    const options = []
     const productTypes = [
       { value: '小麦', label: '小麦' },
       { value: '大米', label: '大米' },
@@ -230,34 +224,7 @@ export default {
       { value: '荞麦面', label: '荞麦面' }
     ]
 
-    const tableData = [
-      {
-        batchId: '1',
-        goodKind: '小麦',
-        upStreamFirm: '上游企业1',
-        origin: '黑龙江',
-        enterWareHouse: '一号仓库',
-        inDepotDate: Date.parse('2024-10-20 10:00:00'), // 存储为时间戳
-        harvestDate: Date.parse('2024-09-15 08:00:00'),
-        inspector: '张三',
-        custodian: '李四',
-        description: '新收获的小麦，质量优良',
-        amount: 1500 // 数量以千克为单位
-      },
-      {
-        batchId: '2',
-        goodKind: '大米',
-        upStreamFirm: '上游企业2',
-        origin: '吉林',
-        enterWareHouse: '二号仓库',
-        inDepotDate: Date.parse('2024-10-19 14:30:00'),
-        harvestDate: Date.parse('2024-09-10 09:00:00'),
-        inspector: '王五',
-        custodian: '赵六',
-        description: '新收获的大米，颗粒饱满',
-        amount: 2000
-      }
-    ]
+    const tableData = []
 
     const form = {
       batchId: '',
@@ -326,7 +293,7 @@ export default {
       sousuo: '',
       tableData,
       newdata: [],
-      zhongjianshuju: '',
+      zhongjianshuju: [], // 初始化为空数组
       xinzengdialogFormVisible: false,
       form,
       shujujianyan,
@@ -355,11 +322,29 @@ export default {
     }
   },
   created() {
-    this.huqushuju()
-    this.chaxun()
     this.loadOrders()
+    this.getDepotNames() // 获取所有仓库名称
+    this.huqushuju()
   },
   methods: {
+    async getDepotNames() {
+      try {
+        const result = await getDepotNames()
+        if (result.data.code === 1) {
+          // 假设 result.data.data 是仓库名称的字符串数组
+          this.options = result.data.data.map(item => ({
+            value: item, // 如果有唯一的 id，建议使用 id 作为 value
+            label: item // 如果有更友好的名称，可以使用 name 作为 label
+          }))
+          console.log('仓库选项:', this.options)
+        } else {
+          this.$message.error('获取仓库名称失败')
+        }
+      } catch (error) {
+        console.error('获取仓库名称时出错:', error)
+        this.$message.error('请求仓库名称时出错')
+      }
+    },
     // 加载订单数据从 localStorage
     loadOrders() {
       const savedOrders = getOrder()
@@ -369,18 +354,44 @@ export default {
         this.orders = []
       }
     },
+    // 获取入库数据
+    async huqushuju() {
+      try {
+        const result = await getAllInDepotInfo()
+        if (result.data.code === 1) {
+          // 扁平化数据结构
+          this.tableData = result.data.data.map(item => ({
+            batchId: item.inDepotDetail.batchId || '无', // 确保 batchId 存在
+            goodKind: item.goodKind,
+            upStreamFirm: item.inDepotDetail.upStreamFirm,
+            origin: item.inDepotDetail.origin,
+            enterWareHouse: item.inDepotDetail.enterWareHouse,
+            inDepotDate: item.inDepotDetail.inDepotDate,
+            harvestDate: item.inDepotDetail.harvestDate,
+            inspector: item.inDepotDetail.inspector,
+            custodian: item.inDepotDetail.custodian,
+            description: item.inDepotDetail.description,
+            amount: item.inDepotDetail.amount
+          }))
+          this.zhongjianshuju = this.tableData
+          this.fenye(1)
+          console.log('入库数据:', this.tableData)
+        } else {
+          this.$message.error('获取入库数据失败')
+        }
+      } catch (error) {
+        console.error('获取入库数据时出错:', error)
+        this.$message.error('请求入库数据时出错')
+      }
+    },
     // 查询功能
     chaxun() {
-      const newdata = []
-      this.tableData.forEach(item => {
-        if (
+      this.zhongjianshuju = this.tableData.filter(item => {
+        return (
           (item.enterWareHouse === this.value || this.value === '') &&
-          ((item.batchId && item.batchId.includes(this.sousuo)) || this.sousuo === '')
-        ) {
-          newdata.push(item)
-        }
+          (item.batchId.includes(this.sousuo) || this.sousuo === '')
+        )
       })
-      this.zhongjianshuju = newdata
       this.dangqianyema = 1
       this.fenye(1)
     },
@@ -390,7 +401,10 @@ export default {
       this.fenye(ym)
     },
     fenye(e) {
-      this.newdata = this.zhongjianshuju.slice((e - 1) * 10, e * 10)
+      const pageSize = 10
+      const start = (e - 1) * pageSize
+      const end = e * pageSize
+      this.newdata = this.zhongjianshuju.slice(start, end)
     },
     // 格式化时间戳为日期字符串
     formatTimestamp(row, column, cellValue) {
@@ -409,27 +423,15 @@ export default {
     },
     // 处理入库日期的变化，将其转换为时间戳
     handleInDepotDateChange(value) {
-      if (value) {
-        this.form.inDepotDate = Date.parse(value)
-      } else {
-        this.form.inDepotDate = null
-      }
+      this.form.inDepotDate = value ? Date.parse(value) : null
     },
     // 处理收获日期的变化，将其转换为时间戳
     handleHarvestDateChange(value) {
-      if (value) {
-        this.form.harvestDate = Date.parse(value)
-      } else {
-        this.form.harvestDate = null
-      }
+      this.form.harvestDate = value ? Date.parse(value) : null
     },
     // 处理出库日期的变化，将其转换为时间戳
     handleOutDepotDateChange(value) {
-      if (value) {
-        this.chukuForm.outDepotDate = Date.parse(value)
-      } else {
-        this.chukuForm.outDepotDate = null
-      }
+      this.chukuForm.outDepotDate = value ? Date.parse(value) : null
     },
     // 新增入库
     async xinzeng() {
@@ -448,31 +450,38 @@ export default {
             description: this.form.description,
             amount: this.form.amount
           }
-          // 新增入库
-          const result = await addGrain(newEntry)
-          console.log(result)
-          this.tableData.push(newEntry)
-          this.fenye(this.dangqianyema)
-          this.chaxun()
-          // 重置表单
-          Object.assign(this.form, {
-            batchId: '',
-            goodKind: '',
-            upStreamFirm: '',
-            origin: '',
-            enterWareHouse: '',
-            inDepotDate: null,
-            harvestDate: null,
-            inspector: '',
-            custodian: '',
-            description: '',
-            amount: ''
-          })
-          this.xinzengdialogFormVisible = false
-          this.$message({
-            message: '入库信息保存成功',
-            type: 'success'
-          })
+          try {
+            // 新增入库
+            const result = await createInDepotInfo(newEntry)
+            if (result.data.code === 1) {
+              this.tableData.push(newEntry)
+              this.chaxun()
+              // 重置表单
+              Object.assign(this.form, {
+                batchId: '',
+                goodKind: '',
+                upStreamFirm: '',
+                origin: '',
+                enterWareHouse: '',
+                inDepotDate: null,
+                harvestDate: null,
+                inspector: '',
+                custodian: '',
+                description: '',
+                amount: ''
+              })
+              this.xinzengdialogFormVisible = false
+              this.$message({
+                message: '入库信息保存成功',
+                type: 'success'
+              })
+            } else {
+              this.$message.error('保存入库信息失败')
+            }
+          } catch (error) {
+            console.error('新增入库时出错:', error)
+            this.$message.error('请求出错')
+          }
         } else {
           this.$message.error('请输入全部数据')
         }
@@ -515,7 +524,6 @@ export default {
           )
           if (index !== -1) {
             this.tableData.splice(index, 1)
-            this.fenye(this.dangqianyema)
             this.chaxun()
             this.chukudialogFormVisible = false
             this.$message({
@@ -540,10 +548,6 @@ export default {
           this.$message.error('表单验证失败，请检查输入内容！')
         }
       })
-    },
-    // 获取初始数据
-    huqushuju() {
-      this.newdata = this.tableData
     }
   }
 }
