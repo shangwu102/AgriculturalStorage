@@ -14,6 +14,14 @@ export function getDepotInfoByName() {
     method: 'get'
   })
 }
+// 新增仓库
+export function createDepotInfo(newWarehouse) {
+  return request({
+    url: '/createDepotInfo',
+    method: 'post',
+    data: newWarehouse
+  })
+}
 
 // export function findAll() {
 //   return request({

@@ -57,9 +57,6 @@
         <el-form-item label="仓库名称" prop="name">
           <el-input v-model="formData.name" />
         </el-form-item>
-        <el-form-item label="仓库位置" prop="location">
-          <el-input v-model="formData.location" />
-        </el-form-item>
         <el-form-item label="建立时间" prop="creationTime">
           <el-date-picker v-model="formData.creationTime" type="datetime" placeholder="选择日期时间" style="width: 100%;" />
         </el-form-item>
@@ -89,12 +86,6 @@
           <el-col :span="16">{{ selectedItem.depotId }}</el-col>
         </el-row>
         <el-divider />
-
-        <!-- 仓库位置 -->
-        <el-row class="drawer-row">
-          <el-col :span="8"><strong>位置:</strong></el-col>
-          <el-col :span="16">{{ selectedItem.location }}</el-col>
-        </el-row>
         <el-divider />
 
         <!-- 仓库描述 -->
@@ -116,8 +107,7 @@
 </template>
 
 <script>
-import axios from 'axios' // 导入 axios
-import { getDepotInfoByName } from '@/api/Store'
+import { createDepotInfo, getDepotInfoByName } from '@/api/Store'
 
 export default {
   data() {
@@ -176,9 +166,18 @@ export default {
         const response = await getDepotInfoByName()
         console.log(response)
         if (response.data.code === 1) {
-          const apiData = response.data.data
-          console.log(apiData)
+          const apiData = response.data.data.map(item => {
+            console.log(item.location)
 
+            // 将 location 中的时间戳转换为 'YYYY-MM-DD' 格式并赋值给 creationTime
+            const date = new Date(parseInt(item.location, 10)) // 假设 location 是时间戳
+            const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+            return {
+              ...item,
+              creationTime: formattedDate // 将转换后的日期赋值给 creationTime
+            }
+          })
+          // console.log(apiData)
           if (apiData && apiData.length > 0) {
             this.dataList = apiData
           } else {
@@ -213,18 +212,21 @@ export default {
           const newWarehouse = {
             depotId: this.formData.depotId,
             name: this.formData.name,
-            location: this.formData.location,
+            location: this.formData.creationTime ? new Date(this.formData.creationTime).getTime() : '',
             description: this.formData.description,
-            creationTime: this.formatDateTime(this.formData.creationTime),
+            // creationTime: this.formatDateTime(this.formData.creationTime),
+            // 将建立时间转换为时间戳
             img: this.formData.img || 'https://hiwcq.oss-cn-beijing.aliyuncs.com/10%E4%BB%93%E5%BA%93%E3%80%81%E4%BB%93%E5%82%A8.png' // 默认图片
           }
+          console.log(newWarehouse)
+
           // 调用API存储仓库信息
           try {
-            const response = await axios.post('/api/warehouses', newWarehouse) // 根据实际 API 端点修改
-            if (response.status === 201 || response.status === 200) { // 根据后端实际返回的状态码调整
-              const result = response.data
-              // 假设后端返回新增的仓库信息，包括生成的 id
-              this.dataList.push(result)
+            const response = await createDepotInfo(newWarehouse)
+            console.log(response)
+
+            if (response.data.code === 1) {
+              this.loadWarehouseData()
               // 关闭对话框并清空表单
               this.dialogVisible = false
               this.resetForm()
