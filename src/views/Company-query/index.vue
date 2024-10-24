@@ -48,18 +48,126 @@ export default {
       value: '', // 仓库选择
       sousuo: '', // 产品搜索输入
       tableData: [
-        { id: '1', repertoryName: '一号仓库', productType: '电子产品', productName: '手机', joinAmount: 150, pass: '90%', createTime: '2021-02-05 12:00:00' },
-        { id: '2', repertoryName: '二号仓库', productType: '电子产品', productName: '手机', joinAmount: 150, pass: '90%', createTime: '2021-02-05 12:00:00' },
-        { id: '3', repertoryName: '三号仓库', productType: '电子产品', productName: '手机', joinAmount: 150, pass: '90%', createTime: '2021-02-05 12:00:00' },
-        { id: '4', repertoryName: '三号仓库', productType: '电子产品', productName: '手机', joinAmount: 150, pass: '90%', createTime: '2021-02-05 12:00:00' },
-        { id: '5', repertoryName: '四号仓库', productType: '电子产品', productName: '手机', joinAmount: 150, pass: '90%', createTime: '2021-02-05 12:00:00' },
-        { id: '6', repertoryName: '五号仓库', productType: '电子产品', productName: '手机', joinAmount: 150, pass: '90%', createTime: '2021-02-05 12:00:00' },
-        { id: '7', repertoryName: '五号仓库', productType: '电子产品', productName: '手机', joinAmount: 150, pass: '90%', createTime: '2021-02-05 12:00:00' },
-        { id: '8', repertoryName: '五号仓库', productType: '电子产品', productName: '手机', joinAmount: 150, pass: '90%', createTime: '2021-02-05 12:00:00' },
-        { id: '9', repertoryName: '五号仓库', productType: '电子产品', productName: '手机', joinAmount: 150, pass: '90%', createTime: '2021-02-05 12:00:00' },
-        { id: '10', repertoryName: '五号仓库', productType: '电子产品', productName: '手机', joinAmount: 150, pass: '90%', createTime: '2021-02-05 12:00:00' },
-        { id: '11', repertoryName: '五号仓库', productType: '电子产品', productName: '耳机', joinAmount: 200, pass: '95%', createTime: '2021-03-10 14:30:45' }
-        // ... 其他数据
+        {
+          id: '1',
+          repertoryName: '一号仓库',
+          productType: '粮食',
+          productName: '小麦',
+          joinAmount: 1500,
+          pass: '95%',
+          createTime: '2024-10-20 10:00:00',
+          account: 'admin'
+        },
+        {
+          id: '2',
+          repertoryName: '二号仓库',
+          productType: '粮食',
+          productName: '大米',
+          joinAmount: 2000,
+          pass: '97%',
+          createTime: '2024-10-19 14:30:00',
+          account: 'admin'
+        },
+        {
+          id: '3',
+          repertoryName: '三号仓库',
+          productType: '粮食',
+          productName: '玉米',
+          joinAmount: 1800,
+          pass: '94%',
+          createTime: '2024-10-18 09:15:00',
+          account: 'admin'
+        },
+        {
+          id: '4',
+          repertoryName: '四号仓库',
+          productType: '粮食',
+          productName: '大豆',
+          joinAmount: 1200,
+          pass: '92%',
+          createTime: '2024-10-17 16:45:00',
+          account: 'admin'
+        },
+        {
+          id: '5',
+          repertoryName: '五号仓库',
+          productType: '粮食',
+          productName: '燕麦',
+          joinAmount: 900,
+          pass: '90%',
+          createTime: '2024-10-16 11:20:00',
+          account: 'admin'
+        },
+        {
+          id: '6',
+          repertoryName: '一号仓库',
+          productType: '粮食',
+          productName: '高粱',
+          joinAmount: 1100,
+          pass: '93%',
+          createTime: '2024-10-15 08:50:00',
+          account: 'admin'
+        },
+        {
+          id: '7',
+          repertoryName: '二号仓库',
+          productType: '粮食',
+          productName: '荞麦',
+          joinAmount: 700,
+          pass: '88%',
+          createTime: '2024-10-14 13:05:00',
+          account: 'admin'
+        },
+        {
+          id: '8',
+          repertoryName: '三号仓库',
+          productType: '粮食',
+          productName: '大麦',
+          joinAmount: 1300,
+          pass: '91%',
+          createTime: '2024-10-13 15:25:00',
+          account: 'admin'
+        },
+        {
+          id: '9',
+          repertoryName: '四号仓库',
+          productType: '粮食',
+          productName: '米粉',
+          joinAmount: 850,
+          pass: '89%',
+          createTime: '2024-10-12 10:10:00',
+          account: 'admin'
+        },
+        {
+          id: '10',
+          repertoryName: '五号仓库',
+          productType: '粮食',
+          productName: '面粉',
+          joinAmount: 1000,
+          pass: '96%',
+          createTime: '2024-10-11 17:40:00',
+          account: 'admin'
+        },
+        {
+          id: '11',
+          repertoryName: '一号仓库',
+          productType: '粮食',
+          productName: '红米',
+          joinAmount: 1600,
+          pass: '95%',
+          createTime: '2024-10-09 11:30:00',
+          account: 'admin'
+        },
+        {
+          id: '12',
+          repertoryName: '二号仓库',
+          productType: '粮食',
+          productName: '荞麦面',
+          joinAmount: 400,
+          pass: '85%',
+          createTime: '2024-10-08 09:00:00',
+          account: 'admin'
+        }
       ],
       newdata: [],
       zhongjianshuju: [], // 存储查询结果

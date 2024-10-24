@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     tiaozhuangdaping() {
-      window.open('http://192.168.47.13:8080/#/de-link/ZELfp0cH')
+      window.open('http://192.168.169.157:8080/#/de-link/YCJy7F8Z')
     },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
