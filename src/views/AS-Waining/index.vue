@@ -19,9 +19,10 @@
       </el-form-item> -->
       <el-form-item>
         <el-badge :value="weidu.length">
-          <el-button type="primary" class="xiaoxi" @click="xuigaijiluzhuangtai">消息</el-button>
+          <el-button type="primary" class="xiaoxi" @click="yidu">消息</el-button>
         </el-badge>
       </el-form-item>
+      <el-button type="primary" class="xiaoxi" @click="wei">未读</el-button>
     </el-form>
     <el-table
       :data="newdata"
@@ -277,10 +278,23 @@ export default {
       console.log('数据', this.tableData)
       console.log('未读数据', this.weidu)
     },
-    async xuigaijiluzhuangtai() {
+    async yidu() {
       try {
         const json = {
           status: 1
+        }
+        const ref = await querenyidu(json)
+        console.log('返回值', ref)
+        this.chushihua()
+        this.weidushuju()
+      } catch (error) {
+        console.log('错误', error)
+      }
+    },
+    async wei() {
+      try {
+        const json = {
+          status: 0
         }
         const ref = await querenyidu(json)
         console.log('返回值', ref)
@@ -352,6 +366,15 @@ export default {
   }
 }
 </script>
+<style>
+.el-table .warning-row {
+    background: oldlace;
+  }
+
+.el-table .success-row {
+    background: #f0f9eb;
+  }
+</style>
 <style scoped>
 .el-select{
   width: 17vw;
@@ -402,12 +425,4 @@ export default {
 .xiaoxi{
   margin-bottom: 10px;
 }
-.el-table .warning-row {
-    background: oldlace;
-  }
-
-  .el-table .success-row {
-    background: #f0f9eb;
-  }
 </style>
-
