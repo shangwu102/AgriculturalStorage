@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
-        <el-select v-model="value" placeholder="请选择" @change="chaxun">
+        <el-select v-model="value" placeholder="请选择" @change="query">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -12,10 +12,10 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="sousuo" placeholder="请输入摄像头名称">''</el-input>
+        <el-input v-model="search" placeholder="请输入摄像头名称">''</el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="chaxun">搜索</el-button>
+        <el-button type="primary" @click="query">搜索</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -58,28 +58,28 @@
         width="200px"
       >
         <template slot-scope="scope">
-          <el-button size="small" type="warning" @click="chongmm(scope.row)">重命名</el-button>
+          <el-button size="small" type="warning" @click="rename(scope.row)">重命名</el-button>
           <el-button size="small" type="primary">视频查看</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="重命名" :visible.sync="chongmmxs">
-      <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="chongmingming">
+    <el-dialog title="重命名" :visible.sync="renameDisplay">
+      <el-form :model="currentRowData" :rules="formDataVerification1" class="chongmingming">
         <el-form-item label="摄像头名称" prop="cameraName">
-          <el-input v-model="dangqianhangshuju.cameraName" placeholder="请输入内容" />
+          <el-input v-model="currentRowData.cameraName" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="chongmmxs = false">取 消</el-button>
-        <el-button type="primary" @click="chongmmqr()">确 定</el-button>
+        <el-button @click="renameDisplay = false">取 消</el-button>
+        <el-button type="primary" @click="renameConfirmation()">确 定</el-button>
       </div>
     </el-dialog>
-    <div class="yema">
+    <div class="pageNumber">
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="zhongjianshuju.length"
-        :current-page.sync="dangqianyema"
+        :total="intermediateData.length"
+        :current-page.sync="currentPageNumber"
         @current-change="handlePageChange"
       />
     </div>
@@ -237,10 +237,10 @@ export default {
       }
     ]
 
-    const newrukuxx = {
+    const formData = {
       repertoryName: ''
     }
-    const newrukuxxjianyan = {
+    const formDataVerification = {
       repertoryName: [{ required: true, message: '请输入仓库名称', trigger: 'blur' }],
       productType: [{ required: true, message: '请输入产品类型', trigger: 'blur' }],
       productName: [{ required: true, message: '请输入产品名称', trigger: 'blur' }],
@@ -249,38 +249,38 @@ export default {
       createTime: [{ required: true, message: '请输入入库时间', trigger: 'blur' }],
       account: [{ required: true, message: '请输入操作账号', trigger: 'blur' }]
     }
-    const newrukuxxjianyan1 = {
+    const formDataVerification1 = {
       cameraName: [{ required: true, message: '请输入摄像头名称', trigger: 'blur' }]
     }
     return {
       options: options,
       value: '',
-      sousuo: '',
+      search: '',
       tableData: tableData,
       newdata: [],
-      zhongjianshuju: '',
+      intermediateData: '',
       dialogFormVisible: false,
-      form: newrukuxx,
-      shujujianyan: newrukuxxjianyan,
-      shujujianyan1: newrukuxxjianyan1,
-      chongmmxs: false,
-      dangqianyema: 1,
+      form: formData,
+      formDataVerification: formDataVerification,
+      formDataVerification1: formDataVerification1,
+      renameDisplay: false,
+      currentPageNumber: 1,
       activeName: 'chuangganqi',
-      dangqianhangshuju: '',
-      cmmmc: ''
+      currentRowData: '',
+      renameName: ''
     }
   },
   created() {
-    this.chushihua()
+    this.initialization()
   },
   methods: {
-    async chongmmqr() {
-      if (!this.dangqianhangshuju.cameraName) {
+    async renameConfirmation() {
+      if (!this.currentRowData.cameraName) {
         this.$message.error('请输入摄像头名称')
-        this.dangqianhangshuju.cameraName = this.cmmmc
+        this.currentRowData.cameraName = this.renameName
       } else {
         try {
-          const e = this.dangqianhangshuju
+          const e = this.currentRowData
           console.log('重命名', e)
           const json = {
             id: e.id,
@@ -293,21 +293,21 @@ export default {
           })
           console.log(json)
           console.log(ref)
-          this.chushihua()
+          this.initialization()
         } catch (error) {
           console.log('错误', error)
         }
-        console.log(this.dangqianhangshuju)
-        this.chongmmxs = false
+        console.log(this.currentRowData)
+        this.renameDisplay = false
       }
     },
-    chongmm(e) {
-      this.cmmmc = e.cameraName
-      this.chongmmxs = true
-      this.dangqianhangshuju = JSON.parse(JSON.stringify(e))
-      console.log('当前行', this.dangqianhangshuju)
+    rename(e) {
+      this.renameName = e.cameraName
+      this.renameDisplay = true
+      this.currentRowData = JSON.parse(JSON.stringify(e))
+      console.log('当前行', this.currentRowData)
     },
-    async chushihua() {
+    async initialization() {
       try {
         const ref = await sxtsbhq()
         console.log('原始', this.tableData)
@@ -317,50 +317,50 @@ export default {
       } catch (error) {
         console.log('错误', error)
       }
-      this.huqushuju()
-      this.chaxun()
+      this.getData()
+      this.query()
     },
-    huqushuju() {
+    getData() {
       this.newdata = this.tableData
     },
-    chaxun() {
+    query() {
       const newdata = []
       this.tableData.forEach(item => {
-        if (item.cameraCount === this.value && item.cameraName.includes(this.sousuo)) {
+        if (item.cameraCount === this.value && item.cameraName.includes(this.search)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (item.cameraCount === this.value && this.sousuo === '') {
+        } else if (item.cameraCount === this.value && this.search === '') {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (this.value === '' && item.cameraName.includes(this.sousuo)) {
+        } else if (this.value === '' && item.cameraName.includes(this.search)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (this.value === '' && this.sousuo === '') {
+        } else if (this.value === '' && this.search === '') {
           newdata.push(item)
           console.log('搜索成功')
         }
       }
       )
       console.log('搜索后的结果', newdata)
-      this.zhongjianshuju = newdata
-      console.log('中间', this.zhongjianshuju)
-      this.dangqianyema = 1
-      this.fenye(1)
+      this.intermediateData = newdata
+      console.log('中间', this.intermediateData)
+      this.currentPageNumber = 1
+      this.paging(1)
     },
     handlePageChange(ym) {
       console.log(ym)
       this.currentPage = ym
-      this.fenye(ym)
+      this.paging(ym)
     },
-    fenye(e) {
+    paging(e) {
       this.newdata = []
       for (let i = (e - 1) * 10; i < ((e - 1) * 10) + 10; i++) {
-        console.log(`第${e}页的数据${i}`, this.zhongjianshuju[i])
-        if (this.zhongjianshuju[i] === undefined) {
+        console.log(`第${e}页的数据${i}`, this.intermediateData[i])
+        if (this.intermediateData[i] === undefined) {
           console.warn(`字段未定义，值为 undefined`)
           break
         } else {
-          this.newdata.push(this.zhongjianshuju[i])
+          this.newdata.push(this.intermediateData[i])
         }
       }
       console.log('分页数据', this.newdata)
@@ -379,7 +379,7 @@ export default {
 .el-select{
   width: 17vw;
 }
-.yema{
+.pageNumber{
   /* border: 1px solid red; */
   /* position: absolute;
   bottom: 0px ;
@@ -400,11 +400,11 @@ export default {
 .el-input {
   width: 17vw;
 }
-.diyi{
+.first{
   display: flex;
   justify-content: space-between;
 }
-.dier{
+.second{
   display: flex;
   justify-content: space-between;
 

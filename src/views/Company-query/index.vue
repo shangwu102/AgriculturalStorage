@@ -2,15 +2,15 @@
   <div class="app-container">
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
-        <el-select v-model="value" placeholder="请选择仓库" @change="chaxun">
+        <el-select v-model="value" placeholder="请选择仓库" @change="query">
           <el-option v-for="item in options" :key="item.value" :label="item.name" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="sousuo" placeholder="请输入产品名称">''</el-input>
+        <el-input v-model="search" placeholder="请输入产品名称">''</el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="chaxun">搜索</el-button>
+        <el-button type="primary" @click="query">搜索</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="newdata" style="width: 100%" border :row-style="{ height: '64px' }">
@@ -22,12 +22,12 @@
       <el-table-column prop="pass" label="仓库负责人" />
       <el-table-column prop="createTime" label="入库时间" />
     </el-table>
-    <div class="yema">
+    <div class="pageNumber">
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="zhongjianshuju.length"
-        :current-page.sync="dangqianyema"
+        :total="intermediateData.length"
+        :current-page.sync="currentPageNumber"
         @current-change="handlePageChange"
       />
     </div>
@@ -46,7 +46,7 @@ export default {
         { value: '5', name: '五号仓库' }
       ],
       value: '', // 仓库选择
-      sousuo: '', // 产品搜索输入
+      search: '', // 产品搜索输入
       tableData: [
         {
           'id': '1',
@@ -170,35 +170,35 @@ export default {
         }
       ],
       newdata: [],
-      zhongjianshuju: [], // 存储查询结果
-      dangqianyema: 1 // 当前页码
+      intermediateData: [], // 存储查询结果
+      currentPageNumber: 1 // 当前页码
     }
   },
   created() {
-    this.huqushuju()
+    this.getData()
   },
   methods: {
-    huqushuju() {
+    getData() {
       this.newdata = this.tableData
-      this.zhongjianshuju = this.tableData
-      this.fenye(1)
+      this.intermediateData = this.tableData
+      this.paging(1)
     },
-    chaxun() {
+    query() {
       const newdata = this.tableData.filter(item => {
         const matchesWarehouse = !this.value || item.repertoryName === this.options.find(opt => opt.value === this.value).name
-        const matchesProduct = !this.sousuo || item.productName.includes(this.sousuo)
+        const matchesProduct = !this.search || item.productName.includes(this.search)
         return matchesWarehouse && matchesProduct
       })
-      this.zhongjianshuju = newdata
-      this.dangqianyema = 1
-      this.fenye(1)
+      this.intermediateData = newdata
+      this.currentPageNumber = 1
+      this.paging(1)
     },
     handlePageChange(ym) {
-      this.dangqianyema = ym
-      this.fenye(ym)
+      this.currentPageNumber = ym
+      this.paging(ym)
     },
-    fenye(e) {
-      this.newdata = this.zhongjianshuju.slice((e - 1) * 10, e * 10)
+    paging(e) {
+      this.newdata = this.intermediateData.slice((e - 1) * 10, e * 10)
     }
   }
 }
@@ -209,7 +209,7 @@ export default {
   width: 17vw;
 }
 
-.yema {
+.pageNumber {
   height: 6vh;
   display: flex;
   justify-content: center;

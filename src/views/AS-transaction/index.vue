@@ -3,10 +3,10 @@
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
         <el-form-item label="TxHash">
-          <el-input v-model="sousuo" />
+          <el-input v-model="search" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="chaxun">搜索</el-button>
+          <el-button type="primary" @click="query">搜索</el-button>
         </el-form-item>
       </el-form-item></el-form>
     <el-table :data="newdata" style="width: 100%" border :row-style="{ height: '64px' }">
@@ -16,12 +16,12 @@
       <el-table-column prop="orderStatus" label="订单状态" width="155" />
       <el-table-column prop="createTime" label="提交时间" />
     </el-table>
-    <div class="yema">
+    <div class="pageNumber">
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="zhongjianshuju.length"
-        :current-page.sync="dangqianyema"
+        :total="intermediateData.length"
+        :current-page.sync="currentPageNumber"
         @current-change="handlePageChange"
       />
     </div>
@@ -32,7 +32,7 @@
 export default {
   data() {
     return {
-      sousuo: '',
+      search: '',
       tableData: [
         { id: '1', repertoryName: '0x887e3520f06156498d2d83207ef96d6b83c5ea001ce8072e0f89fca7982c50d', createTime: '2021-02-15 12:24:27', recipientAddress: '0x1BB611c5e9cEF84aCF3065B1b1eb128e3057E665', orderStatus: '待发货' },
         { id: '2', repertoryName: '0x721fa75f639f62569d98d0826f2b450094e85041431c44458d8b3d06dc2cea', createTime: '2021-02-16 14:24:29', recipientAddress: '0xADe2DEa5c8A206C69778836dEE9986fFbACbD4B', orderStatus: '已发货' },
@@ -48,32 +48,32 @@ export default {
         { id: '12', repertoryName: '0x721fa75f639f62569d98d0826f2b450094e85041431c44458d8b3d06dc2cea', createTime: '2021-02-16 14:24:29', recipientAddress: '0xADe2DEa5c8A206C69778836dEE9986fFbACbD4B', orderStatus: '已发货' }
         // 更多数据省略...
       ],
-      zhongjianshuju: [],
+      intermediateData: [],
       newdata: [],
-      dangqianyema: 1
+      currentPageNumber: 1
     }
   },
   created() {
-    this.chaxun()
+    this.query()
   },
   methods: {
-    chaxun() {
-      this.zhongjianshuju = this.tableData.filter(item => {
+    query() {
+      this.intermediateData = this.tableData.filter(item => {
         return (
-          item.repertoryName.includes(this.sousuo) ||
-          item.recipientAddress.includes(this.sousuo)
+          item.repertoryName.includes(this.search) ||
+          item.recipientAddress.includes(this.search)
         )
       })
-      this.fenye(1)
+      this.paging(1)
     },
     handlePageChange(page) {
-      this.fenye(page)
+      this.paging(page)
     },
-    fenye(page) {
+    paging(page) {
       const pageSize = 10
       const start = (page - 1) * pageSize
       const end = page * pageSize
-      this.newdata = this.zhongjianshuju.slice(start, end)
+      this.newdata = this.intermediateData.slice(start, end)
     }
   }
 }
@@ -84,7 +84,7 @@ export default {
   width: 17vw;
 }
 
-.yema {
+.pageNumber {
   height: 6vh;
   display: flex;
   justify-content: center;
