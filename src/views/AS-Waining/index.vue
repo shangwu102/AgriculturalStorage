@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
-        <el-select v-model="value" placeholder="请选择" @change="chaxun">
+        <el-select v-model="value" placeholder="请选择" @change="query">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -12,17 +12,17 @@
         </el-select>
       </el-form-item>
       <!-- <el-form-item>
-        <el-input v-model="sousuo" placeholder="请输入区域名称">''</el-input>
+        <el-input v-model="search" placeholder="请输入区域名称">''</el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="chaxun">搜索</el-button>
+        <el-button type="primary" @click="query">搜索</el-button>
       </el-form-item> -->
       <el-form-item>
-        <el-badge :value="weidu.length">
-          <el-button type="primary" class="xiaoxi" @click="yidu">消息</el-button>
+        <el-badge :value="unread.length">
+          <el-button type="primary" class="xiaoxi" @click="setTheStatusToRead">消息</el-button>
         </el-badge>
       </el-form-item>
-      <el-button type="primary" class="xiaoxi" @click="wei">未读</el-button>
+      <el-button type="primary" class="xiaoxi" @click="setTheStatusToUnread">未读</el-button>
     </el-form>
     <el-table
       :data="newdata"
@@ -82,12 +82,12 @@
         </el-drawer>
       </el-table-column> -->
     </el-table>
-    <div class="yema">
+    <div class="pageNumber">
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="zhongjianshuju.length"
-        :current-page.sync="dangqianyema"
+        :total="intermediateData.length"
+        :current-page.sync="currentPageNumber"
         @current-change="handlePageChange"
       />
     </div>
@@ -226,7 +226,7 @@ export default {
       }
     ]
 
-    const newrukuxx = {
+    const formData = {
       repertoryName: '',
       productType: '',
       productName: '',
@@ -235,7 +235,7 @@ export default {
       createTime: '',
       account: ''
     }
-    const newrukuxxjianyan = {
+    const formDataVerification = {
       repertoryName: [{ required: true, message: '请输入仓库名称', trigger: 'blur' }],
       productType: [{ required: true, message: '请输入产品类型', trigger: 'blur' }],
       productName: [{ required: true, message: '请输入产品名称', trigger: 'blur' }],
@@ -247,20 +247,20 @@ export default {
     return {
       options: options,
       value: '',
-      sousuo: '',
+      search: '',
       tableData: tableData,
       newdata: [],
-      zhongjianshuju: '',
+      intermediateData: '',
       dialogFormVisible: false,
-      form: newrukuxx,
-      shujujianyan: newrukuxxjianyan,
+      form: formData,
+      formDataVerification: formDataVerification,
       table: true,
-      dangqianyema: 1,
-      weidu: []
+      currentPageNumber: 1,
+      unread: []
     }
   },
   created() {
-    this.chushihua()
+    this.initialization()
   },
   methods: {
     shifouyidu(row) {
@@ -271,94 +271,94 @@ export default {
         return 'warning-row'
       }
     },
-    weidushuju() {
-      this.weidu = this.tableData.filter(e => {
+    unreadData() {
+      this.unread = this.tableData.filter(e => {
         return e.status === 0
       })
       console.log('数据', this.tableData)
-      console.log('未读数据', this.weidu)
+      console.log('未读数据', this.unread)
     },
-    async yidu() {
+    async setTheStatusToRead() {
       try {
         const json = {
           status: 1
         }
         const ref = await querenyidu(json)
         console.log('返回值', ref)
-        this.chushihua()
-        this.weidushuju()
+        this.initialization()
+        this.unreadData()
       } catch (error) {
         console.log('错误', error)
       }
     },
-    async wei() {
+    async setTheStatusToUnread() {
       try {
         const json = {
           status: 0
         }
         const ref = await querenyidu(json)
         console.log('返回值', ref)
-        this.chushihua()
-        this.weidushuju()
+        this.initialization()
+        this.unreadData()
       } catch (error) {
         console.log('错误', error)
       }
     },
-    async chushihua() {
+    async initialization() {
       try {
         const ref = await yujingxinxi()
         console.log('原始', this.tableData)
         console.log('数据', ref)
         this.tableData = ref.data.data
         console.log('修改后', this.tableData)
-        this.weidushuju()
+        this.unreadData()
       } catch (error) {
         console.log('错误', error)
       }
-      this.huqushuju()
-      this.chaxun()
+      this.getData()
+      this.query()
     },
-    huqushuju() {
+    getData() {
       this.newdata = this.tableData
     },
-    chaxun() {
+    query() {
       const newdata = []
       this.tableData.forEach(item => {
-        if (item.warnCome === this.value && item.warnStore.includes(this.sousuo)) {
+        if (item.warnCome === this.value && item.warnStore.includes(this.search)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (item.warnCome === this.value && this.sousuo === '') {
+        } else if (item.warnCome === this.value && this.search === '') {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (this.value === '' && item.warnStore.includes(this.sousuo)) {
+        } else if (this.value === '' && item.warnStore.includes(this.search)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (this.value === '' && this.sousuo === '') {
+        } else if (this.value === '' && this.search === '') {
           newdata.push(item)
           console.log('搜索成功')
         }
       }
       )
       console.log(newdata)
-      this.zhongjianshuju = newdata
-      console.log('中间', this.zhongjianshuju)
-      this.dangqianyema = 1
-      this.fenye(1)
+      this.intermediateData = newdata
+      console.log('中间', this.intermediateData)
+      this.currentPageNumber = 1
+      this.paging(1)
     },
     handlePageChange(ym) {
       console.log(ym)
       this.currentPage = ym
-      this.fenye(ym)
+      this.paging(ym)
     },
-    fenye(e) {
+    paging(e) {
       this.newdata = []
       for (let i = (e - 1) * 10; i < ((e - 1) * 10) + 10; i++) {
-        console.log(this.zhongjianshuju[i])
-        if (this.zhongjianshuju[i] === undefined) {
+        console.log(this.intermediateData[i])
+        if (this.intermediateData[i] === undefined) {
           console.warn(`字段未定义，值为 undefined`)
           break
         } else {
-          this.newdata.push(this.zhongjianshuju[i])
+          this.newdata.push(this.intermediateData[i])
         }
       }
       console.log('分页数据', this.newdata)
@@ -368,7 +368,8 @@ export default {
 </script>
 <style>
 .el-table .warning-row {
-    background: oldlace;
+    background: rgba(255, 124, 48, 0.824);
+    /* color: #ffff; */
   }
 
 .el-table .success-row {
@@ -379,7 +380,7 @@ export default {
 .el-select{
   width: 17vw;
 }
-.yema{
+.pageNumber{
   /* border: 1px solid red; */
   /* position: absolute;
   bottom: 0px ;
@@ -400,11 +401,11 @@ export default {
 .el-input {
   width: 17vw;
 }
-.diyi{
+.first{
   display: flex;
   justify-content: space-between;
 }
-.dier{
+.second{
   display: flex;
   justify-content: space-between;
 

@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
-        <el-select v-model="value" placeholder="请选择" @change="chaxun">
+        <el-select v-model="value" placeholder="请选择" @change="query">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -12,10 +12,10 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="sousuo" placeholder="请输入控制器名称">''</el-input>
+        <el-input v-model="search" placeholder="请输入控制器名称">''</el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="chaxun">搜索</el-button>
+        <el-button type="primary" @click="query">搜索</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -69,8 +69,8 @@
         width="270px"
       >
         <template slot-scope="scope">
-          <el-button size="small" type="success" @click="shezhi(scope.row)">设置</el-button>
-          <el-button size="small" type="warning" @click="chongmm(scope.row)">重命名</el-button>
+          <el-button size="small" type="success" @click="setUp(scope.row)">设置</el-button>
+          <el-button size="small" type="warning" @click="rename(scope.row)">重命名</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -81,7 +81,7 @@
       size="50%"
     >
       <div class="celan">
-        <el-button type="primary" @click="xinzeng()">新增设置</el-button>
+        <el-button type="primary" @click="newlyAdded()">新增设置</el-button>
         <br>
         <br>
         <h3 class="el-icon-alarm-clock">定时</h3>
@@ -93,8 +93,8 @@
           <el-table-column property="controllerCycle" label="循环周期" />
           <el-table-column width="140px" label="操作">
             <template slot-scope="szscope">
-              <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
-              <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
+              <el-button size="small" type="warning" icon="el-icon-edit" @click="modify(szscope.row)" />
+              <el-button size="small" type="danger" icon="el-icon-delete" @click="deleteSettings(szscope.row)" />
             </template>
           </el-table-column>
         </el-table>
@@ -111,8 +111,8 @@
           <el-table-column property="controllerCycle" label="循环周期" />
           <el-table-column width="140px" label="操作">
             <template slot-scope="szscope">
-              <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
-              <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
+              <el-button size="small" type="warning" icon="el-icon-edit" @click="modify(szscope.row)" />
+              <el-button size="small" type="danger" icon="el-icon-delete" @click="deleteSettings(szscope.row)" />
             </template>
           </el-table-column>
         </el-table>
@@ -130,15 +130,15 @@
           <el-table-column property="controllerStatus" label="状态" />
           <el-table-column width="140px" label="操作">
             <template slot-scope="szscope">
-              <el-button size="small" type="warning" icon="el-icon-edit" @click="xuigai(szscope.row)" />
-              <el-button size="small" type="danger" icon="el-icon-delete" @click="shanchushezhi(szscope.row)" />
+              <el-button size="small" type="warning" icon="el-icon-edit" @click="modify(szscope.row)" />
+              <el-button size="small" type="danger" icon="el-icon-delete" @click="deleteSettings(szscope.row)" />
             </template>
           </el-table-column>
         </el-table>
       </div>
     </el-drawer>
     <el-dialog width="30vw" title="新增控制器设置" :visible.sync="dialogFormVisible">
-      <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
+      <el-form :model="form" :rules="formDataVerification" class="addNewData">
         <div class="if">
           <el-form-item label-width="130px" label="控制类型">
             <el-select v-model="form.kzqType" placeholder="请选择">
@@ -294,7 +294,7 @@
           >
             <el-select v-model="form.controllerStatus" placeholder="请选择">
               <el-option
-                v-for="item in zt"
+                v-for="item in state"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -318,13 +318,13 @@
           </el-form-item>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="xinzengqr()">确 定</el-button>
+            <el-button type="primary" @click="addConfirmation()">确 定</el-button>
           </div>
         </div>
       </el-form>
     </el-dialog>
-    <el-dialog width="30vw" title="修改设置" :visible.sync="xuigaixs">
-      <el-form :model="form" :rules="shujujianyan" class="xinzenshuju">
+    <el-dialog width="30vw" title="修改设置" :visible.sync="modifyDisplay">
+      <el-form :model="form" :rules="formDataVerification" class="addNewData">
         <div class="if">
           <el-form-item label-width="130px" label="控制类型">
             <el-select v-model="form.kzqType" placeholder="请选择">
@@ -480,7 +480,7 @@
           >
             <el-select v-model="form.controllerStatus" placeholder="请选择">
               <el-option
-                v-for="item in zt"
+                v-for="item in state"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -503,29 +503,29 @@
             </el-select>
           </el-form-item>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="xuigaixs = false">取 消</el-button>
-            <el-button type="primary" @click="xuigaiqr()">确 定</el-button>
+            <el-button @click="modifyDisplay = false">取 消</el-button>
+            <el-button type="primary" @click="modificationConfirmation()">确 定</el-button>
           </div>
         </div>
       </el-form>
     </el-dialog>
-    <el-dialog title="重命名" :visible.sync="chongmmxs">
-      <el-form :model="dangqianhangshuju" :rules="shujujianyan1" class="chongmingming">
+    <el-dialog title="重命名" :visible.sync="renameDisplay">
+      <el-form :model="currentRowData" :rules="formDataVerification1" class="chongmingming">
         <el-form-item label="控制器名称" prop="controllerName">
-          <el-input v-model="dangqianhangshuju.controllerName" placeholder="请输入内容" />
+          <el-input v-model="currentRowData.controllerName" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="chongmmxs = false">取 消</el-button>
-        <el-button type="primary" @click="chongmmqr()">确 定</el-button>
+        <el-button @click="renameDisplay = false">取 消</el-button>
+        <el-button type="primary" @click="renameConfirmation()">确 定</el-button>
       </div>
     </el-dialog>
-    <div class="yema">
+    <div class="pageNumber">
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="zhongjianshuju.length"
-        :current-page.sync="dangqianyema"
+        :total="intermediateData.length"
+        :current-page.sync="currentPageNumber"
         @current-change="handlePageChange"
       />
     </div>
@@ -666,7 +666,7 @@ export default {
       }
     ]
 
-    const newrukuxx = {
+    const formData = {
       kzqType: 'type1',
       controllerOpentime: '',
       controllerEndtime: '',
@@ -683,7 +683,7 @@ export default {
       controllerConditionvalue: '',
       controllerOffvalue: ''
     }
-    const newrukuxxcz = {
+    const formDataReset = {
       kzqType: 'type1',
       controllerOpentime: '',
       controllerEndtime: '',
@@ -700,7 +700,7 @@ export default {
       controllerConditionvalue: '',
       controllerOffvalue: ''
     }
-    const newrukuxxjianyan = {
+    const formDataVerification = {
       controllerOpentime: [{ required: true, message: '请输入开启时间', trigger: 'blur' }],
       controllerEndtime: [{ required: true, message: '请输入关闭时间', trigger: 'blur' }],
       controllerCount: [{ required: true, message: '请输入循环次数', trigger: 'blur' }],
@@ -717,7 +717,7 @@ export default {
       controllerOffvalue: [{ required: true, message: '请输入关闭条件数值', trigger: 'blur' }]
 
     }
-    const newrukuxxjianyan1 = {
+    const formDataVerification1 = {
       controllerName: [{ required: true, message: '请输入控制器名称', trigger: 'blur' }]
     }
     const gridData1 = [
@@ -824,7 +824,7 @@ export default {
         label: '小于'
       }
     ]
-    const zt = [
+    const state = [
       {
         value: '开启',
         label: '开启'
@@ -877,46 +877,46 @@ export default {
     return {
       options: options,
       value: '',
-      sousuo: '',
+      search: '',
       tableData: tableData,
       newdata: [],
-      zhongjianshuju: '',
+      intermediateData: '',
       dialogFormVisible: false,
-      form: newrukuxx,
-      fromcz: newrukuxxcz,
-      shujujianyan: newrukuxxjianyan,
-      shujujianyan1: newrukuxxjianyan1,
+      form: formData,
+      formDataReset: formDataReset,
+      formDataVerification: formDataVerification,
+      formDataVerification1: formDataVerification1,
       table: false,
-      dangqianyema: 1,
+      currentPageNumber: 1,
       activeName: 'chuangganqi',
       kzqzt: true,
-      dangqianhangshuju: '',
+      currentRowData: '',
       gridData1: gridData1,
       gridData2: gridData2,
       gridData3: gridData3,
-      shezhidqhsj: '',
-      xuigaixs: false,
-      chongmmxs: false,
+      setCurrentRowData: '',
+      modifyDisplay: false,
+      renameDisplay: false,
       leixing: leixing,
       cgqmc: cgqmc,
       tj: tj,
-      zt: zt,
+      state: state,
       xhjslx: xhjslx,
       xhzq: xhzq,
-      cmmmc: ''
+      renameName: ''
     }
   },
   created() {
-    this.chushihua()
+    this.initialization()
   },
   methods: {
-    async chongmmqr() {
-      if (!this.dangqianhangshuju.controllerName) {
+    async renameConfirmation() {
+      if (!this.currentRowData.controllerName) {
         this.$message.error('请输入控制器名称')
-        this.dangqianhangshuju.controllerName = this.cmmmc
+        this.currentRowData.controllerName = this.renameName
       } else {
         try {
-          const e = this.dangqianhangshuju
+          const e = this.currentRowData
           console.log('重命名', e)
           const json = {
             id: e.id,
@@ -929,21 +929,21 @@ export default {
           })
           console.log(json)
           console.log(ref)
-          this.chushihua()
+          this.initialization()
         } catch (error) {
           console.log('错误', error)
         }
-        console.log(this.dangqianhangshuju)
-        this.chongmmxs = false
+        console.log(this.currentRowData)
+        this.renameDisplay = false
       }
     },
-    chongmm(e) {
-      this.cmmmc = e.controllerName
-      this.chongmmxs = true
-      this.dangqianhangshuju = JSON.parse(JSON.stringify(e))
-      console.log('当前行', this.dangqianhangshuju)
+    rename(e) {
+      this.renameName = e.controllerName
+      this.renameDisplay = true
+      this.currentRowData = JSON.parse(JSON.stringify(e))
+      console.log('当前行', this.currentRowData)
     },
-    async shanchushezhi(e) {
+    async deleteSettings(e) {
       console.log('删除行', e)
       switch (e.kzqType) {
         case 'type1':
@@ -960,7 +960,7 @@ export default {
           } catch (error) {
             console.log('错误', error)
           }
-          this.shezhi(this.shezhidqhsj)
+          this.setUp(this.setCurrentRowData)
           break
 
         case 'type2':
@@ -977,7 +977,7 @@ export default {
           } catch (error) {
             console.log('错误', error)
           }
-          this.shezhi(this.shezhidqhsj)
+          this.setUp(this.setCurrentRowData)
           break
 
         case 'type3':
@@ -995,7 +995,7 @@ export default {
           } catch (error) {
             console.log('错误', error)
           }
-          this.shezhi(this.shezhidqhsj)
+          this.setUp(this.setCurrentRowData)
           break
       }
       // try {
@@ -1013,10 +1013,10 @@ export default {
       //   console.log('错误', error)
       // }
       // console.log('删除', e.id)
-      // this.shezhi(this.shezhidqhsj)
-      // this.shezhi(this.shezhidqhsj)
+      // this.setUp(this.setCurrentRowData)
+      // this.setUp(this.setCurrentRowData)
     },
-    async xuigaiqr() {
+    async modificationConfirmation() {
       switch (this.form.kzqType) {
         case 'type1':
           if (!this.form.controllerOpentime ||
@@ -1029,7 +1029,7 @@ export default {
             try {
               const form1 =
                 {
-                  sensorId: this.dangqianhangshuju.sensorId,
+                  sensorId: this.currentRowData.sensorId,
                   ...this.form
                 }
               const ref = await xgdssz(form1)
@@ -1041,11 +1041,11 @@ export default {
             } catch (error) {
               console.log('错误', error)
             }
-            this.form = JSON.parse(JSON.stringify(this.fromcz))
+            this.form = JSON.parse(JSON.stringify(this.formDataReset))
 
             console.log('修改后的数据', this.form)
-            this.xuigaixs = false
-            this.shezhi(this.shezhidqhsj)
+            this.modifyDisplay = false
+            this.setUp(this.setCurrentRowData)
           }
           break
 
@@ -1062,7 +1062,7 @@ export default {
             try {
               const form1 =
                 {
-                  sensorId: this.dangqianhangshuju.sensorId,
+                  sensorId: this.currentRowData.sensorId,
                   ...this.form
                 }
               const ref = await xgxhsz(form1)
@@ -1074,10 +1074,10 @@ export default {
             } catch (error) {
               console.log('错误', error)
             }
-            this.form = JSON.parse(JSON.stringify(this.fromcz))
+            this.form = JSON.parse(JSON.stringify(this.formDataReset))
             console.log('修改后的数据', this.form)
-            this.xuigaixs = false
-            this.shezhi(this.shezhidqhsj)
+            this.modifyDisplay = false
+            this.setUp(this.setCurrentRowData)
           }
           break
 
@@ -1097,7 +1097,7 @@ export default {
             try {
               const form1 =
                 {
-                  sensorId: this.dangqianhangshuju.sensorId,
+                  sensorId: this.currentRowData.sensorId,
                   ...this.form
                 }
               const ref = await xgznsz(form1)
@@ -1109,17 +1109,17 @@ export default {
             } catch (error) {
               console.log('错误', error)
             }
-            this.form = JSON.parse(JSON.stringify(this.fromcz))
+            this.form = JSON.parse(JSON.stringify(this.formDataReset))
 
             console.log('修改后的数据', this.form)
-            this.xuigaixs = false
-            this.shezhi(this.shezhidqhsj)
+            this.modifyDisplay = false
+            this.setUp(this.setCurrentRowData)
           }
           break
       }
     },
-    xuigai(e) {
-      this.xuigaixs = true
+    modify(e) {
+      this.modifyDisplay = true
       console.log('修改', e)
       this.form.sensorId = e.sensorId
       this.form.kzqType = e.kzqType
@@ -1140,8 +1140,8 @@ export default {
       console.log('初始化修改', this.form)
       console.log('当前行数据', e)
     },
-    async shezhi(e) {
-      this.shezhidqhsj = e
+    async setUp(e) {
+      this.setCurrentRowData = e
       console.log('当前行id', e.id)
       try {
         const json = {
@@ -1169,10 +1169,10 @@ export default {
       }
       this.table = true
       console.log('当前行数据', e)
-      this.dangqianhangshuju = e
-      console.log('新增那条数据的设置', this.dangqianhangshuju)
+      this.currentRowData = e
+      console.log('新增那条数据的设置', this.currentRowData)
     },
-    async xinzengqr() {
+    async addConfirmation() {
       switch (this.form.kzqType) {
         case 'type1':
           if (!this.form.controllerOpentime ||
@@ -1185,7 +1185,7 @@ export default {
             try {
               const form1 =
                 {
-                  id: this.dangqianhangshuju.id,
+                  id: this.currentRowData.id,
                   ...this.form
                 }
               const ref = await xzdssz(form1)
@@ -1198,9 +1198,9 @@ export default {
               console.log('错误', error)
             }
             console.log(this.form)
-            this.form = JSON.parse(JSON.stringify(this.fromcz))
+            this.form = JSON.parse(JSON.stringify(this.formDataReset))
             this.dialogFormVisible = false
-            this.shezhi(this.shezhidqhsj)
+            this.setUp(this.setCurrentRowData)
           }
           break
 
@@ -1217,7 +1217,7 @@ export default {
             try {
               const form1 =
                 {
-                  id: this.dangqianhangshuju.id,
+                  id: this.currentRowData.id,
                   ...this.form
                 }
               const ref = await xzxhsz(form1)
@@ -1230,9 +1230,9 @@ export default {
               console.log('错误', error)
             }
             console.log(this.form)
-            this.form = JSON.parse(JSON.stringify(this.fromcz))
+            this.form = JSON.parse(JSON.stringify(this.formDataReset))
             this.dialogFormVisible = false
-            this.shezhi(this.shezhidqhsj)
+            this.setUp(this.setCurrentRowData)
           }
           break
 
@@ -1251,7 +1251,7 @@ export default {
             try {
               const form1 =
                 {
-                  id: this.dangqianhangshuju.id,
+                  id: this.currentRowData.id,
                   ...this.form
                 }
               const ref = await xzznsz(form1)
@@ -1264,14 +1264,14 @@ export default {
               console.log('错误', error)
             }
             console.log(this.form)
-            this.form = JSON.parse(JSON.stringify(this.fromcz))
+            this.form = JSON.parse(JSON.stringify(this.formDataReset))
             this.dialogFormVisible = false
-            this.shezhi(this.shezhidqhsj)
+            this.setUp(this.setCurrentRowData)
           }
           break
       }
     },
-    async xinzeng() {
+    async newlyAdded() {
       try {
         const ref = await hqkzqmc()
         console.log('所有传感器名称', ref)
@@ -1286,12 +1286,12 @@ export default {
       } catch (error) {
         console.log('错误', error)
       }
-      console.log('重置数据', this.fromcz)
-      this.form = JSON.parse(JSON.stringify(this.fromcz))
+      console.log('重置数据', this.formDataReset)
+      this.form = JSON.parse(JSON.stringify(this.formDataReset))
       this.dialogFormVisible = true
-      console.log('新增那条数据的设置', this.dangqianhangshuju)
+      console.log('新增那条数据的设置', this.currentRowData)
     },
-    async chushihua() {
+    async initialization() {
       try {
         const ref = await kzqsbhq()
         console.log('原始', this.tableData)
@@ -1301,50 +1301,50 @@ export default {
       } catch (error) {
         console.log('错误', error)
       }
-      this.huqushuju()
-      this.chaxun()
+      this.getData()
+      this.query()
     },
-    huqushuju() {
+    getData() {
       this.newdata = this.tableData
     },
-    chaxun() {
+    query() {
       const newdata = []
       this.tableData.forEach(item => {
-        if (item.controllerStatus === this.value && item.controllerName.includes(this.sousuo)) {
+        if (item.controllerStatus === this.value && item.controllerName.includes(this.search)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (item.controllerStatus === this.value && this.sousuo === '') {
+        } else if (item.controllerStatus === this.value && this.search === '') {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (this.value === '' && item.controllerName.includes(this.sousuo)) {
+        } else if (this.value === '' && item.controllerName.includes(this.search)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (this.value === '' && this.sousuo === '') {
+        } else if (this.value === '' && this.search === '') {
           newdata.push(item)
           console.log('搜索成功')
         }
       }
       )
       console.log('搜索后的结果', newdata)
-      this.zhongjianshuju = newdata
-      console.log('中间', this.zhongjianshuju)
-      this.dangqianyema = 1
-      this.fenye(1)
+      this.intermediateData = newdata
+      console.log('中间', this.intermediateData)
+      this.currentPageNumber = 1
+      this.paging(1)
     },
     handlePageChange(ym) {
       console.log(ym)
       this.currentPage = ym
-      this.fenye(ym)
+      this.paging(ym)
     },
-    fenye(e) {
+    paging(e) {
       this.newdata = []
       for (let i = (e - 1) * 10; i < ((e - 1) * 10) + 10; i++) {
-        console.log(`第${e}页的数据${i}`, this.zhongjianshuju[i])
-        if (this.zhongjianshuju[i] === undefined) {
+        console.log(`第${e}页的数据${i}`, this.intermediateData[i])
+        if (this.intermediateData[i] === undefined) {
           console.warn(`字段未定义，值为 undefined`)
           break
         } else {
-          this.newdata.push(this.zhongjianshuju[i])
+          this.newdata.push(this.intermediateData[i])
         }
       }
       console.log('分页数据', this.newdata)
@@ -1374,7 +1374,7 @@ export default {
   text-align: right;
   padding-right: 30px;
 }
-.yema{
+.pageNumber{
   /* border: 1px solid red; */
   /* position: absolute;
   bottom: 0px ;
@@ -1385,7 +1385,7 @@ export default {
   justify-content: center;
   align-items:center;
 }
-.xinzenshuju{
+.addNewData{
   /* border: 7px solid red; */
   display: flex;
   flex-direction: column;
@@ -1399,11 +1399,11 @@ export default {
 .el-input {
   width: 17vw;
 }
-.diyi{
+.first{
   display: flex;
   flex-direction: column;
 }
-.dier{
+.second{
   display: flex;
   flex-direction: column;
 }

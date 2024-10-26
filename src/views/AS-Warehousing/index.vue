@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
-        <el-select v-model="value" placeholder="请选择" @change="chaxun">
+        <el-select v-model="value" placeholder="请选择" @change="query">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -12,10 +12,10 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="sousuo" placeholder="请输入产品姓名">''</el-input>
+        <el-input v-model="search" placeholder="请输入产品姓名">''</el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="chaxun">搜索</el-button>
+        <el-button type="primary" @click="query">搜索</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -55,12 +55,12 @@
         label="入库时间"
       />
     </el-table>
-    <div class="yema">
+    <div class="pageNumber">
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="zhongjianshuju.length"
-        :current-page.sync="dangqianyema"
+        :total="intermediateData.length"
+        :current-page.sync="currentPageNumber"
         @current-change="handlePageChange"
       />
     </div>
@@ -101,7 +101,7 @@ export default {
       }
     ]
 
-    const newrukuxx = {
+    const formData = {
       repertoryName: '',
       productType: '',
       productName: '',
@@ -110,7 +110,7 @@ export default {
       createTime: '',
       account: ''
     }
-    const newrukuxxjianyan = {
+    const formDataVerification = {
       repertoryName: [{ required: true, message: '请输入仓库名称', trigger: 'blur' }],
       productType: [{ required: true, message: '请输入产品类型', trigger: 'blur' }],
       productName: [{ required: true, message: '请输入产品名称', trigger: 'blur' }],
@@ -122,20 +122,20 @@ export default {
     return {
       options: options,
       value: '',
-      sousuo: '',
+      search: '',
       tableData: tableData,
       newdata: [],
       dialogFormVisible: false,
-      form: newrukuxx,
-      shujujianyan: newrukuxxjianyan,
+      form: formData,
+      formDataVerification: formDataVerification,
       table: true,
-      dangqianyema: 1
+      currentPageNumber: 1
     }
   },
   created() {
     this.qingqui()
-    this.huqushuju()
-    this.chaxun()
+    this.getData()
+    this.query()
   },
   methods: {
     async qingqui() {
@@ -146,47 +146,47 @@ export default {
         console.log('错误', error)
       }
     },
-    huqushuju() {
+    getData() {
       this.newdata = this.tableData
     },
-    chaxun() {
+    query() {
       const newdata = []
       this.tableData.forEach(item => {
-        if (item.repertoryName === this.value && item.productName.includes(this.sousuo)) {
+        if (item.repertoryName === this.value && item.productName.includes(this.search)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (item.repertoryName === this.value && this.sousuo === '') {
+        } else if (item.repertoryName === this.value && this.search === '') {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (this.value === '' && item.productName.includes(this.sousuo)) {
+        } else if (this.value === '' && item.productName.includes(this.search)) {
           newdata.push(item)
           console.log('搜索成功')
-        } else if (this.value === '' && this.sousuo === '') {
+        } else if (this.value === '' && this.search === '') {
           newdata.push(item)
           console.log('搜索成功')
         }
       },
       console.log(newdata)
       )
-      this.zhongjianshuju = newdata
-      console.log('中间', this.zhongjianshuju)
-      this.dangqianyema = 1
-      this.fenye(1)
+      this.intermediateData = newdata
+      console.log('中间', this.intermediateData)
+      this.currentPageNumber = 1
+      this.paging(1)
     },
     handlePageChange(ym) {
       console.log(ym)
       this.currentPage = ym
-      this.fenye(ym)
+      this.paging(ym)
     },
-    fenye(e) {
+    paging(e) {
       this.newdata = []
       for (let i = (e - 1) * 10; i < ((e - 1) * 10) + 10; i++) {
-        console.log(this.zhongjianshuju[i])
-        if (this.zhongjianshuju[i] === undefined) {
+        console.log(this.intermediateData[i])
+        if (this.intermediateData[i] === undefined) {
           console.warn(`字段未定义，值为 undefined`)
           break
         } else {
-          this.newdata.push(this.zhongjianshuju[i])
+          this.newdata.push(this.intermediateData[i])
         }
       }
       console.log('分页数据', this.newdata)
@@ -198,7 +198,7 @@ export default {
 .el-select{
   width: 17vw;
 }
-.yema{
+.pageNumber{
   /* border: 1px solid red; */
   /* position: absolute;
   bottom: 0px ; */
@@ -219,11 +219,11 @@ export default {
 .el-input {
   width: 17vw;
 }
-.diyi{
+.first{
   display: flex;
   justify-content: space-between;
 }
-.dier{
+.second{
   display: flex;
   justify-content: space-between;
 

@@ -2,19 +2,19 @@
   <div class="app-container">
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
-        <el-select v-model="value" placeholder="请选择仓库" @change="chaxun">
+        <el-select v-model="value" placeholder="请选择仓库" @change="query">
           <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="sousuo" placeholder="请输入批次号" />
+        <el-input v-model="search" placeholder="请输入批次号" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="chaxun">搜索</el-button>
+        <el-button type="primary" @click="query">搜索</el-button>
       </el-form-item>
       <el-form-item>
         <el-button
-          class="xinzeng"
+          class="newlyAdded"
           type="success"
           icon="el-icon-plus"
           @click="xinzengdialogFormVisible = true"
@@ -22,8 +22,8 @@
         <!-- 新增入库弹框 -->
         <el-dialog title="新增入库" :visible.sync="xinzengdialogFormVisible" width="60vw">
           <div class="biaodan">
-            <el-form ref="xinzengForm" :model="form" :rules="shujujianyan" class="xingzengshuju">
-              <div class="diyi">
+            <el-form ref="xinzengForm" :model="form" :rules="formDataVerification" class="xingzengshuju">
+              <div class="first">
                 <el-form-item label="批次号" prop="batchId">
                   <el-input v-model="form.batchId" autocomplete="off" />
                 </el-form-item>
@@ -33,7 +33,7 @@
                   </el-select>
                 </el-form-item>
               </div>
-              <div class="dier">
+              <div class="second">
                 <el-form-item label="粮食产地" prop="origin">
                   <el-input v-model="form.origin" autocomplete="off" />
                 </el-form-item>
@@ -41,7 +41,7 @@
                   <el-input v-model="form.upStreamFirm" autocomplete="off" />
                 </el-form-item>
               </div>
-              <div class="dier">
+              <div class="second">
                 <el-form-item label="检测人员" prop="inspector">
                   <el-input v-model="form.inspector" autocomplete="off" />
                 </el-form-item>
@@ -88,7 +88,7 @@
           </div>
           <div slot="footer" class="dialog-footer">
             <el-button @click="xinzengdialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="xinzeng">确 定</el-button>
+            <el-button type="primary" @click="newlyAdded">确 定</el-button>
           </div>
         </el-dialog>
       </el-form-item>
@@ -116,12 +116,12 @@
     </el-table>
 
     <!-- 分页 -->
-    <div class="yema">
+    <div class="pageNumber">
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="zhongjianshuju.length"
-        :current-page.sync="dangqianyema"
+        :total="intermediateData.length"
+        :current-page.sync="currentPageNumber"
         @current-change="handlePageChange"
       />
     </div>
@@ -240,7 +240,7 @@ export default {
       amount: ''
     }
 
-    const shujujianyan = {
+    const formDataVerification = {
       batchId: [{ required: true, message: '请输入批次号', trigger: 'blur' }],
       goodKind: [{ required: true, message: '请选择粮食种类', trigger: 'change' }],
       upStreamFirm: [
@@ -290,14 +290,14 @@ export default {
       options,
       productTypes,
       value: '',
-      sousuo: '',
+      search: '',
       tableData,
       newdata: [],
-      zhongjianshuju: [], // 初始化为空数组
+      intermediateData: [], // 初始化为空数组
       xinzengdialogFormVisible: false,
       form,
-      shujujianyan,
-      dangqianyema: 1,
+      formDataVerification,
+      currentPageNumber: 1,
       celan: false,
       chukudialogFormVisible: false,
       gridData: [],
@@ -324,7 +324,7 @@ export default {
   created() {
     this.loadOrders()
     this.getDepotNames() // 获取所有仓库名称
-    this.huqushuju()
+    this.getData()
   },
   methods: {
     async getDepotNames() {
@@ -355,7 +355,7 @@ export default {
       }
     },
     // 获取入库数据
-    async huqushuju() {
+    async getData() {
       try {
         const result = await getAllInDepotInfo()
         if (result.data.code === 1) {
@@ -373,8 +373,8 @@ export default {
             description: item.inDepotDetail.description,
             amount: item.inDepotDetail.amount
           }))
-          this.zhongjianshuju = this.tableData
-          this.fenye(1)
+          this.intermediateData = this.tableData
+          this.paging(1)
           console.log('入库数据:', this.tableData)
         } else {
           this.$message.error('获取入库数据失败')
@@ -385,26 +385,26 @@ export default {
       }
     },
     // 查询功能
-    chaxun() {
-      this.zhongjianshuju = this.tableData.filter(item => {
+    query() {
+      this.intermediateData = this.tableData.filter(item => {
         return (
           (item.enterWareHouse === this.value || this.value === '') &&
-          (item.batchId.includes(this.sousuo) || this.sousuo === '')
+          (item.batchId.includes(this.search) || this.search === '')
         )
       })
-      this.dangqianyema = 1
-      this.fenye(1)
+      this.currentPageNumber = 1
+      this.paging(1)
     },
     // 分页处理
     handlePageChange(ym) {
-      this.dangqianyema = ym
-      this.fenye(ym)
+      this.currentPageNumber = ym
+      this.paging(ym)
     },
-    fenye(e) {
+    paging(e) {
       const pageSize = 10
       const start = (e - 1) * pageSize
       const end = e * pageSize
-      this.newdata = this.zhongjianshuju.slice(start, end)
+      this.newdata = this.intermediateData.slice(start, end)
     },
     // 格式化时间戳为日期字符串
     formatTimestamp(row, column, cellValue) {
@@ -434,7 +434,7 @@ export default {
       this.chukuForm.outDepotDate = value ? Date.parse(value) : null
     },
     // 新增入库
-    async xinzeng() {
+    async newlyAdded() {
       this.$refs.xinzengForm.validate(async valid => {
         if (valid) {
           const newEntry = {
@@ -455,7 +455,7 @@ export default {
             const result = await createInDepotInfo(newEntry)
             if (result.data.code === 1) {
               this.tableData.push(newEntry)
-              this.chaxun()
+              this.query()
               // 重置表单
               Object.assign(this.form, {
                 batchId: '',
@@ -524,7 +524,7 @@ export default {
           )
           if (index !== -1) {
             this.tableData.splice(index, 1)
-            this.chaxun()
+            this.query()
             this.chukudialogFormVisible = false
             this.$message({
               message: '出库信息保存成功',
@@ -570,7 +570,7 @@ export default {
   padding: 20px;
 }
 
-.yema {
+.pageNumber {
   height: 6vh;
   min-height: 6vh;
   display: flex;
@@ -585,8 +585,8 @@ export default {
   margin: 20px;
 }
 
-.diyi,
-.dier,
+.first,
+.second,
 .disi,
 .form-row {
   display: flex;
