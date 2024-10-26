@@ -88,14 +88,14 @@
           </div>
           <div slot="footer" class="dialog-footer">
             <el-button @click="xinzengdialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="newlyAdded">确 定</el-button>
+            <el-button type="primary" :loading="loadingSubmit" @click="newlyAdded">确 定</el-button>
           </div>
         </el-dialog>
       </el-form-item>
     </el-form>
 
     <!-- 表格显示 -->
-    <el-table :data="newdata" style="width: 100%" border :row-style="{ height: '64px' }">
+    <el-table v-loading="loadingTable" :data="newdata" style="width: 100%" border :row-style="{ height: '64px' }">
       <el-table-column prop="batchId" label="批次号" width="80" />
       <el-table-column prop="goodKind" label="粮食种类" width="130" />
       <el-table-column prop="origin" label="粮食产地" width="130" />
@@ -112,7 +112,7 @@
     </el-table>
 
     <!-- 分页 -->
-    <div class="pageNumber">
+    <div v-if="!loading" class="pageNumber">
       <el-pagination
         background
         layout="prev, pager, next"
@@ -297,6 +297,8 @@ export default {
     }
 
     return {
+      loadingSubmit: false, // 表单提交的加载状态
+      loadingTable: false,
       options,
       productTypes,
       value: '',
@@ -367,6 +369,7 @@ export default {
     // 获取入库数据
     async getData() {
       try {
+        this.loadingTable = true
         const result = await getAllInDepotInfo()
         if (result.data.code === 1) {
           // 扁平化数据结构
@@ -392,6 +395,8 @@ export default {
       } catch (error) {
         console.error('获取入库数据时出错:', error)
         this.$message.error('请求入库数据时出错')
+      } finally {
+        this.loadingTable = false
       }
     },
     // 查询功能
@@ -473,6 +478,7 @@ export default {
           }
           try {
             // 新增入库
+            this.loadingSubmit = true
             const result = await createInDepotInfo(newEntry)
             if (result.data.code === 1) {
               this.tableData.push(newEntry)
@@ -502,6 +508,8 @@ export default {
           } catch (error) {
             console.error('新增入库时出错:', error)
             this.$message.error('请求出错')
+          } finally {
+            this.loadingSubmit = false
           }
         } else {
           this.$message.error('请输入全部数据')
