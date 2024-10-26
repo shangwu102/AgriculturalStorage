@@ -14,8 +14,8 @@
     </el-row>
 
     <!-- 下方列表框 -->
-    <div class="house_data">
-      <div v-if="dataList.length === 0" class="no-data-message">
+    <div v-loading="loadingData" class="house_data">
+      <div v-if="!loadingData && filteredData.length === 0" class="no-data-message">
         暂无仓库信息，请添加仓库信息
       </div>
       <div v-else>
@@ -66,7 +66,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitForm">完成</el-button>
+        <el-button type="primary" :loading="loadingSubmit" @click="submitForm">完成</el-button>
       </span>
     </el-dialog>
 
@@ -85,7 +85,6 @@
           <el-col :span="8"><strong>编号:</strong></el-col>
           <el-col :span="16">{{ selectedItem.depotId }}</el-col>
         </el-row>
-        <el-divider />
         <el-divider />
 
         <!-- 仓库描述 -->
@@ -112,6 +111,8 @@ import { createDepotInfo, getDepotInfoByName } from '@/api/Store'
 export default {
   data() {
     return {
+      loadingData: false, // 加载仓库数据的加载状态
+      loadingSubmit: false, // 表单提交的加载状态
       searchQuery: '',
       drawerVisible: false, // 控制Drawer显示
       selectedItem: null, // 存储选中的仓库信息
@@ -162,6 +163,7 @@ export default {
   },
   methods: {
     async loadWarehouseData() {
+      this.loadingData = true // 开始加载数据
       try {
         const response = await getDepotInfoByName()
         console.log(response)
@@ -177,7 +179,6 @@ export default {
               creationTime: formattedDate // 将转换后的日期赋值给 creationTime
             }
           })
-          // console.log(apiData)
           if (apiData && apiData.length > 0) {
             this.dataList = apiData
           } else {
@@ -191,6 +192,8 @@ export default {
       } catch (error) {
         console.error('获取仓库数据失败:', error)
         this.dataList = []
+      } finally {
+        this.loadingData = false // 结束加载数据
       }
     },
     handleSearch() {
@@ -208,15 +211,15 @@ export default {
     async submitForm() {
       this.$refs.warehouseForm.validate(async(valid) => {
         if (valid) {
+          this.loadingSubmit = true // 开始表单提交加载
           // 添加新仓库的数据
           const newWarehouse = {
             depotId: this.formData.depotId,
             name: this.formData.name,
             location: this.formData.creationTime ? new Date(this.formData.creationTime).getTime() : '',
             description: this.formData.description,
-            // creationTime: this.formatDateTime(this.formData.creationTime),
             // 将建立时间转换为时间戳
-            img: this.formData.img || 'https://hiwcq.oss-cn-beijing.aliyuncs.com/10%E4%BB%93%E5%BA%93%E3%80%81%E4%BB%93%E5%82%A8.png' // 默认图片
+            img: this.formData.img || 'https://hiwcq.oss-cn-beijing.aliyuncs.com/10仓库、仓储.png' // 默认图片
           }
           console.log(newWarehouse)
 
@@ -226,7 +229,7 @@ export default {
             console.log(response)
 
             if (response.data.code === 1) {
-              this.loadWarehouseData()
+              await this.loadWarehouseData() // 重新加载仓库数据
               // 关闭对话框并清空表单
               this.dialogVisible = false
               this.resetForm()
@@ -242,6 +245,8 @@ export default {
           } catch (error) {
             console.error('API error:', error)
             this.$message.error('仓库添加失败，请稍后重试')
+          } finally {
+            this.loadingSubmit = false // 结束表单提交加载
           }
         } else {
           console.log('表单验证失败')
@@ -297,6 +302,7 @@ export default {
 .house_data {
   border: 1px solid #ccc;
   border-radius: 10px;
+  min-height: 10vh;
   max-height: 80vh;
   overflow-y: auto;
   background-color: #fff;
