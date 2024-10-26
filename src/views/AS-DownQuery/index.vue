@@ -96,17 +96,13 @@
 
     <!-- 表格显示 -->
     <el-table :data="newdata" style="width: 100%" border :row-style="{ height: '64px' }">
-      <el-table-column prop="batchId" label="批次号" width="130" />
-      <el-table-column prop="goodKind" label="粮食的种类" />
-      <el-table-column prop="upStreamFirm" label="上游企业的区块链地址" />
-      <el-table-column prop="origin" label="粮食的产地" />
-      <el-table-column prop="enterWareHouse" label="入库的仓库名称" />
-      <el-table-column prop="inDepotDate" label="入库日期" :formatter="formatTimestamp" />
-      <el-table-column prop="harvestDate" label="粮食收获日期" :formatter="formatTimestamp" />
-      <el-table-column prop="inspector" label="检测人员" />
-      <el-table-column prop="custodian" label="保管人员" />
-      <el-table-column prop="description" label="入库的描述信息" />
-      <el-table-column prop="amount" label="入库数量" />
+      <el-table-column prop="batchId" label="批次号" width="80" />
+      <el-table-column prop="goodKind" label="粮食种类" width="130" />
+      <el-table-column prop="origin" label="粮食产地" width="130" />
+      <el-table-column prop="amount" label="入库数量" width="130" />
+      <el-table-column prop="upStreamFirm" label="上游企业区块链地址" width="350" />
+      <el-table-column prop="inDepotDate" label="入库日期" :formatter="formatTimestamp1" />
+      <el-table-column prop="harvestDate" label="粮食收获日期" :formatter="formatTimestamp1" />
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="primary" size="small" @click="chakan(scope.row)">查看</el-button>
@@ -187,16 +183,30 @@
       <div class="xiangqing">
         <h3 class="el-icon-s-order">产品信息</h3>
         <el-table :data="[currentRow]">
+          <el-table-column prop="batchId" label="批次号" />
+          <el-table-column prop="goodKind" label="粮食种类" />
           <el-table-column prop="origin" label="粮食产地" />
-          <el-table-column prop="inspector" label="检测人员" />
-          <el-table-column prop="upStreamFirm" label="上游企业链上地址" />
-          <el-table-column prop="harvestDate" label="收获日期" :formatter="formatTimestamp" />
+          <el-table-column prop="amount" label="入库数量" />
           <el-table-column prop="description" label="入库描述信息" />
+
         </el-table>
-        <h3 class="el-icon-s-order">入库记录</h3>
-        <!-- 您可以在这里添加入库记录的表格 -->
-        <h3 class="el-icon-s-order">出库记录</h3>
-        <!-- 您可以在这里添加出库记录的表格 -->
+
+        <h3 class="el-icon-s-order">相关人员</h3>
+        <el-table :data="[currentRow]">
+          <el-table-column prop="inspector" label="检测人员" />
+          <el-table-column prop="custodian" label="保管人员" />
+
+        </el-table>
+        <h3 class="el-icon-s-order">相关日期</h3>
+        <el-table :data="[currentRow]">
+          <el-table-column prop="harvestDate" label="粮食收获日期" :formatter="formatTimestamp" />
+          <el-table-column prop="inDepotDate" label="入库日期" :formatter="formatTimestamp" />
+        </el-table>
+        <h3 class="el-icon-s-order">上游地址</h3>
+        <el-table :data="[currentRow]">
+          <el-table-column prop="upStreamFirm" label="上游企业区块链地址" width="350" />
+        </el-table>
+
       </div>
     </el-drawer>
   </div>
@@ -407,6 +417,17 @@ export default {
       this.newdata = this.intermediateData.slice(start, end)
     },
     // 格式化时间戳为日期字符串
+    formatTimestamp1(row, column, cellValue) {
+      if (!cellValue) return ''
+      const date = new Date(cellValue)
+      const Y = date.getFullYear() + '-'
+      const M =
+        (date.getMonth() + 1 < 10
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) + '-'
+      const D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' '
+      return Y + M + D
+    },
     formatTimestamp(row, column, cellValue) {
       if (!cellValue) return ''
       const date = new Date(cellValue)
@@ -554,6 +575,9 @@ export default {
 </script>
 
 <style scoped>
+h3 {
+  margin-top: 1%;
+}
 .el-select {
   width: 17vw;
 }
