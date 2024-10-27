@@ -36,3 +36,20 @@ export function createDepotInfo(newWarehouse) {
     data: newWarehouse
   })
 }
+// 增加操作员
+
+export function initSubuserStruct(initSubuserBO) {
+  return request({
+    url: '/initSubuserStruct',
+    method: 'post',
+    data: initSubuserBO
+  })
+}
+// 授权操作员
+export function setdistroDepotArr(setdistroDepotArrBO) {
+  return request({
+    url: '/setdistroDepotArr',
+    method: 'post',
+    data: setdistroDepotArrBO
+  })
+}

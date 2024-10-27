@@ -131,7 +131,7 @@
           <el-input v-model="authForm.password" type="password" placeholder="请输入密码" />
         </el-form-item>
         <el-form-item label="区块链地址" prop="blockchainAddress">
-          <el-input v-model="authForm.blockchainAddress" placeholder="请输入区块链地址" />
+          <el-input v-model="authForm.address" placeholder="请输入区块链地址" />
         </el-form-item>
         <!-- 主管仓库 -->
         <el-form-item label="主管仓库" prop="warehouse">
@@ -198,6 +198,7 @@
 </template>
 
 <script>
+import { initSubuserStruct, setdistroDepotArr } from '@/api/Store'
 import { getUser } from '@/utils/auth'
 
 export default {
@@ -241,7 +242,7 @@ export default {
       },
       authForm: {
         username: '',
-        blockchainAddress: '',
+        address: '',
         password: '',
         warehouse: []
       },
@@ -249,7 +250,7 @@ export default {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
-        blockchainAddress: [
+        address: [
           { required: true, message: '请输入区块链地址', trigger: 'blur' }
         ],
         password: [
@@ -276,7 +277,7 @@ export default {
     openPasswordDialog() {
       this.passwordDialogVisible = true
     },
-    openAuthorizeDialog() {
+    async openAuthorizeDialog() {
       this.authorizeDialogVisible = true
     },
     submitPasswordForm() {
@@ -295,8 +296,18 @@ export default {
       })
     },
     submitAuthForm() {
-      this.$refs.authForm.validate((valid) => {
+      this.$refs.authForm.validate(async(valid) => {
         if (valid) {
+          console.log(this.authForm)
+          try {
+            const result = await initSubuserStruct(this.authForm)
+            const result1 = await setdistroDepotArr(this.authForm)
+            console.log(result)
+            console.log(result1)
+          } catch (error) {
+            console.log(error)
+          }
+
           this.operators.push({
             username: this.authForm.username,
             address: this.authForm.blockchainAddress,
